@@ -1,0 +1,22 @@
+{
+  "name": "zebizen_cirious_game",
+  "version": "1.0.0",
+  "description": "zebizen",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jairaume/ZEBIZEN_CIRIOUS_GAME.git"
+  },
+  "author": "zebizen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jairaume/ZEBIZEN_CIRIOUS_GAME/issues"
+  },
+  "homepage": "https://github.com/jairaume/ZEBIZEN_CIRIOUS_GAME#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
