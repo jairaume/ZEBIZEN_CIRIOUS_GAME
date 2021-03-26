@@ -10,10 +10,14 @@ const bodyParser = require('body-parser');
 const mysql = require('mysql');
 
 //Set static folder
-app.use(express.static((__dirname,"front/html")));
-app.use(express.static((__dirname,"front")));
+app.use(express.static((__dirname+"/front")));
+
+// Redirige vers la page d'accueil
+app.get("/", (req, res) => {
+    res.sendFile(__dirname + '/front/html/index.html');
+});
 
 //Start serveur
-http.listen(4200, ()=>{
-    console.log('Serveur lancé sur le port 4200');
+http.listen(8080, ()=>{
+    console.log('Serveur lancé sur le port 8080');
 });
