@@ -11,6 +11,8 @@ const mysql = require('mysql');
 
 //Set static folder
 app.use(express.static((__dirname+"/front")));
+app.use(express.static((__dirname+"/front/assets")));
+
 
 // Redirige vers la page d'accueil
 app.get("/", (req, res) => {

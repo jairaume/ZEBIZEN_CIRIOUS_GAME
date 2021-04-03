@@ -1,5 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Dela+Gothic+One&display=swap');
+
 body{
     padding:0px;
+    min-height:100%;
     margin:auto;
     background:rgb(44, 44, 44);
+    color:white;
+    font-family: 'Dela Gothic One', cursive;
+}
+.head{
+    text-align:center;
+}
+
+#game{
+    display:flex;
+    justify-content: center;
+    align-items:center;
+}
+
+canvas{
+    border-radius:10px;
+    box-shadow:0 0 50px -10px black;
+}
+canvas:hover{
+    cursor:crosshair;
 }
