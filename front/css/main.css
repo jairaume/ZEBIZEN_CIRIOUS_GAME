@@ -25,3 +25,18 @@ canvas{
 canvas:hover{
     cursor:crosshair;
 }
+
+#fullScreenBtn {
+    padding:10px;
+    background-color:rgb(78, 66, 238);
+    color:white;
+    border-radius:7px;
+    border-style:none;
+    transition-duration:0.1s;
+}
+#fullScreenBtn:hover{
+    transition-duration:0.1s;
+    box-shadow:0 0 20px 0 rgba(77, 66, 238, 0.4);
+}
+
+

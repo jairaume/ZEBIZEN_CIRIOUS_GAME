@@ -1,6 +1,7 @@
 //import Phaser from 'phaser';
 const playerImg = '../assets/player.png';
-const mapImg = '../assets/carte.png';
+const mapImg = '../assets/carte.png'
+
 
 
 const PLAYER_SPRITE_WIDTH = 84
@@ -17,7 +18,7 @@ const MAP_ZOOM = 4
 const player={};
 let keys = [];
 //creating gamemode
-const currentGame = new GameMode(6);
+const currentGame = new GameMode(8);
 
 
 class MyGame extends Phaser.Scene
@@ -30,7 +31,9 @@ class MyGame extends Phaser.Scene
     preload ()
     {   
         //Loading map background
-        this.load.image('map', mapImg);
+        this.load.image('map',mapImg);
+
+
         //Loading player spritesheet
         this.load.spritesheet('player',playerImg, {
             frameWidth : PLAYER_SPRITE_WIDTH,
@@ -41,9 +44,12 @@ class MyGame extends Phaser.Scene
     create ()
     {
         //Map display
-        const map = this.add.image(0, 0, 'map');       
+        const  map = this.add.image(0, 0, 'map');   
+  
+    
         map.displayHeight=MAP_HEIGHT*MAP_ZOOM;
         map.displayWidth=MAP_WIDTH*MAP_ZOOM;
+
         //Player Display
         player.sprite = this.add.sprite(PLAYER_SPRITE_STARTX, PLAYER_SPRITE_STARTY, 'player');
         player.sprite.displayHeight=PLAYER_HEIGHT;
