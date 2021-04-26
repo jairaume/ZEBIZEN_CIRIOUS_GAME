@@ -90,7 +90,7 @@ const config = {
     type: Phaser.AUTO,
     parent: 'game',
     width: '90vw',
-    height: '80vh',
+    height: '85vh',
     scene: MyGame
 };
 
