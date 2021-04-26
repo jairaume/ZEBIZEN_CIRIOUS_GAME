@@ -15,82 +15,90 @@ const session = require("express-session")({
     }
 });
 const sharedsession = require("express-socket.io-session");
-
 const bodyParser = require('body-parser');
+const {body, validationResult} = require('express-validator');
+
+///////
+ const rooms = require('./back/rooms');
+//////
+
 const mysql = require('mysql');
+const { newRoom, joinRoom } = require('./back/rooms');
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 //Set static folder
 app.use(express.static((__dirname+"/front")));
-app.use(express.static((__dirname+"/front/assets")));
 app.use(urlencodedParser);
 app.use(session);
+
+//config session
+
+io.use(sharedsession(session, {
+    autoSave: true
+}));
 
 
 // Redirige vers le jeu ou la page de connexion
 app.get('/', (req, res) => {
-    if (!session.username){
+    let sessionData = req.session;
+    console.log(sessionData);
+    if (!sessionData.username){
         res.sendFile(__dirname + '/front/html/login.html'); 
     }
     else{
-        res.sendFile(__dirname + '/front/html/lobby.html');
+        if(!sessionData.currentGameId){   
+            req.session.currentGameId = rooms.newRoom(playerId = req.sessionID);  
+            res.sendFile(__dirname + '/front/html/lobby.html');
+        }else{
+            if(joinRoom(sessionData.currentGameId, playerId = req.sessionID)){
+                res.sendFile(__dirname + '/front/html/lobby.html');
+                console.log(rooms.getData(sessionData.currentGameId));
+            }
+            else{
+                console.log('pas bien')
+                res.sendFile(__dirname + '/front/html/login.html');
+            }
+        }
     }
 });
+
+app.post('/login', urlencodedParser, (req, res) => {
+    const username = req.body.username;
+    const currentGameId =  req.body.currentGameId;
+
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        console.log(errors);
+    }else{
+        req.session.username = username;
+        req.session.currentGameId = currentGameId;        
+        req.session.save()
+        res.redirect('/');
+    }
+})
+
 
 
 //Start serveur
-http.listen(22222, ()=>{
+http.listen(55555, ()=>{
     console.log('Serveur lancé sur le port 22222');
 });
 
-const state = {};
-const rooms = new Array();
-
 io.on('connection',(socket)=>{
-    console.log('Nouvelle connection au serveur');
+    
+    if(socket.handshake.session.currentGameId){
+        let gameId = socket.handshake.session.currentGameId;
+        socket.join(gameId);
 
-    /*socket.on('new-game',(username)=>{
-        console.log("Creation d'un salon");    
-        let roomId=''
-        do{roomId = generateId()}
-        while(rooms.find(room=>{room === roomId}))
-        
-        console.log('Le code est :',roomId);
-        rooms[socket.id] = roomId;
-        socket.emit('game-code',roomId);
-        
-        state[roomId] = createGameState(roomId, socket.id);
-        
-        socket.join(roomId)
-        socket.number = 1;
-        socket.emit('init',1);
-        
-        // Store login
-        req.session.username = username;
-        req.session.gameId = roomId;
-        
-        req.session.save()
-        res.redirect('/');
-        }
-    })*/
+
+        socket.on('getRoomInfo', () =>{
+            console.log('data demandée');
+            socket.emit('roomInfo',rooms.getData(gameId));
+        });
+    }
+
+
+
 });
 
-function createGameState(id,owner){
-    return {
-        roomId: id,
-        playerList: new Array(),
-        gameStatus: false,
-        owner: owner
-    }
-}
 
-function generateId(){
-    let alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-    let code = '#';
-    let char = ''
-    for (let i=0; i<5; i++){
-        char = alphabet.charAt(Math.floor(Math.random()*alphabet.length));
-        code += char;
-    }
-    return code;
-}

@@ -6,7 +6,8 @@ let logger = (function(){
             type: "POST",
             url: "/login/",
             data: {
-                login: username
+                username: username,
+                currentGameId: gameId
             },
             success: () => {
                 window.location.href = "/";
