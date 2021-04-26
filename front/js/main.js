@@ -89,8 +89,8 @@ class MyGame extends Phaser.Scene
 const config = {
     type: Phaser.AUTO,
     parent: 'game',
-    width: 1000,
-    height: 600,
+    width: '90vw',
+    height: '80vh',
     scene: MyGame
 };
 
