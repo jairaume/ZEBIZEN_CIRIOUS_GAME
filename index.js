@@ -20,6 +20,6 @@ app.get("/", (req, res) => {
 });
 
 //Start serveur
-http.listen(8080, ()=>{
-    console.log('Serveur lancé sur le port 8080');
+http.listen(55555, ()=>{
+    console.log('Serveur lancé sur le port 55555');
 });
