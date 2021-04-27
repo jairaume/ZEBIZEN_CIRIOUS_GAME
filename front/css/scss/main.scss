@@ -1,0 +1,68 @@
+@import "libs/reset.scss";
+
+/////////////////////////////////////////////
+
+$black: rgb(36, 44, 36);
+$white: rgb(249, 249, 249);
+$primary: rgb(65, 187, 120);
+
+/////////////////////////////////////////////
+@import url('https://fonts.googleapis.com/css2?family=Hanalei+Fill&family=Noto+Sans&display=swap');
+
+/////////////////////////////////////////////
+
+%boxShadow {
+    box-shadow: (1px 5px 5px 0px lighten($black, $amount: 8));
+}
+
+/////////////////////////////////////////////
+
+*,
+::before,
+::after {
+    box-sizing: border-box;
+}
+
+/////////////////////////////////////////////
+html {
+    font-family: 'Noto Sans', sans-serif;
+    text-align: center;
+    background-color: $white;
+    color: $black;
+}
+
+h1,
+h2 {
+    font-family: 'Hanalei Fill', cursive;
+}
+
+h3,
+h4,
+h5,
+h6,
+b {
+    font-weight: bold;
+}
+
+h1{
+    font-size: 6rem;
+}
+
+h2{
+    font-size: 4rem;
+}
+
+@for $i from 3 through 6{
+    h#{$i}{
+        font-size: 7rem - $i*1rem;
+    }
+}
+
+p{
+    text-align: justify;
+    font-size: 1.5rem;
+}
+
+a:not(.fakeBtn,b,i,u,li,span){
+    
+}

@@ -81,7 +81,7 @@ app.post('/login', urlencodedParser, (req, res) => {
 
 //Start serveur
 http.listen(55555, ()=>{
-    console.log('Serveur lancé sur le port 22222');
+    console.log('Serveur lancé sur le port 55555');
 });
 
 io.on('connection',(socket)=>{
