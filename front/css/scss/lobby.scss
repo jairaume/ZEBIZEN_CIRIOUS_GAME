@@ -2,15 +2,46 @@
 
 /////////////////////////////////
 
+/*CLOSE BUTTON*/
+.close {
+    position: fixed;
+    right: 1rem;
+    top: 1rem;
+    width:3rem;
+    height:3rem;
+    &>i{
+        color:$black;
+        background:$primary;
+        font-size:3rem;
+        width:3rem;
+        height:3rem;
+        box-shadow:inset 0 0 0 4px $black;
+        border-radius:1rem;
+        transition-duration:.5s;
+        &:hover{
+            box-shadow:inset 0 0 0 1.5rem $primary;
+            transition-duration:.2s;
+            color:$white;
+            transform:rotateZ(90deg);
+        }
+        &:active{
+            box-shadow:inset 0 0 0 1.6rem $white;
+            color:$primary;
+        }
+    }
+    
+}
+
+/*GAME CODE INPUT*/
 div#gameId{
     @extend %boxShadow;
     border-radius: .5rem;
     background-color:$black;
     height: unset;
-    
     position: relative;
     
     &>input{
+        transition-duration:.2s;
         font-size: 4rem;
         text-align: center;
         color: $white;
@@ -20,7 +51,10 @@ div#gameId{
         border: unset;
         margin: unset;
         box-shadow: unset;
-        background-color: unset;
+        background-color: unset; 
+        &:hover{
+            color:lighten($primary,10);
+        }
     }
 
     &>i{
@@ -33,19 +67,22 @@ div#gameId{
         cursor: pointer;
         font-size: 2rem;
         padding: .5rem;
-        color:$white;
+        color:$black;
         transition-duration:.2s;
         box-shadow:0 0 0 4px $black;
 
         &:hover{
             background:lighten($primary,10);     
-            color:$black;
+            color:$white;
+            transform:scale(1.1);
         }
     
         &:active{
-            background:$white;
+            background:$black;
+            transform:scale(0.9);
         }
     }
+   
 }
 
 #content{
@@ -59,6 +96,47 @@ div#gameId{
 #box{
     height: 10vh;
     width: 10vw;
-
-    background-color: violet;
+    background-color: darken($white,10);
 }
+
+.slidecontainer {
+    width: 100%; /* Width of the outside container */
+  }
+  
+  /* The slider itself */
+  .slider {
+    -webkit-appearance: none;  /* Override default CSS styles */
+    appearance: none;
+    width: 100%; /* Full-width */
+    height: 1rem; /* Specified height */
+    background: #d3d3d3; /* Grey background */
+    outline: none; /* Remove outline */
+    opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+    -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+    transition: opacity .2s;
+  }
+  
+  /* Mouse-over effects */
+  .slider:hover {
+    opacity: 1; /* Fully shown on mouse-over */
+  }
+  
+  /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    width: 2rem; /* Set a specific slider handle width */
+    height: 2rem; /* Slider handle height */
+    border-radius:100%;
+    background: $primary; /* Green background */
+    cursor: pointer; /* Cursor on hover */
+  }
+  
+  .slider::-moz-range-thumb {
+    width: 25px; /* Set a specific slider handle width */
+    height: 25px; /* Slider handle height */
+    background: #4CAF50; /* Green background */
+    cursor: pointer; /* Cursor on hover */
+  }
+
+  

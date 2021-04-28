@@ -301,6 +301,36 @@ button, input, .fakeBtn {
   color: #41bb78;
 }
 
+/*CLOSE BUTTON*/
+.close {
+  position: fixed;
+  right: 1rem;
+  top: 1rem;
+  width: 3rem;
+  height: 3rem;
+}
+.close > i {
+  color: #383838;
+  background: #41bb78;
+  font-size: 3rem;
+  width: 3rem;
+  height: 3rem;
+  box-shadow: inset 0 0 0 4px #383838;
+  border-radius: 1rem;
+  transition-duration: 0.5s;
+}
+.close > i:hover {
+  box-shadow: inset 0 0 0 1.5rem #41bb78;
+  transition-duration: 0.2s;
+  color: #f9f9f9;
+  transform: rotateZ(90deg);
+}
+.close > i:active {
+  box-shadow: inset 0 0 0 1.6rem #f9f9f9;
+  color: #41bb78;
+}
+
+/*GAME CODE INPUT*/
 div#gameId {
   border-radius: 0.5rem;
   background-color: #383838;
@@ -308,6 +338,7 @@ div#gameId {
   position: relative;
 }
 div#gameId > input {
+  transition-duration: 0.2s;
   font-size: 4rem;
   text-align: center;
   color: #f9f9f9;
@@ -319,6 +350,9 @@ div#gameId > input {
   box-shadow: unset;
   background-color: unset;
 }
+div#gameId > input:hover {
+  color: #65ca93;
+}
 div#gameId > i {
   position: absolute;
   right: -1rem;
@@ -328,16 +362,18 @@ div#gameId > i {
   cursor: pointer;
   font-size: 2rem;
   padding: 0.5rem;
-  color: #f9f9f9;
+  color: #383838;
   transition-duration: 0.2s;
   box-shadow: 0 0 0 4px #383838;
 }
 div#gameId > i:hover {
   background: #65ca93;
-  color: #383838;
+  color: #f9f9f9;
+  transform: scale(1.1);
 }
 div#gameId > i:active {
-  background: #f9f9f9;
+  background: #383838;
+  transform: scale(0.9);
 }
 
 #content {
@@ -351,7 +387,62 @@ div#gameId > i:active {
 #box {
   height: 10vh;
   width: 10vw;
-  background-color: violet;
+  background-color: #e0e0e0;
 }
 
-/*# sourceMappingURL=lobby.css.map */
+.slidecontainer {
+  width: 100%;
+  /* Width of the outside container */
+}
+
+/* The slider itself */
+.slider {
+  -webkit-appearance: none;
+  /* Override default CSS styles */
+  appearance: none;
+  width: 100%;
+  /* Full-width */
+  height: 1rem;
+  /* Specified height */
+  background: #d3d3d3;
+  /* Grey background */
+  outline: none;
+  /* Remove outline */
+  opacity: 0.7;
+  /* Set transparency (for mouse-over effects on hover) */
+  /* 0.2 seconds transition on hover */
+  transition: opacity 0.2s;
+}
+
+/* Mouse-over effects */
+.slider:hover {
+  opacity: 1;
+  /* Fully shown on mouse-over */
+}
+
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  /* Override default look */
+  appearance: none;
+  width: 2rem;
+  /* Set a specific slider handle width */
+  height: 2rem;
+  /* Slider handle height */
+  border-radius: 100%;
+  background: #41bb78;
+  /* Green background */
+  cursor: pointer;
+  /* Cursor on hover */
+}
+
+.slider::-moz-range-thumb {
+  width: 25px;
+  /* Set a specific slider handle width */
+  height: 25px;
+  /* Slider handle height */
+  background: #4CAF50;
+  /* Green background */
+  cursor: pointer;
+  /* Cursor on hover */
+}
