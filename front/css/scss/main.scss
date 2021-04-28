@@ -5,6 +5,7 @@
 $black: #383838;
 $white: #f9f9f9;
 $primary: rgb(65, 187, 120);
+$red: rgb(231, 76, 60);
 
 
 /////////////////////////////////////////////
@@ -37,8 +38,8 @@ html {
 }
 
 body{
-    width: 100vw;
-    height: 100vh;
+    max-width: 100vw;
+    min-height: 100vh;
 
     display: flex;
     flex-direction: column;
@@ -111,6 +112,7 @@ u{
 button,input,.fakeBtn{
     @extend %boxShadow;
 
+    font-family: 'Noto Sans', sans-serif;
     border-radius: 10rem;
     padding: .5rem 1rem;    
     outline: 0;
@@ -197,4 +199,7 @@ button,input,.fakeBtn{
 
 .primary{
     color : $primary;
+}
+.red{
+    color:$red;
 }

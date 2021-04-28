@@ -153,8 +153,8 @@ html {
 }
 
 body {
-  width: 100vw;
-  height: 100vh;
+  max-width: 100vw;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -232,6 +232,7 @@ u {
 }
 
 button, input, .fakeBtn {
+  font-family: "Noto Sans", sans-serif;
   border-radius: 10rem;
   padding: 0.5rem 1rem;
   outline: 0;
@@ -299,6 +300,10 @@ button, input, .fakeBtn {
 
 .primary {
   color: #41bb78;
+}
+
+.red {
+  color: #e74c3c;
 }
 
 /*# sourceMappingURL=main.css.map */

@@ -130,7 +130,7 @@ table {
   border-spacing: 0;
 }
 
-div#gameId, button, input, .fakeBtn {
+.sliderround, div#gameId, button, input, .fakeBtn {
   box-shadow: 1px 5px 5px 0px #b8b8b8;
 }
 
@@ -153,8 +153,8 @@ html {
 }
 
 body {
-  width: 100vw;
-  height: 100vh;
+  max-width: 100vw;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -232,6 +232,7 @@ u {
 }
 
 button, input, .fakeBtn {
+  font-family: "Noto Sans", sans-serif;
   border-radius: 10rem;
   padding: 0.5rem 1rem;
   outline: 0;
@@ -301,6 +302,19 @@ button, input, .fakeBtn {
   color: #41bb78;
 }
 
+.red {
+  color: #e74c3c;
+}
+
+.content {
+  margin-top: 5rem;
+  padding: 0rem 5rem;
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: center;
+}
+
 /*CLOSE BUTTON*/
 .close {
   position: fixed;
@@ -316,29 +330,31 @@ button, input, .fakeBtn {
   width: 3rem;
   height: 3rem;
   box-shadow: inset 0 0 0 4px #383838;
-  border-radius: 1rem;
+  border-radius: 0.7rem;
   transition-duration: 0.5s;
 }
 .close > i:hover {
-  box-shadow: inset 0 0 0 1.5rem #41bb78;
+  box-shadow: inset 0 0 0 1.5rem #e74c3c;
   transition-duration: 0.2s;
   color: #f9f9f9;
   transform: rotateZ(90deg);
 }
 .close > i:active {
   box-shadow: inset 0 0 0 1.6rem #f9f9f9;
-  color: #41bb78;
+  color: #e74c3c;
 }
 
 /*GAME CODE INPUT*/
 div#gameId {
   border-radius: 0.5rem;
+  margin: 1rem;
   background-color: #383838;
   height: unset;
   position: relative;
 }
 div#gameId > input {
-  transition-duration: 0.2s;
+  transition-duration: 0.8s;
+  padding-right: 2rem;
   font-size: 4rem;
   text-align: center;
   color: #f9f9f9;
@@ -377,72 +393,264 @@ div#gameId > i:active {
 }
 
 #content {
-  width: 80vh;
+  width: 80vw;
+  height: auto;
   display: flex;
   flex-flow: row wrap;
   align-items: center;
-  justify-content: space-around;
 }
 
-#box {
-  height: 10vh;
-  width: 10vw;
-  background-color: #e0e0e0;
+.container {
+  margin: 1rem;
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.slidecontainer {
+.box {
+  margin: 0.5rem 0.5rem;
+  padding: 1.5rem;
+  background-color: #e7e7e7;
+  border-radius: 0.5rem;
+}
+
+#playerList {
+  flex-grow: 1;
+  height: 25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+#players {
   width: 100%;
-  /* Width of the outside container */
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  overflow-y: scroll;
+  flex-grow: 10;
+}
+#players .player {
+  position: relative;
+  text-align: start;
+  color: #f9f9f9;
+  margin: 0.5rem 0.5rem;
+  padding: 0.5rem 2.5rem 0.5rem 1rem;
+  border-radius: 0.2rem;
+}
+#players .player.ready {
+  background-color: #41bb78;
+}
+#players .player:not(.ready) {
+  background-color: #525252;
+}
+#players .player.ready:hover {
+  background-color: #3eb373;
+}
+#players .player:not(.ready):hover {
+  background-color: #4c4c4c;
+}
+#players .player > i {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  transition-duration: 0.2s;
+  cursor: pointer;
+}
+#players .player > i:hover {
+  transform: translateY(-50%) rotate(0.25turn);
+  color: #e74c3c;
+}
+#players .player > i:active {
+  transform: translateY(-50%) rotate(0.25turn) scale(0.95);
+  transition-duration: 0.05s;
 }
 
-/* The slider itself */
+#settings {
+  width: 100%;
+}
+
+.default {
+  font-size: 0.8rem;
+  margin-top: 0.3rem;
+}
+
+/*SLIDER*/
 .slider {
   -webkit-appearance: none;
-  /* Override default CSS styles */
   appearance: none;
-  width: 100%;
-  /* Full-width */
-  height: 1rem;
-  /* Specified height */
-  background: #d3d3d3;
-  /* Grey background */
+  width: 30rem;
+  height: 0.3rem;
+  background: white;
+  box-shadow: none;
   outline: none;
-  /* Remove outline */
-  opacity: 0.7;
-  /* Set transparency (for mouse-over effects on hover) */
-  /* 0.2 seconds transition on hover */
-  transition: opacity 0.2s;
+  padding: 0;
+  /*COLOR SELECTOR*/
 }
-
-/* Mouse-over effects */
 .slider:hover {
-  opacity: 1;
-  /* Fully shown on mouse-over */
+  filter: brightness(1.1);
 }
-
-/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
 .slider::-webkit-slider-thumb {
   -webkit-appearance: none;
-  /* Override default look */
   appearance: none;
-  width: 2rem;
-  /* Set a specific slider handle width */
-  height: 2rem;
-  /* Slider handle height */
+  width: 1rem;
+  height: 1rem;
   border-radius: 100%;
-  background: #41bb78;
-  /* Green background */
+  background: #349560;
   cursor: pointer;
-  /* Cursor on hover */
+}
+.slider::-moz-range-thumb {
+  width: 1rem;
+  height: 1rem;
+  background: #41bb78;
+  cursor: pointer;
+}
+.slider.color {
+  background: none;
+  width: 80%;
+}
+.slider.color::-webkit-slider-thumb {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 1rem;
+}
+.slider.color::-moz-range-thumb {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 1rem;
 }
 
-.slider::-moz-range-thumb {
-  width: 25px;
-  /* Set a specific slider handle width */
-  height: 25px;
-  /* Slider handle height */
-  background: #4CAF50;
-  /* Green background */
-  cursor: pointer;
-  /* Cursor on hover */
+/*SWITCH*/
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 3rem;
+  height: 1.5rem;
 }
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.sliderround {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #e74c3c;
+  transition: 0.4s;
+  border-radius: 1rem;
+}
+.sliderround:before {
+  position: absolute;
+  content: "";
+  height: 1.2rem;
+  width: 1.2rem;
+  left: 0.2rem;
+  bottom: 0.17rem;
+  background-color: #f9f9f9;
+  transition: 0.3s;
+  border-radius: 50%;
+}
+
+input:checked + .sliderround {
+  background-color: #41bb78;
+}
+
+input:checked + .sliderround:before {
+  transform: translateX(1.4rem);
+}
+
+hr {
+  border: 0.5px solid #383838;
+  background: #383838;
+  border-radius: 0.5rem;
+  width: 90%;
+}
+
+.settingOut {
+  width: 6ch;
+  text-align: right;
+  font-size: 1.5rem;
+  padding: 0;
+  background: none;
+  box-shadow: none;
+}
+.settingOut::-webkit-outer-spin-button, .settingOut::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+  margin: 0;
+}
+
+#chat {
+  height: 25rem;
+  width: 30vw;
+  flex-grow: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: column;
+}
+#chat > h5 {
+  margin-bottom: 0.8rem;
+}
+#chat #messages {
+  flex-grow: 1000;
+  width: 100%;
+  padding: 0.5rem 0rem;
+  overflow-y: scroll;
+}
+#chat #messages li {
+  position: relative;
+  background-color: #f6f6f6;
+}
+#chat #messages li h6 {
+  position: absolute;
+  left: 0.2rem;
+}
+#chat #messages li p {
+  padding: 1.5rem 2rem 1rem 1rem;
+  font-size: 1rem;
+}
+#chat #messages li:nth-child(2n) {
+  background-color: #f1f1f1;
+}
+#chat form {
+  margin-top: 1rem;
+  position: relative;
+  width: 100%;
+  height: 3rem;
+}
+#chat form > * {
+  margin: 0;
+}
+#chat form input[type=text] {
+  height: 2rem;
+  width: 100%;
+  padding-right: 2rem;
+  position: absolute;
+  bottom: 50%;
+  left: 0px;
+  transform: translateY(50%);
+}
+#chat form button {
+  position: absolute;
+  padding: 0px;
+  margin: 0px;
+  width: 1.5rem;
+  height: 1.5rem;
+  background-color: #41bb78;
+  color: #f9f9f9;
+  font-size: 0.9rem;
+  z-index: 10;
+  bottom: 50%;
+  right: 0.3rem;
+  transform: translateY(50%);
+}
+
+/*# sourceMappingURL=lobby.css.map */

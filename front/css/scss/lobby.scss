@@ -1,47 +1,60 @@
 @import "main.scss";
 
 /////////////////////////////////
+.content {
+    margin-top: 5rem;
+    padding: 0rem 5rem;
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: center;
+}
 
 /*CLOSE BUTTON*/
 .close {
     position: fixed;
     right: 1rem;
     top: 1rem;
-    width:3rem;
-    height:3rem;
-    &>i{
-        color:$black;
-        background:$primary;
-        font-size:3rem;
-        width:3rem;
-        height:3rem;
-        box-shadow:inset 0 0 0 4px $black;
-        border-radius:1rem;
-        transition-duration:.5s;
-        &:hover{
-            box-shadow:inset 0 0 0 1.5rem $primary;
-            transition-duration:.2s;
-            color:$white;
-            transform:rotateZ(90deg);
+    width: 3rem;
+    height: 3rem;
+
+    &>i {
+        color: $black;
+        background: $primary;
+        font-size: 3rem;
+        width: 3rem;
+        height: 3rem;
+        box-shadow: inset 0 0 0 4px $black;
+        border-radius: .7rem;
+        transition-duration: .5s;
+
+        &:hover {
+            box-shadow: inset 0 0 0 1.5rem $red;
+            transition-duration: .2s;
+            color: $white;
+            transform: rotateZ(90deg);
         }
-        &:active{
-            box-shadow:inset 0 0 0 1.6rem $white;
-            color:$primary;
+
+        &:active {
+            box-shadow: inset 0 0 0 1.6rem $white;
+            color: $red;
         }
     }
-    
+
 }
 
 /*GAME CODE INPUT*/
-div#gameId{
+div#gameId {
     @extend %boxShadow;
     border-radius: .5rem;
-    background-color:$black;
+    margin: 1rem;
+    background-color: $black;
     height: unset;
     position: relative;
-    
-    &>input{
-        transition-duration:.2s;
+
+    &>input {
+        transition-duration: .8s;
+        padding-right: 2rem;
         font-size: 4rem;
         text-align: center;
         color: $white;
@@ -51,92 +64,333 @@ div#gameId{
         border: unset;
         margin: unset;
         box-shadow: unset;
-        background-color: unset; 
-        &:hover{
-            color:lighten($primary,10);
+        background-color: unset;
+
+        &:hover {
+            color: lighten($primary, 10);
         }
     }
 
-    &>i{
+    &>i {
         position: absolute;
         right: -1rem;
         bottom: -1rem;
 
-        background:$primary;
-        border-radius:0.5rem;
+        background: $primary;
+        border-radius: 0.5rem;
         cursor: pointer;
         font-size: 2rem;
         padding: .5rem;
-        color:$black;
-        transition-duration:.2s;
-        box-shadow:0 0 0 4px $black;
+        color: $black;
+        transition-duration: .2s;
+        box-shadow: 0 0 0 4px $black;
 
-        &:hover{
-            background:lighten($primary,10);     
-            color:$white;
-            transform:scale(1.1);
+        &:hover {
+            background: lighten($primary, 10);
+            color: $white;
+            transform: scale(1.1);
         }
-    
-        &:active{
-            background:$black;
-            transform:scale(0.9);
+
+        &:active {
+            background: $black;
+            transform: scale(0.9);
         }
     }
-   
+
 }
 
-#content{
-    width: 80vh;
+#content {
+    width: 80vw;
+    height: auto;
     display: flex;
     flex-flow: row wrap;
     align-items: center;
-    justify-content: space-around;
 }
 
-#box{
-    height: 10vh;
-    width: 10vw;
-    background-color: darken($white,10);
+.container {
+    margin:1rem;
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content:space-between;
 }
 
-.slidecontainer {
-    width: 100%; /* Width of the outside container */
-  }
-  
-  /* The slider itself */
-  .slider {
-    -webkit-appearance: none;  /* Override default CSS styles */
-    appearance: none;
-    width: 100%; /* Full-width */
-    height: 1rem; /* Specified height */
-    background: #d3d3d3; /* Grey background */
-    outline: none; /* Remove outline */
-    opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
-    -webkit-transition: .2s; /* 0.2 seconds transition on hover */
-    transition: opacity .2s;
-  }
-  
-  /* Mouse-over effects */
-  .slider:hover {
-    opacity: 1; /* Fully shown on mouse-over */
-  }
-  
-  /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
-  .slider::-webkit-slider-thumb {
-    -webkit-appearance: none; /* Override default look */
-    appearance: none;
-    width: 2rem; /* Set a specific slider handle width */
-    height: 2rem; /* Slider handle height */
-    border-radius:100%;
-    background: $primary; /* Green background */
-    cursor: pointer; /* Cursor on hover */
-  }
-  
-  .slider::-moz-range-thumb {
-    width: 25px; /* Set a specific slider handle width */
-    height: 25px; /* Slider handle height */
-    background: #4CAF50; /* Green background */
-    cursor: pointer; /* Cursor on hover */
-  }
+.box {
+    margin: .5rem .5rem;
+    padding: 1.5rem;
+    background-color: darken($white, 7);
+    border-radius: .5rem;
+}
 
-  
+#playerList {
+    flex-grow: 1;
+    height: 25rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#players {
+    width: 100%;
+    padding: .5rem;
+    margin-bottom: .5rem;
+    overflow-y: scroll;
+    flex-grow: 10;
+
+
+    .player {
+        position: relative;
+
+        text-align: start;
+        color: $white;
+        margin: .5rem .5rem;
+        padding: .5rem 2.5rem .5rem 1rem;
+        border-radius: .2rem;
+
+        &.ready {
+            background-color: $primary;
+        }
+
+        &:not(.ready) {
+            background-color: lighten($black, 10);
+        }
+
+        &.ready:hover {
+            background-color: darken($primary, 2);
+        }
+
+        &:not(.ready):hover {
+            background-color: lighten($black, 8);
+        }
+
+        &>i {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            transition-duration: .2s;
+            cursor: pointer;
+
+            &:hover {
+                //transform-origin: -50% -50%;
+                transform: translateY(-50%) rotate(0.25turn);
+                color: $red;
+            }
+
+            &:active {
+                transform: translateY(-50%) rotate(0.25turn) scale(.95);
+                transition-duration: .05s;
+            }
+        }
+    }
+}
+
+#settings {
+    width: 100%;
+}
+
+.default {
+    font-size: 0.8rem;
+    margin-top:0.3rem;
+}
+
+/*SLIDER*/
+.slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 30rem;
+    height: .3rem;
+    background: white;
+    box-shadow: none;
+    outline: none;
+    padding: 0;
+
+    &:hover {
+        filter: brightness(1.1);
+    }
+
+    &::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 1rem;
+        height: 1rem;
+        border-radius: 100%;
+        background: darken($primary, 10);
+        cursor: pointer;
+    }
+
+    &::-moz-range-thumb {
+        width: 1rem;
+        height: 1rem;
+        background: $primary;
+        cursor: pointer;
+    }
+
+    /*COLOR SELECTOR*/
+    &.color{
+        background:none;
+        width:80%;
+    }
+    &.color::-webkit-slider-thumb{
+        width:3rem;
+        height:3rem;        
+        border-radius:1rem;
+    }
+    &.color::-moz-range-thumb{
+        width:3rem;
+        height:3rem;        
+        border-radius:1rem;
+    }
+}
+
+/*SWITCH*/
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 3rem;
+    height: 1.5rem;
+
+    & input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+}
+
+.sliderround {
+    @extend %boxShadow;
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: $red;
+    transition: .4s;
+    border-radius: 1rem;
+
+    &:before {
+        position: absolute;
+        content: "";
+        height: 1.2rem;
+        width: 1.2rem;
+        left: .2rem;
+        bottom: .17rem;
+        background-color: $white;
+        transition: .3s;
+        border-radius: 50%;
+    }
+}
+
+input:checked+.sliderround {
+    background-color: $primary;
+}
+
+input:checked+.sliderround:before {
+    transform: translateX(1.4rem);
+}
+
+hr {
+    border: .5px solid $black;
+    background: $black;
+    border-radius: .5rem;
+    width:90%;
+}
+
+.settingOut {
+    width: 6ch;
+    text-align:right;
+    font-size: 1.5rem;
+    padding: 0;
+    background: none;
+    box-shadow: none;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        -moz-appearance: textfield;
+        margin: 0;
+    }
+}
+
+
+#chat {
+    height: 25rem;
+    width: 30vw;
+    flex-grow: 2;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column;
+
+    &>h5{
+        margin-bottom: .8rem;
+    }
+
+    #messages{
+        flex-grow: 1000;
+        width: 100%;
+        padding: .5rem 0rem;
+        overflow-y: scroll;
+        
+        li{ 
+            position: relative;
+            background-color: darken($white, $amount: 1);
+            h6{
+                position: absolute;
+                left: .2rem;
+            }
+
+            p{
+                padding: 1.5rem 2rem 1rem 1rem;
+                font-size: 1rem;
+            }
+        }
+        li:nth-child(2n) {
+            background-color: darken($white, $amount: 3);
+          }
+    }
+
+    form {
+        margin-top: 1rem;
+        position: relative;
+        width: 100%;
+        height: 3rem;
+
+        &>* {
+            margin: 0;
+        }
+
+        input[type='text'] {
+            height: 2rem;
+            width: 100%;
+            padding-right: 2rem;
+            position: absolute;
+            bottom: 50%;
+            left: 0px;
+            transform: translateY(50%);
+        }
+
+        button {
+            position: absolute;
+            padding: 0px;
+            margin: 0px;
+
+            width: 1.5rem;
+            height: 1.5rem;
+
+            background-color: $primary;
+            color: $white;
+            font-size: .9rem;
+
+            z-index: 10;
+
+            bottom: 50%;
+            right: .3rem;
+            transform: translateY(50%);
+        }
+    }
+}
