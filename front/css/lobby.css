@@ -130,7 +130,7 @@ table {
   border-spacing: 0;
 }
 
-button, input, .fakeBtn {
+div#gameId, button, input, .fakeBtn {
   box-shadow: 1px 5px 5px 0px #b8b8b8;
 }
 
@@ -301,4 +301,57 @@ button, input, .fakeBtn {
   color: #41bb78;
 }
 
-/*# sourceMappingURL=main.css.map */
+div#gameId {
+  border-radius: 0.5rem;
+  background-color: #383838;
+  height: unset;
+  position: relative;
+}
+div#gameId > input {
+  font-size: 4rem;
+  text-align: center;
+  color: #f9f9f9;
+  font-weight: bolder;
+  cursor: pointer;
+  width: 10ch;
+  border: unset;
+  margin: unset;
+  box-shadow: unset;
+  background-color: unset;
+}
+div#gameId > i {
+  position: absolute;
+  right: -1rem;
+  bottom: -1rem;
+  background: #41bb78;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 2rem;
+  padding: 0.5rem;
+  color: #f9f9f9;
+  transition-duration: 0.2s;
+  box-shadow: 0 0 0 4px #383838;
+}
+div#gameId > i:hover {
+  background: #65ca93;
+  color: #383838;
+}
+div#gameId > i:active {
+  background: #f9f9f9;
+}
+
+#content {
+  width: 80vh;
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: space-around;
+}
+
+#box {
+  height: 10vh;
+  width: 10vw;
+  background-color: violet;
+}
+
+/*# sourceMappingURL=lobby.css.map */

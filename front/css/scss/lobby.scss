@@ -1,0 +1,64 @@
+@import "main.scss";
+
+/////////////////////////////////
+
+div#gameId{
+    @extend %boxShadow;
+    border-radius: .5rem;
+    background-color:$black;
+    height: unset;
+    
+    position: relative;
+    
+    &>input{
+        font-size: 4rem;
+        text-align: center;
+        color: $white;
+        font-weight: bolder;
+        cursor: pointer;
+        width: 10ch;
+        border: unset;
+        margin: unset;
+        box-shadow: unset;
+        background-color: unset;
+    }
+
+    &>i{
+        position: absolute;
+        right: -1rem;
+        bottom: -1rem;
+
+        background:$primary;
+        border-radius:0.5rem;
+        cursor: pointer;
+        font-size: 2rem;
+        padding: .5rem;
+        color:$white;
+        transition-duration:.2s;
+        box-shadow:0 0 0 4px $black;
+
+        &:hover{
+            background:lighten($primary,10);     
+            color:$black;
+        }
+    
+        &:active{
+            background:$white;
+        }
+    }
+}
+
+#content{
+    width: 80vh;
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: space-around;
+}
+
+#box{
+    height: 10vh;
+    width: 10vw;
+
+    background-color: violet;
+}

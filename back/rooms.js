@@ -31,6 +31,10 @@ module.exports = {
         }
     },
 
+    exist(roomId){
+        return state[roomId] != undefined;
+    },
+
     getData(roomId){
         return state[roomId];
     }

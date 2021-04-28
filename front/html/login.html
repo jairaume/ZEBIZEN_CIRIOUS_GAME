@@ -6,6 +6,9 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>        <script src="https://cdn.jsdelivr.net/npm/phaser@3.15.1/dist/phaser-arcade-physics.min.js"></script>
         <script src="//cdn.jsdelivr.net/npm/phaser@3.54.0/dist/phaser.js"></script>
         <script src="//cdn.jsdelivr.net/npm/phaser@3.54.0/dist/phaser.min.js"></script>
+        
+        <script src="https://kit.fontawesome.com/1c62d16d7a.js" crossorigin="anonymous"></script>
+        
         <link rel="stylesheet" href="../css/main.css">
         <script src="/socket.io/socket.io.js"></script>
         
@@ -13,21 +16,27 @@
 
     <body>
         <form id="formLogin">
-            <h1 id="titre">Connexion :</h1>
+            <h1 id="titre">Parmis nous</h1>
+
+            <br><br><br><br>
+
             <input type="text" id="username" placeHolder="Votre pseudo" required>
-            <button type="submit" id="createBtn">Créer un salon privé</button>
-            <hr>
-            <input type="text" id="gameId" placeHolder="Code de la partie">
-            <button type="submit" id="joinBtn">Rejoindre un salon</button>
+            
+            <div class="flip-card" id="expand">
+
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <button id='code' disabled>Entrer un code<i class="fas fa-chevron-down"></i></button>
+                    </div>
+                    <div class="flip-card-back">
+                        <input type="text" id="gameId" placeHolder="#00000" size="6">
+                    </div> 
+                </div>
+
+
+            </div>
+            <button type="submit" id="createBtn" class='btn'><span id="joinCreate">Créer</span> un salon privé</button>
         </form>
-
-        <h1>rtertr</h1>
-        <h2>tregdfgd</h2>
-        <h3>dsfsdfsdf</h3>
-
-        <h6>dfgdfgs</h6>
-
-
 
     </body>
 <script>

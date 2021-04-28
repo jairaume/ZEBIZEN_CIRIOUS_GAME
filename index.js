@@ -41,7 +41,7 @@ io.use(sharedsession(session, {
 // Redirige vers le jeu ou la page de connexion
 app.get('/', (req, res) => {
     let sessionData = req.session;
-    console.log(sessionData);
+    //console.log(sessionData);
     if (!sessionData.username){
         res.sendFile(__dirname + '/front/html/login.html'); 
     }
@@ -52,10 +52,9 @@ app.get('/', (req, res) => {
         }else{
             if(joinRoom(sessionData.currentGameId, playerId = req.sessionID)){
                 res.sendFile(__dirname + '/front/html/lobby.html');
-                console.log(rooms.getData(sessionData.currentGameId));
+                //console.log(rooms.getData(sessionData.currentGameId));
             }
             else{
-                console.log('pas bien')
                 res.sendFile(__dirname + '/front/html/login.html');
             }
         }
@@ -92,7 +91,7 @@ io.on('connection',(socket)=>{
 
 
         socket.on('getRoomInfo', () =>{
-            console.log('data demandée');
+            //console.log('data demandée');
             socket.emit('roomInfo',rooms.getData(gameId));
         });
     }
