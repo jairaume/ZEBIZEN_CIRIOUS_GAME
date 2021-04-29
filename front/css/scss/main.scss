@@ -25,7 +25,7 @@ $red: rgb(231, 76, 60);
     box-sizing: border-box;
 }
 *::selection{
-    background : transparentize($primary, 0.2);
+    background : transparentize(lighten($primary,10), 0.2);
     border-radius: 5%;
 }
 
