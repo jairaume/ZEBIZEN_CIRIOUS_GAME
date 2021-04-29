@@ -379,6 +379,7 @@ div#gameId {
   background-color: #383838;
   height: unset;
   position: relative;
+  margin: 0.5rem 3rem;
 }
 div#gameId > input {
   transition-duration: 0.5s;
@@ -448,7 +449,7 @@ div#gameId > i:active {
 
 #playerList {
   flex-grow: 1;
-  height: 25rem;
+  height: 35rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -549,14 +550,14 @@ div#gameId > i:active {
 }
 
 .color {
+  flex-grow: 3;
+}
+
+.switchContainer {
   flex-grow: 2;
 }
 
-.impo {
-  flex-grow: 2;
-}
-
-.speed {
+.sliderContainer {
   flex-grow: 4;
 }
 
@@ -564,7 +565,7 @@ div#gameId > i:active {
 .slider {
   -webkit-appearance: none;
   appearance: none;
-  width: auto;
+  flex-basis: 60%;
   height: 0.3rem;
   background: white;
   box-shadow: none;
@@ -641,7 +642,7 @@ hr {
 
 /*SETTING OUTPUT*/
 .settingOut {
-  width: 3ch;
+  width: 4ch;
   text-align: center;
   font-size: 1.5rem;
   padding: 0;
@@ -707,7 +708,7 @@ hr {
 
 /*CHAT*/
 #chat {
-  height: 25rem;
+  height: 35rem;
   width: 30vw;
   flex-grow: 2;
   display: flex;
@@ -765,17 +766,35 @@ hr {
   color: #f9f9f9;
   font-size: 0.9rem;
   z-index: 10;
-  right: 0.3rem;
-  bottom: 0.25rem;
+  right: 0.4rem;
+  bottom: 50%;
+  transform: translateY(50%);
   transition: all 0.5s;
 }
 #chat form button:hover {
   background: #3aa86c;
   cursor: pointer;
-  transform: scale(1.2);
+  transform: translateY(50%) scale(1.2);
   transition: all 0.2s;
 }
 #chat form button:hover > i {
   transform: rotate(360deg);
   transition: all 0.5s;
 }
+
+@media (max-width: 1000px) {
+  .box {
+    order: 3;
+  }
+
+  #chat {
+    width: 100%;
+    order: 2;
+  }
+
+  #playerList {
+    order: 1;
+  }
+}
+
+/*# sourceMappingURL=lobby.css.map */

@@ -1,14 +1,14 @@
-const username = document.getElementById('username')
-const createBtn = document.getElementById('createBtn')
+const username = document.getElementById('username');
+const createBtn = document.getElementById('createBtn');
 const joinCreate = document.getElementById('joinCreate');
-const gameId = document.getElementById('gameId')
+const gameId = document.getElementById('gameId');
 const form = document.getElementById('formLogin');
 const expand = document.getElementById('expand');
 
 let join = false;
 
 form.addEventListener('submit', (event) => {
-    console.log('Connection')
+    console.log('Connection');
     event.preventDefault();
     logger.connexion(username.value, gameId.value);
 });

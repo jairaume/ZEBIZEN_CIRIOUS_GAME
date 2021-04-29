@@ -80,6 +80,7 @@ div#gameId {
     background-color: $black;
     height: unset;
     position: relative;
+    margin: .5rem 3rem;
     
     &>input {
         transition-duration: .5s;
@@ -156,7 +157,7 @@ div#gameId {
 
 #playerList {
     flex-grow: 1;
-    height: 25rem;
+    height: 35rem;
 
     display: flex;
     align-items: center;
@@ -269,12 +270,12 @@ div#gameId {
     margin-top:0.3rem;
 }
 .color{
+    flex-grow:3;
+}
+.switchContainer{
     flex-grow:2;
 }
-.impo{
-    flex-grow:2;
-}
-.speed{
+.sliderContainer{
     flex-grow:4;
 }
 
@@ -283,7 +284,7 @@ div#gameId {
     -webkit-appearance: none;
     @extend %boxShadow;
     appearance: none;
-    width: auto;
+    flex-basis:  60%;
     height: .3rem;
     background: white;
     box-shadow: none;
@@ -364,7 +365,7 @@ hr {
 
 /*SETTING OUTPUT*/
 .settingOut {
-    width: 3ch;
+    width: 4ch;
     text-align:center;
     font-size: 1.5rem;
     padding: 0;
@@ -442,7 +443,7 @@ hr {
 
 /*CHAT*/
 #chat {
-    height: 25rem;
+    height: 35rem;
     width: 30vw;
     flex-grow: 2;
 
@@ -511,13 +512,14 @@ hr {
 
             z-index: 10;
 
-            right: .3rem;
-            bottom:.25rem;
+            right: .4rem;
+            bottom:50%;
+            transform: translateY(50%);
             transition:all .5s;
             &:hover{
                 background:darken($primary,5);
                 cursor: pointer;
-                transform:scale(1.2);
+                transform:translateY(50%) scale(1.2);
                 transition:all .2s;
                 &>i{
                     transform:rotate(360deg);
@@ -527,3 +529,16 @@ hr {
         }
     }
 }
+
+@media (max-width: 1000px) {
+    .box{
+        order: 3;
+    }
+    #chat{
+        width: 100%;
+        order: 2;
+    }
+    #playerList{
+        order: 1;
+    }
+  }
