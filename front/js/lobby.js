@@ -1,21 +1,30 @@
 const gameId = document.getElementById('gameId'); 
+
+const readyBtn = document.getElementById('readyBtn');
+let ready = false;
+
 const speedRange = document.getElementById('speedRange');
+
 const speedOutput = document.getElementById('speed');
-const colorSelector = document.getElementById('color');
 speedOutput.value = speedRange.value;
+
+const colorSelector = document.getElementById('color');
+const leftColor = document.getElementById('left');
+const rightColor = document.getElementById('right');
 const colors = [
-    '#ffe119',
-    '#f58231',
-    '#000075',
-    '#e6194B',
-    '#a9a9a9',
-    '#aaffc3',
-    '#800000',
-    '#42d4f4',
-    '#469990',
-    '#4363d8',
-    '#911eb4',
+    '#006400',
+    '#00008b',
+    '#b03060',
+    '#ff0000',
+    '#ffd700',
+    '#7fff00',
+    '#00ffff',
+    '#ff00ff',
+    '#6495ed',
+    '#ffdab9',
 ];
+let color = Math.floor(Math.random()*10);
+colorSelector.style.background = colors[color];
 
 /*******************GAME CODE**********************/
 gameId.addEventListener('click',()=>{
@@ -37,7 +46,11 @@ gameId.getElementsByTagName('i')[0].addEventListener('mouseenter',()=>{
 function showId(id){
     gameId.firstElementChild.value = id;
 }
-
+/**********PLAYER LIST AND READINESS*****************/
+readyBtn.addEventListener('mouseup',()=>{
+    readyBtn.classList.toggle('ready')
+    ready = ready ? false : true;
+});
 /**************************SETTINGS*****************/
 speedRange.oninput = function(){
     speedOutput.value = this.value;
@@ -46,12 +59,14 @@ speedOutput.oninput = function(){
     speedRange.value = this.value;
 }
 
-colorSelector.oninput = function(){
-    let color = colors[this.value];
-    let s = document.createElement("style");
-    document.head.appendChild(s);
-    s.textContent = '.color::-webkit-slider-thumb{background-color:'+color+' }'
-}
+leftColor.addEventListener('click',()=>{
+    color = color==0 ? 9 : color-1;
+    colorSelector.style.background = colors[color];
+});
+rightColor.addEventListener('click',()=>{
+    color = color==9 ? 0 : color+1;
+    colorSelector.style.background = colors[color];
+});
 
 
 

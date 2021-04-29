@@ -2,22 +2,24 @@
 
 /////////////////////////////////
 .content {
-    margin-top: 5rem;
     padding: 0rem 5rem;
     display: flex;
     flex-flow: row wrap;
     align-items: center;
     justify-content: center;
+    margin:1rem;
 }
 
 /*CLOSE BUTTON*/
 .close {
     position: fixed;
-    right: 1rem;
-    top: 1rem;
+    left: .5rem;
+    bottom: .5rem;
     width: 3rem;
     height: 3rem;
-
+    &>a{
+        text-decoration: none;
+    }
     &>i {
         color: $black;
         background: $primary;
@@ -27,33 +29,60 @@
         box-shadow: inset 0 0 0 4px $black;
         border-radius: .7rem;
         transition-duration: .5s;
-
+        
         &:hover {
             box-shadow: inset 0 0 0 1.5rem $red;
             transition-duration: .2s;
             color: $white;
             transform: rotateZ(90deg);
+            cursor: pointer;
         }
-
+        
         &:active {
             box-shadow: inset 0 0 0 1.6rem $white;
             color: $red;
         }
     }
+    &>span{
+        position:absolute;
+        bottom: 110%;
+        left: 0;
+        transition-duration:1s;
+        opacity: 0;
+        color:darken($red,20);
+        font-size:.8rem;
+    }
+    &:hover{
+        &>span{
+            transition-duration:.5s;
+            opacity:1;
+        }
+    }
 
 }
 
+.header{
+    display:flex;
+    flex-flow:row wrap;
+    justify-content: space-around;
+
+    width:100%;
+    padding-top: 1rem;
+    &>h1{
+        padding-top:1rem;
+        font-size:5rem;
+    }
+}
 /*GAME CODE INPUT*/
 div#gameId {
     @extend %boxShadow;
     border-radius: .5rem;
-    margin: 1rem;
     background-color: $black;
     height: unset;
     position: relative;
-
+    
     &>input {
-        transition-duration: .8s;
+        transition-duration: .5s;
         padding-right: 2rem;
         font-size: 4rem;
         text-align: center;
@@ -108,11 +137,14 @@ div#gameId {
 }
 
 .container {
-    margin:1rem;
+    margin:.5rem;
     display: flex;
     flex-flow: row wrap;
     align-items: center;
     justify-content:space-between;
+    background: darken($white,15);
+    padding:1rem;
+    border-radius:.5rem;
 }
 
 .box {
@@ -185,31 +217,78 @@ div#gameId {
             }
         }
     }
+    &>h5{
+        z-index: 10;
+    }
+}
+#readyBtn{
+    background:$black;
+    color:$white;
+    box-shadow: inset 0 0 0 4px $black, inset 0 0 0 8px darken($primary,20);
+    text-align:center;
+    line-height:3rem;
+    font-size:2rem;
+    transition-duration:.5s;
+    z-index: 0;
+
+    padding:.5rem 4rem;
+    border-radius:1rem;
+    margin-top:1.5rem;
+
+    &:hover{
+        cursor: pointer;
+        box-shadow: inset 0 0 0 4px $black, 
+        inset 0 0 0 8px lighten($primary,10),
+        inset 0 0 5px 8px $primary;
+        transition-duration:.3s;
+    }
+    &:active{
+        background:$primary;
+        transform:scale(0.9);
+    }
+    &.ready{
+        background:$primary;
+        box-shadow:0 0 10px 0 $primary;
+        &:hover{
+            box-shadow:0 0 20px 5px $primary;
+        }
+    }
 }
 
+/*PARAMETRES DE LA PARTIE*/
 #settings {
     width: 100%;
+    display:flex;
+    flex-flow: row wrap;
 }
-
+.setting{
+    margin-right:1rem;
+}
 .default {
     font-size: 0.8rem;
     margin-top:0.3rem;
+}
+.color{
+    flex-grow:2;
+}
+.impo{
+    flex-grow:2;
+}
+.speed{
+    flex-grow:4;
 }
 
 /*SLIDER*/
 .slider {
     -webkit-appearance: none;
+    @extend %boxShadow;
     appearance: none;
-    width: 30rem;
+    width: auto;
     height: .3rem;
     background: white;
     box-shadow: none;
     outline: none;
-    padding: 0;
-
-    &:hover {
-        filter: brightness(1.1);
-    }
+    padding: 0;;
 
     &::-webkit-slider-thumb {
         -webkit-appearance: none;
@@ -217,7 +296,7 @@ div#gameId {
         width: 1rem;
         height: 1rem;
         border-radius: 100%;
-        background: darken($primary, 10);
+        background: $primary;
         cursor: pointer;
     }
 
@@ -226,22 +305,6 @@ div#gameId {
         height: 1rem;
         background: $primary;
         cursor: pointer;
-    }
-
-    /*COLOR SELECTOR*/
-    &.color{
-        background:none;
-        width:80%;
-    }
-    &.color::-webkit-slider-thumb{
-        width:3rem;
-        height:3rem;        
-        border-radius:1rem;
-    }
-    &.color::-moz-range-thumb{
-        width:3rem;
-        height:3rem;        
-        border-radius:1rem;
     }
 }
 
@@ -258,7 +321,6 @@ div#gameId {
         height: 0;
     }
 }
-
 .sliderround {
     @extend %boxShadow;
     position: absolute;
@@ -277,21 +339,21 @@ div#gameId {
         height: 1.2rem;
         width: 1.2rem;
         left: .2rem;
-        bottom: .17rem;
-        background-color: $white;
+        top: .17rem;
+        background-color: white;
         transition: .3s;
         border-radius: 50%;
     }
 }
-
 input:checked+.sliderround {
     background-color: $primary;
 }
-
 input:checked+.sliderround:before {
     transform: translateX(1.4rem);
 }
 
+
+/*HR*/
 hr {
     border: .5px solid $black;
     background: $black;
@@ -299,12 +361,15 @@ hr {
     width:90%;
 }
 
+
+/*SETTING OUTPUT*/
 .settingOut {
-    width: 6ch;
-    text-align:right;
+    width: 3ch;
+    text-align:center;
     font-size: 1.5rem;
     padding: 0;
-    background: none;
+    background: darken($white,10);
+    border-radius:.5rem;
     box-shadow: none;
 
     &::-webkit-outer-spin-button,
@@ -316,6 +381,66 @@ hr {
 }
 
 
+/*COLOR SELECTOR*/
+#color{
+    width:3rem;
+    height:3rem;
+    line-height:3rem;
+
+    border-radius:100%;
+    box-shadow:0 0 0 2px white, (1px 5px 5px 0px lighten($black, $amount: 50));
+    background:$primary;
+    transition-duration:.2s;
+
+    padding:0;
+    margin:0;
+    position:relative;
+    
+    & #left, & #right{
+        width:1.5rem;
+        height:3rem;
+
+        font-size:0.5rem;
+        color:transparentize($white,0.5);
+        
+        top:0;
+        padding:0;
+        margin:0;
+        z-index: 10;
+        position:absolute;
+
+        &:hover{
+            background:transparentize($white, 0.90);
+            color:$white;
+            cursor: pointer;
+            transition-duration:.2s;
+            &>i{
+                transition-duration:.2s;
+                transform:scale(1.1);
+            }
+        }
+        &:active{
+            background:transparentize($white, 0.5);
+            &>i{
+                transition-duration:.05s;
+                transform:scale(0.9);
+            }
+        }
+    }
+    #left{
+        border-radius:10rem 0 0 10rem;
+        left:0; 
+    }
+    #right{
+        border-radius:0 10rem 10rem 0;
+        right:0;
+    }    
+}
+
+
+
+
+/*CHAT*/
 #chat {
     height: 25rem;
     width: 30vw;
@@ -326,9 +451,6 @@ hr {
     justify-content: space-between;
     flex-direction: column;
 
-    &>h5{
-        margin-bottom: .8rem;
-    }
 
     #messages{
         flex-grow: 1000;
@@ -371,6 +493,7 @@ hr {
             position: absolute;
             bottom: 50%;
             left: 0px;
+            font-size:1rem;
             transform: translateY(50%);
         }
 
@@ -388,9 +511,19 @@ hr {
 
             z-index: 10;
 
-            bottom: 50%;
             right: .3rem;
-            transform: translateY(50%);
+            bottom:.25rem;
+            transition:all .5s;
+            &:hover{
+                background:darken($primary,5);
+                cursor: pointer;
+                transform:scale(1.2);
+                transition:all .2s;
+                &>i{
+                    transform:rotate(360deg);
+                    transition:all .5s;
+                }
+            }
         }
     }
 }

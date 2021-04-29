@@ -12,112 +12,121 @@
         
     </head>
     <body>
-        <div id="gameId">
-            <input id="code" value='#00000' readonly></input>
-            <i class="far fa-clipboard"></i>
+        <div class="header">
+            <h1>Lobby d'avant partie :</h1>
+            <div id="gameId">
+                <input id="code" value='#00000' readonly></input>
+                <i class="far fa-clipboard"></i>
+            </div>
         </div>
+        
         
         <br>
         <div class="content">
-        <div id="chat" class="box">
-            <h5>Chat:</h5>
-            <ul id="messages">
-                <li>
-                    <h6>Jairaume: </h6>
-                    <p>Bonjour les fils de putes</p>
-                </li>
-                <li>
-                    <h6>Jairaume: </h6>
-                    <p>les fils de putes</p>
-                </li>
-                <li>
-                    <h6>Jairaume: </h6>
-                    <p>Bonjour les fils de putes</p>
-                </li>
-                <li>
-                    <h6>Jairaume: </h6>
-                    <p>Bonjour les fils de putes</p>
-                </li>
-                <li>
-                    <h6>Jairaume: </h6>
-                    <p>Bonjour les fils de putes putes putes putes putes putes putes putes putes putes putes putes putes putes putes putes putes putes putes putes putes putes putes putes putes putes putes putes putes putes</p>
-                </li>
-                <li>
-                    <h6>Jairaume: </h6>
-                    <p>Bonjour les fils de putes</p>
-                </li>
-            </ul>
-            <form id="newMessage">
-                <input type="text" placeholder='Alex le gros pd'>
-                <button type="submit"><i class="fas fa-paper-plane"></i></button>
-            </form>
-        </div>
-
-        <div id="playerList" class="box">
-            <div id="players">
-                <div class="player">
-                    <b>Jairaume</b>
-                    <i class="fas fa-times"></i>
-                </div>
-                <div class="player ready">
-                    <b>Jairaume</b>
-                    <i class="fas fa-times"></i>
-                </div>            
-            </div>
-            <h5>Ready : <b id="readyPlayers" class="red">0</b>/10</h5>
-        </div>
-
-
-
-        <div id='settings' class="box">
-            <h5><b>Paramètres de la partie :</b></h5> 
-
-            <div class="container">
-                <div>
-                    <p>
-                        <b>Votre couleur :</b>
-                        <p class="default">Par defaut : Blanc</p>
-                    </p>     
-                </div>
-                <input type="range" min="0" max="9" value="7" class="color slider" id="color">
+            <div id="chat" class="box">
+                <h5>Chat :</h5>
+                <ul id="messages">
+                    <li>
+                        <h6>Jairaume: </h6>
+                        <p>Bonjour les fils de putes</p>
+                    </li>
+                    <li>
+                        <h6>Jairaume: </h6>
+                        <p>les fils de putes</p>
+                    </li>
+                    <li>
+                        <h6>Jairaume: </h6>
+                        <p>Bonjour les fils de putes</p>
+                    </li>
+                    <li>
+                        <h6>Jairaume: </h6>
+                        <p>Bonjour les fils de putes</p>
+                    </li>
+                    <li>
+                        <h6>Jairaume: </h6>
+                        <p>Bonjour les fils de putes putes putes putes putes putes putes putes putes putes putes putes putes putes putes putes putes putes putes putes putes putes putes putes putes putes putes putes putes putes</p>
+                    </li>
+                    <li>
+                        <h6>Jairaume: </h6>
+                        <p>Bonjour les fils de putes</p>
+                    </li>
+                </ul>
+                <form id="newMessage">
+                    <input type="text" placeholder='message...'>
+                    <button type="submit"><i class="fas fa-paper-plane"></i></button>
+                </form>
             </div>
 
-            <hr>
-
-            <div class="container">
-                <div>
-                    <p>
-                        <b>Vitesse :</b>
-                        <p class="default">Par defaut : 7</p>
-                    </p>     
+            <div id="playerList" class="box">
+                <h5><b>Joueurs :</b></h5> 
+                <div id="players">
+                    <div class="player">
+                        <b>Jairaume</b>
+                        <i class="fas fa-times"></i>
+                    </div>
+                    <div class="player ready">
+                        <b>Jairaume</b>
+                        <i class="fas fa-times"></i>
+                    </div>            
                 </div>
-                <input type="range" min="0" max="10" value="7" class="slider" id="speedRange">
-                <input type='number' min="0" max="10" id="speed" class="settingOut">
+                <h5>Ready : <b id="readyPlayers" class="red">0</b>/10</h5>
+                <div class="" id="readyBtn"><b>Prêt</b></div>
             </div>
 
-            <hr>
 
-            <div class="container">   
-                <div>
-                    <p>
-                        <b>Imposteur :</b>
-                        <p class="default">Par defaut : <b class="primary">ON</b></p>
-                    </p>
+            <div class="box" style='width:100%;'>
+                <h5><b>Paramètres de la partie :</b></h5> 
+                <div id="settings">
+                    <div class="container color">
+                        <div>
+                            <p>
+                                <b class="setting">Votre couleur :</b>
+                                <p class="default setting">Par defaut : <b>Blanc</b></p>
+                            </p>     
+                        </div>
+                        <div class="setting" id="color">
+                            <div id="left"><i class="fas fa-chevron-left"></i></div>
+                            <div id="right"><i class="fas fa-chevron-right"></i></div>
+                        </div>
+                    </div>
+            
+                    <div class="container impo">   
+                        <div>
+                            <p>
+                                <b class="setting" >Imposteur :</b>
+                                <p class="default setting">Par defaut : <b class="primary">ON</b></p>
+                            </p>
+                        </div>
+                        
+                        <label class="switch setting"><input type="checkbox" checked><span class="sliderround"></span></label>
+                    </div>
+
+                    <div class="container speed">
+                        <div>
+                            <p>
+                                <b class="setting" >Vitesse :</b>
+                                <p class="default setting">Par defaut : <b>7</b></p>
+                            </p>     
+                        </div>
+                        <input type="range" min="0" max="10" value="7" class="slider setting" id="speedRange">
+                        <input type='number' min="0" max="10" id="speed" class="settingOut setting">
+                    </div>
+
+
                 </div>
-                
-                <label class="switch"><input type="checkbox" checked><span class="sliderround"></span></label>
             </div>
 
+            <div class="close" id="leave">
+                <i class="fas fa-times"></i>
+                <span class="tooltiptext">Quitter le salon</span>   
+            </div>
         </div>
-        </div>
-
-        <a href="#" class="close" id="leave"><i class="fas fa-times"></i></a>
-
-
     </body>
 
 <script>
     let socket = io();
 </script>
+
 </html>
+
 <script src="../js/lobby.js"></script>

@@ -130,7 +130,7 @@ table {
   border-spacing: 0;
 }
 
-.sliderround, div#gameId, button, input, .fakeBtn {
+.sliderround, .slider, div#gameId, button, input, .fakeBtn {
   box-shadow: 1px 5px 5px 0px #b8b8b8;
 }
 
@@ -307,21 +307,24 @@ button, input, .fakeBtn {
 }
 
 .content {
-  margin-top: 5rem;
   padding: 0rem 5rem;
   display: flex;
   flex-flow: row wrap;
   align-items: center;
   justify-content: center;
+  margin: 1rem;
 }
 
 /*CLOSE BUTTON*/
 .close {
   position: fixed;
-  right: 1rem;
-  top: 1rem;
+  left: 0.5rem;
+  bottom: 0.5rem;
   width: 3rem;
   height: 3rem;
+}
+.close > a {
+  text-decoration: none;
 }
 .close > i {
   color: #383838;
@@ -338,22 +341,47 @@ button, input, .fakeBtn {
   transition-duration: 0.2s;
   color: #f9f9f9;
   transform: rotateZ(90deg);
+  cursor: pointer;
 }
 .close > i:active {
   box-shadow: inset 0 0 0 1.6rem #f9f9f9;
   color: #e74c3c;
 }
+.close > span {
+  position: absolute;
+  bottom: 110%;
+  left: 0;
+  transition-duration: 1s;
+  opacity: 0;
+  color: #a82315;
+  font-size: 0.8rem;
+}
+.close:hover > span {
+  transition-duration: 0.5s;
+  opacity: 1;
+}
+
+.header {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+  width: 100%;
+  padding-top: 1rem;
+}
+.header > h1 {
+  padding-top: 1rem;
+  font-size: 5rem;
+}
 
 /*GAME CODE INPUT*/
 div#gameId {
   border-radius: 0.5rem;
-  margin: 1rem;
   background-color: #383838;
   height: unset;
   position: relative;
 }
 div#gameId > input {
-  transition-duration: 0.8s;
+  transition-duration: 0.5s;
   padding-right: 2rem;
   font-size: 4rem;
   text-align: center;
@@ -401,11 +429,14 @@ div#gameId > i:active {
 }
 
 .container {
-  margin: 1rem;
+  margin: 0.5rem;
   display: flex;
   flex-flow: row wrap;
   align-items: center;
   justify-content: space-between;
+  background: lightgray;
+  padding: 1rem;
+  border-radius: 0.5rem;
 }
 
 .box {
@@ -467,9 +498,49 @@ div#gameId > i:active {
   transform: translateY(-50%) rotate(0.25turn) scale(0.95);
   transition-duration: 0.05s;
 }
+#players > h5 {
+  z-index: 10;
+}
 
+#readyBtn {
+  background: #383838;
+  color: #f9f9f9;
+  box-shadow: inset 0 0 0 4px #383838, inset 0 0 0 8px #276f47;
+  text-align: center;
+  line-height: 3rem;
+  font-size: 2rem;
+  transition-duration: 0.5s;
+  z-index: 0;
+  padding: 0.5rem 4rem;
+  border-radius: 1rem;
+  margin-top: 1.5rem;
+}
+#readyBtn:hover {
+  cursor: pointer;
+  box-shadow: inset 0 0 0 4px #383838, inset 0 0 0 8px #65ca93, inset 0 0 5px 8px #41bb78;
+  transition-duration: 0.3s;
+}
+#readyBtn:active {
+  background: #41bb78;
+  transform: scale(0.9);
+}
+#readyBtn.ready {
+  background: #41bb78;
+  box-shadow: 0 0 10px 0 #41bb78;
+}
+#readyBtn.ready:hover {
+  box-shadow: 0 0 20px 5px #41bb78;
+}
+
+/*PARAMETRES DE LA PARTIE*/
 #settings {
   width: 100%;
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.setting {
+  margin-right: 1rem;
 }
 
 .default {
@@ -477,20 +548,28 @@ div#gameId > i:active {
   margin-top: 0.3rem;
 }
 
+.color {
+  flex-grow: 2;
+}
+
+.impo {
+  flex-grow: 2;
+}
+
+.speed {
+  flex-grow: 4;
+}
+
 /*SLIDER*/
 .slider {
   -webkit-appearance: none;
   appearance: none;
-  width: 30rem;
+  width: auto;
   height: 0.3rem;
   background: white;
   box-shadow: none;
   outline: none;
   padding: 0;
-  /*COLOR SELECTOR*/
-}
-.slider:hover {
-  filter: brightness(1.1);
 }
 .slider::-webkit-slider-thumb {
   -webkit-appearance: none;
@@ -498,7 +577,7 @@ div#gameId > i:active {
   width: 1rem;
   height: 1rem;
   border-radius: 100%;
-  background: #349560;
+  background: #41bb78;
   cursor: pointer;
 }
 .slider::-moz-range-thumb {
@@ -506,20 +585,6 @@ div#gameId > i:active {
   height: 1rem;
   background: #41bb78;
   cursor: pointer;
-}
-.slider.color {
-  background: none;
-  width: 80%;
-}
-.slider.color::-webkit-slider-thumb {
-  width: 3rem;
-  height: 3rem;
-  border-radius: 1rem;
-}
-.slider.color::-moz-range-thumb {
-  width: 3rem;
-  height: 3rem;
-  border-radius: 1rem;
 }
 
 /*SWITCH*/
@@ -552,8 +617,8 @@ div#gameId > i:active {
   height: 1.2rem;
   width: 1.2rem;
   left: 0.2rem;
-  bottom: 0.17rem;
-  background-color: #f9f9f9;
+  top: 0.17rem;
+  background-color: white;
   transition: 0.3s;
   border-radius: 50%;
 }
@@ -566,6 +631,7 @@ input:checked + .sliderround:before {
   transform: translateX(1.4rem);
 }
 
+/*HR*/
 hr {
   border: 0.5px solid #383838;
   background: #383838;
@@ -573,12 +639,14 @@ hr {
   width: 90%;
 }
 
+/*SETTING OUTPUT*/
 .settingOut {
-  width: 6ch;
-  text-align: right;
+  width: 3ch;
+  text-align: center;
   font-size: 1.5rem;
   padding: 0;
-  background: none;
+  background: #e0e0e0;
+  border-radius: 0.5rem;
   box-shadow: none;
 }
 .settingOut::-webkit-outer-spin-button, .settingOut::-webkit-inner-spin-button {
@@ -587,6 +655,57 @@ hr {
   margin: 0;
 }
 
+/*COLOR SELECTOR*/
+#color {
+  width: 3rem;
+  height: 3rem;
+  line-height: 3rem;
+  border-radius: 100%;
+  box-shadow: 0 0 0 2px white, 1px 5px 5px 0px #b8b8b8;
+  background: #41bb78;
+  transition-duration: 0.2s;
+  padding: 0;
+  margin: 0;
+  position: relative;
+}
+#color #left, #color #right {
+  width: 1.5rem;
+  height: 3rem;
+  font-size: 0.5rem;
+  color: rgba(249, 249, 249, 0.5);
+  top: 0;
+  padding: 0;
+  margin: 0;
+  z-index: 10;
+  position: absolute;
+}
+#color #left:hover, #color #right:hover {
+  background: rgba(249, 249, 249, 0.1);
+  color: #f9f9f9;
+  cursor: pointer;
+  transition-duration: 0.2s;
+}
+#color #left:hover > i, #color #right:hover > i {
+  transition-duration: 0.2s;
+  transform: scale(1.1);
+}
+#color #left:active, #color #right:active {
+  background: rgba(249, 249, 249, 0.5);
+}
+#color #left:active > i, #color #right:active > i {
+  transition-duration: 0.05s;
+  transform: scale(0.9);
+}
+#color #left {
+  border-radius: 10rem 0 0 10rem;
+  left: 0;
+}
+#color #right {
+  border-radius: 0 10rem 10rem 0;
+  right: 0;
+}
+
+/*CHAT*/
 #chat {
   height: 25rem;
   width: 30vw;
@@ -595,9 +714,6 @@ hr {
   align-items: center;
   justify-content: space-between;
   flex-direction: column;
-}
-#chat > h5 {
-  margin-bottom: 0.8rem;
 }
 #chat #messages {
   flex-grow: 1000;
@@ -636,6 +752,7 @@ hr {
   position: absolute;
   bottom: 50%;
   left: 0px;
+  font-size: 1rem;
   transform: translateY(50%);
 }
 #chat form button {
@@ -648,9 +765,17 @@ hr {
   color: #f9f9f9;
   font-size: 0.9rem;
   z-index: 10;
-  bottom: 50%;
   right: 0.3rem;
-  transform: translateY(50%);
+  bottom: 0.25rem;
+  transition: all 0.5s;
 }
-
-/*# sourceMappingURL=lobby.css.map */
+#chat form button:hover {
+  background: #3aa86c;
+  cursor: pointer;
+  transform: scale(1.2);
+  transition: all 0.2s;
+}
+#chat form button:hover > i {
+  transform: rotate(360deg);
+  transition: all 0.5s;
+}
