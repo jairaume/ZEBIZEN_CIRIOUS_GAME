@@ -141,7 +141,7 @@ button, input, .fakeBtn {
 }
 
 *::selection {
-  background: rgba(65, 187, 120, 0.8);
+  background: rgba(101, 202, 147, 0.8);
   border-radius: 5%;
 }
 
@@ -292,6 +292,8 @@ button, input, .fakeBtn {
 }
 .flip-card-front > button > i {
   position: absolute;
+  transform: translateY(-50%);
+  top: 50%;
   right: 1.5rem;
 }
 .flip-card-back {

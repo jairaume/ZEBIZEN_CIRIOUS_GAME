@@ -185,11 +185,18 @@ div#gameId {
         text-align: start;
         color: $white;
         margin: .5rem .5rem;
-        padding: .5rem 2.5rem .5rem 1rem;
+        padding: .5rem 2.5rem .5rem 1.5rem;
         border-radius: .2rem;
 
         &.ready {
             background-color: $primary;
+        }
+        &.owner {
+            padding-left: .5rem;
+            &::before{
+                content: '★ ';
+                color:rgb(252, 193, 84);
+            }
         }
 
         &:not(.ready) {
@@ -572,5 +579,7 @@ hr {
 
     #playerList {
         order: 1;
+        height: auto;
+        max-height: 20rem;
     }
 }

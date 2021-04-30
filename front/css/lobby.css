@@ -1,3 +1,4 @@
+@charset "UTF-8";
 @import url("https://fonts.googleapis.com/css2?family=Hanalei+Fill&family=Noto+Sans&display=swap");
 html,
 body,
@@ -292,6 +293,8 @@ button, input, .fakeBtn {
 }
 .flip-card-front > button > i {
   position: absolute;
+  transform: translateY(-50%);
+  top: 50%;
   right: 1.5rem;
 }
 .flip-card-back {
@@ -468,11 +471,18 @@ div#gameId > i:active {
   text-align: start;
   color: #f9f9f9;
   margin: 0.5rem 0.5rem;
-  padding: 0.5rem 2.5rem 0.5rem 1rem;
+  padding: 0.5rem 2.5rem 0.5rem 1.5rem;
   border-radius: 0.2rem;
 }
 #players .player.ready {
   background-color: #41bb78;
+}
+#players .player.owner {
+  padding-left: 0.5rem;
+}
+#players .player.owner::before {
+  content: "★ ";
+  color: #fcc154;
 }
 #players .player:not(.ready) {
   background-color: #525252;
@@ -794,6 +804,8 @@ hr {
 
   #playerList {
     order: 1;
+    height: auto;
+    max-height: 20rem;
   }
 }
 

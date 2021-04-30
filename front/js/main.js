@@ -16,6 +16,7 @@ const MAP_ZOOM = 4
 
 
 const player={};
+const otherPlayer={};
 let keys = [];
 //creating gamemode
 const currentGame = new GameMode(8);
@@ -39,6 +40,11 @@ class MyGame extends Phaser.Scene
             frameWidth : PLAYER_SPRITE_WIDTH,
             frameHeight : PLAYER_SPRITE_HEIGHT
         });
+        //Loading other player spritesheet
+        this.load.spritesheet('otherPlayer',playerImg, {
+            frameWidth : PLAYER_SPRITE_WIDTH,
+            frameHeight : PLAYER_SPRITE_HEIGHT
+        });
     }
       
     create ()
@@ -54,6 +60,10 @@ class MyGame extends Phaser.Scene
         player.sprite = this.add.sprite(PLAYER_SPRITE_STARTX, PLAYER_SPRITE_STARTY, 'player');
         player.sprite.displayHeight=PLAYER_HEIGHT;
         player.sprite.displayWidth=PLAYER_WIDTH;
+        //Other Display
+        otherPlayer.sprite = this.add.sprite(PLAYER_SPRITE_STARTX, PLAYER_SPRITE_STARTY, 'otherPlayer');
+        otherPlayer.sprite.displayHeight=PLAYER_HEIGHT;
+        otherPlayer.sprite.displayWidth=PLAYER_WIDTH;
  
         //Player Animation
         this.anims.create({
@@ -73,6 +83,20 @@ class MyGame extends Phaser.Scene
             keys = keys.filter((touche)=>touche != key.code);
         })        
 
+        socket.on('move',(data)=>{
+            if (data.x > otherPlayer.sprite.x){
+                otherPlayer.flipX = true;
+            }
+            else if(data.x < otherPlayer.sprite.x){
+                otherPlayer.flipX = false;
+            }
+            otherPlayer.sprite.x = data.x;
+            otherPlayer.sprite.y = data.y;
+            otherPlayer.moving = true;
+        });
+        socket.on('end-move',()=>{
+            otherPlayer.moving = false;
+        });
     }
 
     update()
@@ -80,9 +104,26 @@ class MyGame extends Phaser.Scene
         //Camera always centered on player
         this.scene.scene.cameras.main.centerOn(player.sprite.x,player.sprite.y);
         //Move player when appropriate keys are pressed
-        movePlayer(keys,player.sprite,currentGame);
+        let playerMoved = movePlayer(keys,player.sprite,currentGame);
+        if(playerMoved){
+            socket.emit('move',{x: player.sprite.x,  y: player.sprite.y})
+            player.movedLastFrame = true;
+        }
+        else {
+            if(player.movedLastFrame){
+                socket.emit('end-move')
+            }
+            player.movedLastFrame = false;
+        }
         //Animate player sprite
         moveAnimate(keys, player.sprite);
+        //Animate other player
+        if(otherPlayer.moving && !otherPlayer.sprite.anims.isPlaying){
+            otherPlayer.sprite.play('running');
+        }
+        else if(!otherPlayer.moving && otherPlayer.sprite.anims.isPlaying){
+            otherPlayer.sprite.stop('running');
+        }
     }
 }
 
