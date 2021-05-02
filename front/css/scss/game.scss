@@ -1,0 +1,51 @@
+@import "main.scss";
+
+////////////////////////////////
+
+html,body{
+   overflow: hidden;
+}
+
+#fullScreenBtn{
+    position: fixed;
+    top:.5rem;
+    left:.5rem;
+    width:2rem;
+    height:2rem;
+    margin:0;
+    overflow: visible;
+    z-index:10;
+    box-shadow:none;
+    background:transparentize($black,.5);
+    transition-duration:.2s;
+    border-radius:.5rem;
+
+    &>i{
+        transition-duration:.2s;
+        position:absolute;
+        font-size:1rem;
+        line-height:2rem;
+        color:darken($white,10);
+        top:50%;
+        left:50%;
+        transform: translate(-50%,-50%);
+    }
+    &:hover{
+        transition-duration:.2s;
+        cursor: pointer;
+        background:rgb(47, 137, 255);
+        &>i{
+            color:white;
+            transform: translate(-50%,-50%) scale(1.1);
+            transition-duration:.2s;
+        }
+    }
+    &:active{
+        background:$black;
+    }
+}
+
+div#game{
+    width: 100vw;
+    height: 100vh;
+}

@@ -18,18 +18,19 @@ const colorSelector = document.getElementById('color');
 const leftColor = document.getElementById('left');
 const rightColor = document.getElementById('right');
 const colors = [
-    '#006400',
-    '#00008b',
-    '#b03060',
-    '#ff0000',
-    '#ffd700',
-    '#7fff00',
-    '#00ffff',
-    '#ff00ff',
-    '#6495ed',
-    '#ffdab9',
+    '#c51111',
+    '#132ed1',
+    '#117f2d',
+    '#ed54ba',
+    '#ef7d0e',
+    '#f6f658',
+    '#3f474e',
+    '#d6e0f0',
+    '#6b31bc',
+    '#71491e',
+    '#38fedb',
 ];
-let color = Math.floor(Math.random() * 10);
+let color = Math.floor(Math.random() * 11);
 colorSelector.style.background = colors[color];
 /*****************Reload*******************/
 
@@ -178,11 +179,11 @@ speedOutput.oninput = function () {
 }
 
 leftColor.addEventListener('click', () => {
-    color = color == 0 ? 9 : color - 1;
+    color = color == 0 ? 10 : color - 1;
     colorSelector.style.background = colors[color];
 });
 rightColor.addEventListener('click', () => {
-    color = color == 9 ? 0 : color + 1;
+    color = color == 10 ? 0 : color + 1;
     colorSelector.style.background = colors[color];
 });
 

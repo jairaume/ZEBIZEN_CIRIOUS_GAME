@@ -145,10 +145,10 @@ io.on('connection', (socket) => {
         
         //MULTIPLAYER GAME
         socket.on('move',(data)=>{
-            socket.to(gameId).emit('move',{x:data.x, y:data.y});
+            socket.to(gameId).emit('move',{x:data.x, y:data.y, id:data.id});
         })
-        socket.on('end-move',()=>{
-            socket.to(gameId).emit('end-move');
+        socket.on('end-move',(id)=>{
+            socket.to(gameId).emit('end-move',id);
         })
     }
 });
