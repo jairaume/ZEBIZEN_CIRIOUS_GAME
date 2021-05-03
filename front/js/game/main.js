@@ -1,19 +1,24 @@
 //import Phaser from 'phaser';
 const playerImg = '../../assets/player.png';
-const mapImg = '../../assets/carte.png'
+const mapProps = '../../assets/map/map_props.png';
+const mapTiles = '../../assets/map/map_tiles.png';
+
+
 
 import { Player } from './class_PLAYER.js'
 import { generateSpawnPositions} from './generateSpawnPositions.js'
+import { generateBins} from './generateBins.js'
 
 const PLAYER_SPRITE_WIDTH = 84
 const PLAYER_SPRITE_HEIGHT = 128
-const PLAYER_SPRITE_STARTX = 330
-const PLAYER_SPRITE_STARTY = 10
+const PLAYER_SPRITE_STARTX = -80
+const PLAYER_SPRITE_STARTY = 0
 const PLAYER_HEIGHT = 60
 const PLAYER_WIDTH = 40
-const MAP_HEIGHT = 1100
-const MAP_WIDTH = 950
-const MAP_ZOOM = 3
+const MAP_WIDTH = 1392
+const MAP_HEIGHT = 1120
+const MAP_ZOOM = 5
+const POUBELLE_ZOOM = 0.4
 
 let clientId;
 
@@ -22,6 +27,7 @@ let player;
 let roomInfos;
 let keys = [];
 let spawnPositions;
+let binImg = generateBins();
 //creating gamemode
 const currentGame = new GameMode(8);
 
@@ -33,11 +39,21 @@ class MyGame extends Phaser.Scene {
 
     preload() {
         //Loading map background
-        this.load.image('map', mapImg);
-
-
+        this.load.image('mapT', mapTiles);
+        
+        
+        this.load.image('binBlanc', binImg.Blanc.url);
+        this.load.image('binMarron', binImg.Marron.url);
+        this.load.image('binJaune', binImg.Jaune.url);
+        this.load.image('binVert', binImg.Vert.url);
+        this.load.image('binBleue', binImg.Bleue.url);
+        this.load.image('binViolet', binImg.Violet.url);
+        this.load.image('binNoir', binImg.Noir.url);
+        this.load.image('binOrange', binImg.Orange.url);
+        this.load.image('binRouge', binImg.Rouge.url);
+        
         //Loading player spritesheet
-        this.load.spritesheet('player', playerImg, {
+        this.load.spritesheet('player',playerImg, {
             frameWidth: PLAYER_SPRITE_WIDTH,
             frameHeight: PLAYER_SPRITE_HEIGHT
         });
@@ -46,15 +62,31 @@ class MyGame extends Phaser.Scene {
             frameWidth: PLAYER_SPRITE_WIDTH,
             frameHeight: PLAYER_SPRITE_HEIGHT
         });
+        this.load.image('mapP', mapProps);
     }
 
     create() {
-        //Map display
-        const map = this.add.image(0, 0, 'map');
-        
-        map.displayHeight = MAP_HEIGHT * MAP_ZOOM;
-        map.displayWidth = MAP_WIDTH * MAP_ZOOM;
-        
+        //Map tiles display
+        const mapT = this.add.image(0, 0, 'mapT');
+        mapT.displayHeight = MAP_HEIGHT * MAP_ZOOM;
+        mapT.displayWidth = MAP_WIDTH * MAP_ZOOM;
+        mapT.setDepth(1);
+
+        //POUBELLE
+        let bins = new Array();
+        let generateBins = ()=>{
+            for (const bin in binImg) {
+                bins.push(this.add.image(binImg[bin].x,binImg[bin].y, 'bin'+binImg[bin].color));
+            }
+            for (const bin of bins) {
+                bin.displayHeight = 200 * POUBELLE_ZOOM;
+                bin.displayWidth = 125 * POUBELLE_ZOOM;
+                bin.setDepth(30)
+            }            
+        }
+        generateBins();
+
+        //JOUEURS
         let newContainer = (name,position) => {
             let container = this.add.container(position.x, position.y);
 
@@ -71,6 +103,7 @@ class MyGame extends Phaser.Scene {
             spritePlayer.setFrame(10);
             
             container.add(spritePlayer);
+            container.setDepth(2);
 
             return container;
         }
@@ -86,9 +119,7 @@ class MyGame extends Phaser.Scene {
         socket.on('roomInfo', (data) => {
             roomInfos = data;
             clientId = data.me;
-            console.log(roomInfos.playerList.length);
             spawnPositions = generateSpawnPositions(roomInfos.playerList.length)
-            console.log(spawnPositions)
             let i = 0;
             for (const aPlayer of data.playerList) {
                 if (aPlayer.id != clientId) {
@@ -98,7 +129,18 @@ class MyGame extends Phaser.Scene {
                 }
                 i++;
             }
+
         });
+        
+        this.input.on(Phaser.Input.Events.POINTER_DOWN, function (pointer){
+            console.log("x: ",player.container.x," y: ",player.container.y)
+        });
+
+        //Map tiles display
+        const mapP = this.add.image(0, 0, 'mapP');
+        mapP.displayHeight = MAP_HEIGHT * MAP_ZOOM;
+        mapP.displayWidth = MAP_WIDTH * MAP_ZOOM;
+        mapP.setDepth(10);
 
         //Player Animation
         this.anims.create({
@@ -136,6 +178,7 @@ class MyGame extends Phaser.Scene {
             otherPlayer[index].moving = false;
             otherPlayer[index].container.getByName('sprite').setFrame(11);
         });
+
     }
 
     update() {
@@ -176,6 +219,7 @@ const config = {
     parent: 'game',
     width: '100%',
     height: '100%',
+    pixelArt : true,
     scale: {
         mode: Phaser.Scale.ENVELOP,
         autoCenter: Phaser.Scale.CENTER_BOTH
