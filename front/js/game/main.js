@@ -37,7 +37,10 @@ class MyGame extends Phaser.Scene {
         super();
     }
 
-    preload() {
+    preload() {  
+        const screenCenterX = this.cameras.main.worldView.x + this.cameras.main.width / 2;
+        const screenCenterY = this.cameras.main.worldView.y + this.cameras.main.height / 2;
+        const loadingText = this.add.text(screenCenterX, screenCenterY, 'CHARGEMENT...').setOrigin(0.5);
         //Loading map background
         this.load.image('mapT', mapTiles);
         
@@ -81,6 +84,7 @@ class MyGame extends Phaser.Scene {
             for (const bin of bins) {
                 bin.displayHeight = 200 * POUBELLE_ZOOM;
                 bin.displayWidth = 125 * POUBELLE_ZOOM;
+                bin.pixelArt = true;
                 bin.setDepth(30)
             }            
         }
@@ -93,7 +97,6 @@ class MyGame extends Phaser.Scene {
             let textPlayer = this.add.text(0, -45, name)
             textPlayer.x = textPlayer.width / -2
             textPlayer.name = 'text';
-            
             container.add(textPlayer);
 
             let spritePlayer = this.add.sprite(0, 0, 'player')
@@ -129,7 +132,6 @@ class MyGame extends Phaser.Scene {
                 }
                 i++;
             }
-
         });
         
         this.input.on(Phaser.Input.Events.POINTER_DOWN, function (pointer){
@@ -178,6 +180,8 @@ class MyGame extends Phaser.Scene {
             otherPlayer[index].moving = false;
             otherPlayer[index].container.getByName('sprite').setFrame(11);
         });
+        this.scene.scene.cameras.main.setBounds(-MAP_WIDTH*5/2,-MAP_HEIGHT*5/2,(MAP_WIDTH*MAP_ZOOM),(MAP_HEIGHT*MAP_ZOOM))
+        
 
     }
 
