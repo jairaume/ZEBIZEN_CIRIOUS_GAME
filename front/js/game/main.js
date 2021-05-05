@@ -6,8 +6,8 @@ const mapTiles = '../../assets/map/map_tiles.png';
 
 
 import { Player } from './class_PLAYER.js'
-import { generateSpawnPositions} from './generateSpawnPositions.js'
-import { generateBins} from './generateBins.js'
+import { generateSpawnPositions } from './generateSpawnPositions.js'
+import { generateBins } from './generateBins.js'
 
 const PLAYER_SPRITE_WIDTH = 84
 const PLAYER_SPRITE_HEIGHT = 128
@@ -37,14 +37,14 @@ class MyGame extends Phaser.Scene {
         super();
     }
 
-    preload() {  
+    preload() {
         const screenCenterX = this.cameras.main.worldView.x + this.cameras.main.width / 2;
         const screenCenterY = this.cameras.main.worldView.y + this.cameras.main.height / 2;
         const loadingText = this.add.text(screenCenterX, screenCenterY, 'CHARGEMENT...').setOrigin(0.5);
         //Loading map background
         this.load.image('mapT', mapTiles);
-        
-        
+
+
         this.load.image('binBlanc', binImg.Blanc.url);
         this.load.image('binMarron', binImg.Marron.url);
         this.load.image('binJaune', binImg.Jaune.url);
@@ -54,9 +54,14 @@ class MyGame extends Phaser.Scene {
         this.load.image('binNoir', binImg.Noir.url);
         this.load.image('binOrange', binImg.Orange.url);
         this.load.image('binRouge', binImg.Rouge.url);
-        
+
+
+        this.load.image('garbagePile', '../../assets/garbagePile.png');
+        this.load.image('garbagePileGlow', '../../assets/garbagePile-glow.png');
+
+
         //Loading player spritesheet
-        this.load.spritesheet('player',playerImg, {
+        this.load.spritesheet('player', playerImg, {
             frameWidth: PLAYER_SPRITE_WIDTH,
             frameHeight: PLAYER_SPRITE_HEIGHT
         });
@@ -69,6 +74,7 @@ class MyGame extends Phaser.Scene {
     }
 
     create() {
+
         //Map tiles display
         const mapT = this.add.image(0, 0, 'mapT');
         mapT.displayHeight = MAP_HEIGHT * MAP_ZOOM;
@@ -77,21 +83,31 @@ class MyGame extends Phaser.Scene {
 
         //POUBELLE
         let bins = new Array();
-        let generateBins = ()=>{
+        let generateBins = () => {
             for (const bin in binImg) {
-                bins.push(this.add.image(binImg[bin].x,binImg[bin].y, 'bin'+binImg[bin].color));
+                bins.push(this.add.image(binImg[bin].x, binImg[bin].y, 'bin' + binImg[bin].color));
             }
             for (const bin of bins) {
                 bin.displayHeight = 200 * POUBELLE_ZOOM;
                 bin.displayWidth = 125 * POUBELLE_ZOOM;
                 bin.pixelArt = true;
                 bin.setDepth(30)
-            }            
+            }
         }
         generateBins();
 
+        //DECHETS
+        const garbagePile = this.add
+        .image(-70, 0, 'garbagePile')
+        .setScale(0.6)
+        .setDepth(2)
+        .setTexture('garbagePileGlow')
+
+
+
+
         //JOUEURS
-        let newContainer = (name,position) => {
+        let newContainer = (name, position) => {
             let container = this.add.container(position.x, position.y);
 
             let textPlayer = this.add.text(0, -45, name)
@@ -104,15 +120,15 @@ class MyGame extends Phaser.Scene {
             spritePlayer.displayHeight = PLAYER_HEIGHT;
             spritePlayer.displayWidth = PLAYER_WIDTH;
             spritePlayer.setFrame(10);
-            
+
             container.add(spritePlayer);
             container.setDepth(2);
 
             return container;
         }
 
-        let newPlayer = (id, username, color, imposteur = false,position) => {
-            let newPlayer = new Player(id, newContainer(username,position), username, color);
+        let newPlayer = (id, username, color, imposteur = false, position) => {
+            let newPlayer = new Player(id, newContainer(username, position), username, color);
 
             return newPlayer;
         }
@@ -126,17 +142,18 @@ class MyGame extends Phaser.Scene {
             let i = 0;
             for (const aPlayer of data.playerList) {
                 if (aPlayer.id != clientId) {
-                    otherPlayer.push(newPlayer(aPlayer.id, aPlayer.username, 'yellow', false,spawnPositions[i]));
+                    otherPlayer.push(newPlayer(aPlayer.id, aPlayer.username, 'yellow', false, spawnPositions[i]));
                 } else {
-                    player = newPlayer(aPlayer.id, aPlayer.username, 'blue', false,spawnPositions[i]);
+                    player = newPlayer(aPlayer.id, aPlayer.username, 'blue', false, spawnPositions[i]);
                 }
                 i++;
             }
         });
-        
-        this.input.on(Phaser.Input.Events.POINTER_DOWN, function (pointer){
-            console.log("x: ",player.container.x," y: ",player.container.y)
+
+        this.input.on(Phaser.Input.Events.POINTER_DOWN, function (pointer) {
+            console.log("x: ", player.container.x, " y: ", player.container.y)
         });
+
 
         //Map tiles display
         const mapP = this.add.image(0, 0, 'mapP');
@@ -182,23 +199,26 @@ class MyGame extends Phaser.Scene {
         });
 
 
-        this.scene.scene.cameras.main.setBounds(-MAP_WIDTH*5/2,-MAP_HEIGHT*5/2,(MAP_WIDTH*MAP_ZOOM),(MAP_HEIGHT*MAP_ZOOM))
-        
-        this.minimap = this.cameras.add(5, 5, MAP_WIDTH/5, MAP_HEIGHT/5)
+        this.scene.scene.cameras.main.setBounds(-MAP_WIDTH * 5 / 2, -MAP_HEIGHT * 5 / 2, (MAP_WIDTH * MAP_ZOOM), (MAP_HEIGHT * MAP_ZOOM))
+
+        this.minimap = this.cameras.add(5, 5, MAP_WIDTH / 5, MAP_HEIGHT / 5)
         this.minimap.setZoom(0.08)
         this.minimap.setBackgroundColor(0x002244);
         this.minimap.setName('mini');
         //this.minimap.ignore(otherPlayer);
-        
+        this.minimap.setLerp(0.1)
+
+
+        //this.enable([garbagePile,player], Phaser.Physics.ARCADE);
     }
-    
+
     update() {
         if (roomInfos) {
-            
-            
+
+
             //Camera always centered on player
-            this.minimap.centerOn(player.container.x,player.container.y)
-            this.scene.scene.cameras.main.centerOn(player.container.x, player.container.y);
+            this.minimap.startFollow(player.container,true, 0.5, 0.5)
+            this.scene.scene.cameras.main.startFollow(player.container);
             //Move player when appropriate keys are pressed
             let playerMoved = player.move(keys, currentGame);
             if (playerMoved) {
@@ -223,7 +243,13 @@ class MyGame extends Phaser.Scene {
                 }
             });
         }
+        //this.physics.arcade.collide(garbagePile, player, collisionHandler, null, this);
     }
+
+    /*render(){
+        this.debug.body(garbagePile);
+        this.debug.body(player);
+    }*/
 }
 
 const config = {
@@ -231,12 +257,12 @@ const config = {
     parent: 'game',
     width: '100%',
     height: '100%',
-    pixelArt : true,
+    pixelArt: true,
     scale: {
         mode: Phaser.Scale.ENVELOP,
         autoCenter: Phaser.Scale.CENTER_BOTH
     },
-    scene: MyGame
+    scene: MyGame,
 };
 
 
