@@ -180,16 +180,24 @@ class MyGame extends Phaser.Scene {
             otherPlayer[index].moving = false;
             otherPlayer[index].container.getByName('sprite').setFrame(11);
         });
+
+
         this.scene.scene.cameras.main.setBounds(-MAP_WIDTH*5/2,-MAP_HEIGHT*5/2,(MAP_WIDTH*MAP_ZOOM),(MAP_HEIGHT*MAP_ZOOM))
         
-
+        this.minimap = this.cameras.add(5, 5, MAP_WIDTH/5, MAP_HEIGHT/5)
+        this.minimap.setZoom(0.08)
+        this.minimap.setBackgroundColor(0x002244);
+        this.minimap.setName('mini');
+        //this.minimap.ignore(otherPlayer);
+        
     }
-
+    
     update() {
         if (roomInfos) {
-
-
+            
+            
             //Camera always centered on player
+            this.minimap.centerOn(player.container.x,player.container.y)
             this.scene.scene.cameras.main.centerOn(player.container.x, player.container.y);
             //Move player when appropriate keys are pressed
             let playerMoved = player.move(keys, currentGame);
