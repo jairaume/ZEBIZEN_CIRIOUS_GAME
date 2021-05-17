@@ -498,17 +498,24 @@ hr {
 
             h6 {
                 position: absolute;
-                left: .2rem;
+                left: .4rem;
+                top: .2rem;
+                .hour{
+                    font-size: .8rem;
+                    color: lighten($black,20);
+                    padding-left:.5rem;
+                }
             }
 
             p {
-                padding: 1.5rem 2rem 1rem 1rem;
+                padding: 1.6rem 2rem 1rem 1.5rem;
                 font-size: 1rem;
+                word-wrap: break-word;
             }
         }
 
         li:nth-child(2n) {
-            background-color: darken($white, $amount: 3);
+            background-color: darken($white, $amount: 4);
         }
     }
 
