@@ -241,7 +241,7 @@ function salonAudio() {
 }
 
 let receiveAudio = new Audio('../audio/receive-audio.mp3');
-receiveAudio.volume = .1;
+receiveAudio.volume = .5;
 function receiveSound(){
     receiveAudio.play();
 }
