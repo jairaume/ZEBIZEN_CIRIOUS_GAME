@@ -82,19 +82,23 @@ class MyGame extends Phaser.Scene {
         mapT.setDepth(1);
 
         //POUBELLE
-        let bins = new Array();
-        let generateBins = () => {
-            for (const bin in binImg) {
-                bins.push(this.add.image(binImg[bin].x, binImg[bin].y, 'bin' + binImg[bin].color));
+
+        socket.emit('generate-bins','');
+        socket.on('generate-bins',(bins)=>{
+            let allBins = [];
+            for(const bin in binImg){
+                let color = bins[bin].color;
+                allBins.push(this.add.image(bins[color].x, bins[color].y, 'bin' + bins[color].color))
+                console.log(bins[color].x)
+
             }
-            for (const bin of bins) {
+            for (const bin of allBins) {
                 bin.displayHeight = 200 * POUBELLE_ZOOM;
                 bin.displayWidth = 125 * POUBELLE_ZOOM;
                 bin.pixelArt = true;
                 bin.setDepth(30)
             }
-        }
-        generateBins();
+        });
 
         //DECHETS
         const garbagePile = this.add

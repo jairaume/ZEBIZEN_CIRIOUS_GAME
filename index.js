@@ -19,6 +19,10 @@ const bodyParser = require('body-parser');
 const { body, validationResult } = require('express-validator');
 
 ///////
+const functionBins = require('./back/bins');
+allFunctionBins = new functionBins;
+///////
+///////
 const rooms = require('./back/rooms');
 //////
 let sessionInfo = new Array();
@@ -26,6 +30,7 @@ let sessionInfo = new Array();
 
 const mysql = require('mysql');
 const { newRoom, joinRoom } = require('./back/rooms');
+const { Console } = require('console');
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 //Set static folder
@@ -158,6 +163,14 @@ io.on('connection', (socket) => {
         })
         socket.on('end-move',(id)=>{
             socket.to(gameId).emit('end-move',id);
+        })
+
+        //PLACEMENT POUBELLES
+        socket.on('generate-bins', ()=>{
+            let bins = allFunctionBins.generateBins();
+            socket.to(gameId).emit('generate-bins',bins);
+            socket.emit('generate-bins',bins);
+            console.log(bins);
         })
     }
 });
