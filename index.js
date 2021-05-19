@@ -30,7 +30,6 @@ let sessionInfo = new Array();
 
 const mysql = require('mysql');
 const { newRoom, joinRoom } = require('./back/rooms');
-const { Console } = require('console');
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 //Set static folder

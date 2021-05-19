@@ -81,25 +81,7 @@ class MyGame extends Phaser.Scene {
         mapT.displayWidth = MAP_WIDTH * MAP_ZOOM;
         mapT.setDepth(1);
 
-        //POUBELLE
-
-        socket.emit('generate-bins','');
-        socket.on('generate-bins',(bins)=>{
-            let allBins = [];
-            for(const bin in binImg){
-                let color = bins[bin].color;
-                allBins.push(this.add.image(bins[color].x, bins[color].y, 'bin' + bins[color].color))
-                console.log(bins[color].x)
-
-            }
-            for (const bin of allBins) {
-                bin.displayHeight = 200 * POUBELLE_ZOOM;
-                bin.displayWidth = 125 * POUBELLE_ZOOM;
-                bin.pixelArt = true;
-                bin.setDepth(30)
-            }
-        });
-
+        
         //DECHETS
         const garbagePile = this.add
         .image(-70, 0, 'garbagePile')
@@ -108,8 +90,8 @@ class MyGame extends Phaser.Scene {
         .setTexture('garbagePileGlow')
 
 
-
-
+        
+        
         //JOUEURS
         let newContainer = (name, position) => {
             let container = this.add.container(position.x, position.y);
@@ -118,7 +100,7 @@ class MyGame extends Phaser.Scene {
             textPlayer.x = textPlayer.width / -2
             textPlayer.name = 'text';
             container.add(textPlayer);
-
+            
             let spritePlayer = this.add.sprite(0, 0, 'player')
             spritePlayer.name = 'sprite';
             spritePlayer.displayHeight = PLAYER_HEIGHT;
@@ -127,16 +109,16 @@ class MyGame extends Phaser.Scene {
 
             container.add(spritePlayer);
             container.setDepth(2);
-
+            
             return container;
         }
-
+        
         let newPlayer = (id, username, color, imposteur = false, position) => {
             let newPlayer = new Player(id, newContainer(username, position), username, color);
-
+            
             return newPlayer;
         }
-
+        
         //Récuperation des infos de la session
         socket.emit('getRoomInfo');
         socket.on('roomInfo', (data) => {
@@ -147,13 +129,19 @@ class MyGame extends Phaser.Scene {
             for (const aPlayer of data.playerList) {
                 if (aPlayer.id != clientId) {
                     otherPlayer.push(newPlayer(aPlayer.id, aPlayer.username, 'yellow', false, spawnPositions[i]));
-                } else {
+                } 
+                else {
                     player = newPlayer(aPlayer.id, aPlayer.username, 'blue', false, spawnPositions[i]);
+                }
+                if(aPlayer.id == clientId && aPlayer.isOwner){
+                    console.log('c moi le owner')
+                    socket.emit('generate-bins')
                 }
                 i++;
             }
         });
-
+        
+        
         this.input.on(Phaser.Input.Events.POINTER_DOWN, function (pointer) {
             console.log("x: ", player.container.x, " y: ", player.container.y)
         });
@@ -182,7 +170,7 @@ class MyGame extends Phaser.Scene {
         this.input.keyboard.on("keyup", (key) => {
             keys = keys.filter((touche) => touche != key.code);
         })
-
+        
         socket.on('move', (data) => {
             let id = data.id;
             let index = otherPlayer.findIndex((player) => player.id == id);
@@ -201,21 +189,41 @@ class MyGame extends Phaser.Scene {
             otherPlayer[index].moving = false;
             otherPlayer[index].container.getByName('sprite').setFrame(11);
         });
-
-
+        
+        
         this.scene.scene.cameras.main.setBounds(-MAP_WIDTH * 5 / 2, -MAP_HEIGHT * 5 / 2, (MAP_WIDTH * MAP_ZOOM), (MAP_HEIGHT * MAP_ZOOM))
-
+        
         this.minimap = this.cameras.add(5, 5, MAP_WIDTH / 5, MAP_HEIGHT / 5)
         this.minimap.setZoom(0.08)
         this.minimap.setBackgroundColor(0x002244);
         this.minimap.setName('mini');
         //this.minimap.ignore(otherPlayer);
         this.minimap.setLerp(0.1)
-
-
+        
+        
+        //POUBELLE
+        //socket.emit('generate-bins','');
+        socket.on('generate-bins',(bins)=>{
+            console.log("je genere la en gros")
+            let allBins = [];
+            for(const bin in binImg){
+                let color = bins[bin].color;
+                let tmpBin = this.add.image(bins[color].x, bins[color].y, 'bin' + bins[color].color)
+                if(bins[color].flip)tmpBin.flipX = true;
+                allBins.push(tmpBin)
+                console.log(allBins);
+    
+            }
+            for (const bin of allBins) {
+                bin.displayHeight = 200 * POUBELLE_ZOOM;
+                bin.displayWidth = 125 * POUBELLE_ZOOM;
+                bin.pixelArt = true;
+                bin.setDepth(30)
+            }
+        });
         //this.enable([garbagePile,player], Phaser.Physics.ARCADE);
     }
-
+    
     update() {
         if (roomInfos) {
 

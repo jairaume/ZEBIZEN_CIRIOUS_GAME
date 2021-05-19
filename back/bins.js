@@ -2,18 +2,18 @@ const POUBELLE_POS = [
     {x: 0, y:0},
 ]
 const POUBELLE_POS_V2 =[
-    {'id':0,'x': 975, 'y': -1721},
-    {'id':1,'x': -3436, 'y': 1144},
-    {'id':2,'x': 650, 'y': 2625},
-    {'id':3,'x': 3355, 'y': -2360},
-    {'id':4,'x':2630, 'y': -1400},
-    {'id':5,'x': -156, 'y': -2460},
-    {'id':6,'x': -2786, 'y': -2124},
-    {'id':7,'x': -2612, 'y': -685},
-    {'id':8,'x': -2863, 'y': -113},
-    {'id':9,'x': -2567, 'y': 1277},
-    {'id':10,'x': -1030, 'y': 1670},
-    {'id':11,'x': -2439, 'y': 2317}
+    {'id':0,'x': 975, 'y': -1721, 'flip': false},
+    {'id':1,'x': -3436, 'y': 1144, 'flip': true},
+    {'id':2,'x': 650, 'y': 2625, 'flip': false},/////////
+    {'id':3,'x': 3355, 'y': -2360, 'flip': false},
+    {'id':4,'x':2630, 'y': -1400, 'flip': true},
+    {'id':5,'x': -156, 'y': -2460, 'flip': true},
+    {'id':6,'x': -2786, 'y': -2124, 'flip': false},
+    {'id':7,'x': -2612, 'y': -685, 'flip': false},
+    {'id':8,'x': -2863, 'y': -113, 'flip': true},
+    {'id':9,'x': -2567, 'y': 1277, 'flip': true},
+    {'id':10,'x': -1030, 'y': 1630, 'flip': false},
+    {'id':11,'x': -2439, 'y': 2317, 'flip': false}
 ]
 class functionBins{
     constructor(){
@@ -33,7 +33,7 @@ class functionBins{
     }
     coordWithId(id){
         let coord = [];
-        coord.push({'x':POUBELLE_POS_V2[id]['x'], 'y':POUBELLE_POS_V2[id]['y']})
+        coord.push({'x':POUBELLE_POS_V2[id]['x'], 'y':POUBELLE_POS_V2[id]['y'], 'flip':POUBELLE_POS_V2[id]['flip']})
         return coord
     }
     aleatoirePosBins(list){
@@ -54,15 +54,15 @@ class functionBins{
             coord[i] = this.aleatoirePosBins(this.list);
         }
         const bin = {
-            "Bleue" : {color:'Bleue',x: coord[0][0]['x'], y: coord[0][0]['y'], url: '../../assets/poubelle-bleue.png'},
-            "Violet" : {color: 'Violet',x: coord[1][0]['x'], y: coord[1][0]['y'], url: '../../assets/poubelle-violet.png'},
-            "Marron" :{color: 'Marron',x: coord[2][0]['x'], y: coord[2][0]['y'], url: '../../assets/poubelle-marron.png'},
-            "Jaune" : {color: 'Jaune',x: coord[3][0]['x'], y: coord[3][0]['y'], url: '../../assets/poubelle-jaune.png'},
-            "Noir": {color: 'Noir',x: coord[4][0]['x'], y: coord[4][0]['y'], url: '../../assets/poubelle-noir.png'},
-            "Rouge" : {color: 'Rouge',x: coord[5][0]['x'], y: coord[5][0]['y'], url: '../../assets/poubelle-rouge.png'},
-            "Orange" : {color: 'Orange',x: coord[6][0]['x'], y: coord[6][0]['y'], url: '../../assets/poubelle-orange.png'},
-            "Blanc": {color: 'Blanc',x: coord[7][0]['x'], y: coord[7][0]['y'], url: '../../assets/poubelle-blanc.png'},
-            "Vert": {color: 'Vert',x: coord[8][0]['x'], y: coord[8][0]['y'], url: '../../assets/poubelle-vert.png'}
+            "Bleue" : {color:'Bleue',x: coord[0][0]['x'], y: coord[0][0]['y'], flip: coord[0][0]['flip'], url: '../../assets/poubelle-bleue.png'},
+            "Violet" : {color: 'Violet',x: coord[1][0]['x'], y: coord[1][0]['y'], flip: coord[1][0]['flip'], url: '../../assets/poubelle-violet.png'},
+            "Marron" :{color: 'Marron',x: coord[2][0]['x'], y: coord[2][0]['y'], flip: coord[2][0]['flip'], url: '../../assets/poubelle-marron.png'},
+            "Jaune" : {color: 'Jaune',x: coord[3][0]['x'], y: coord[3][0]['y'], flip: coord[3][0]['flip'], url: '../../assets/poubelle-jaune.png'},
+            "Noir": {color: 'Noir',x: coord[4][0]['x'], y: coord[4][0]['y'], flip: coord[4][0]['flip'], url: '../../assets/poubelle-noir.png'},
+            "Rouge" : {color: 'Rouge',x: coord[5][0]['x'], y: coord[5][0]['y'], flip: coord[5][0]['flip'], url: '../../assets/poubelle-rouge.png'},
+            "Orange" : {color: 'Orange',x: coord[6][0]['x'], y: coord[6][0]['y'], flip: coord[6][0]['flip'], url: '../../assets/poubelle-orange.png'},
+            "Blanc": {color: 'Blanc',x: coord[7][0]['x'], y: coord[7][0]['y'], flip: coord[7][0]['flip'], url: '../../assets/poubelle-blanc.png'},
+            "Vert": {color: 'Vert',x: coord[8][0]['x'], y: coord[8][0]['y'], flip: coord[8][0]['flip'], url: '../../assets/poubelle-vert.png'}
         };
         return bin;
     }
