@@ -8,6 +8,7 @@ const mapTiles = '../../assets/map/map_tiles.png';
 import { Player } from './class_PLAYER.js'
 import { generateSpawnPositions } from './generateSpawnPositions.js'
 import { generateBins } from './generateBins.js'
+import { getDistance } from './getDistance.js'
 
 const PLAYER_SPRITE_WIDTH = 84
 const PLAYER_SPRITE_HEIGHT = 128
@@ -24,7 +25,10 @@ let clientId;
 
 let otherPlayer = new Array();
 let player;
+let garbagePile;
 let roomInfos;
+let garbageBag;
+let allBins = [];
 let keys = [];
 let spawnPositions;
 let binImg = generateBins();
@@ -45,7 +49,7 @@ class MyGame extends Phaser.Scene {
         //Loading map background
         this.load.image('mapT', mapTiles);
 
-
+        //bin textures
         this.load.image('binBlanc', binImg.Blanc.url);
         this.load.image('binMarron', binImg.Marron.url);
         this.load.image('binJaune', binImg.Jaune.url);
@@ -55,10 +59,14 @@ class MyGame extends Phaser.Scene {
         this.load.image('binNoir', binImg.Noir.url);
         this.load.image('binOrange', binImg.Orange.url);
         this.load.image('binRouge', binImg.Rouge.url);
+    
 
-
+        //garbage pile textures
         this.load.image('garbagePile', '../../assets/garbagePile.png');
         this.load.image('garbagePileGlow', '../../assets/garbagePile-glow.png');
+        
+        //all dechets textures
+        this.load.image('garbageBag','../../assets/garbage.png')
 
 
         //Loading player spritesheet
@@ -84,11 +92,11 @@ class MyGame extends Phaser.Scene {
 
         
         //DECHETS
-        const garbagePile = this.add
+        garbagePile = this.add
         .image(-70, 0, 'garbagePile')
         .setScale(0.6)
         .setDepth(2)
-        .setTexture('garbagePileGlow')
+        garbagePile.in = false;
 
 
         
@@ -116,7 +124,8 @@ class MyGame extends Phaser.Scene {
         
         let newPlayer = (id, username, color, imposteur = false, position) => {
             let newPlayer = new Player(id, newContainer(username, position), username, color);
-            
+            newPlayer.walkSound.loop = true;
+            newPlayer.walkSound.volume=.5
             return newPlayer;
         }
         
@@ -125,6 +134,7 @@ class MyGame extends Phaser.Scene {
         socket.on('roomInfo', (data) => {
             roomInfos = data;
             clientId = data.me;
+            console.log(roomInfos);
             spawnPositions = generateSpawnPositions(roomInfos.playerList.length)
             let i = 0;
             for (const aPlayer of data.playerList) {
@@ -135,11 +145,15 @@ class MyGame extends Phaser.Scene {
                     player = newPlayer(aPlayer.id, aPlayer.username, 'blue', false, spawnPositions[i]);
                 }
                 if(aPlayer.id == clientId && aPlayer.isOwner){
-                    console.log('c moi le owner')
-                    socket.emit('generate-bins')
+                    console.log("je suis le owner et je genere grave a balle de poubelles")
+                    socket.emit('generate-bins-query')
                 }
                 i++;
             }
+        });
+
+        socket.on('newInfo', (data) => {
+            ////
         });
         
         
@@ -203,16 +217,17 @@ class MyGame extends Phaser.Scene {
         
         
         //POUBELLE
-        //socket.emit('generate-bins','');
+
         socket.on('generate-bins',(bins)=>{
             console.log("je genere la en gros")
-            let allBins = [];
+            
             for(const bin in binImg){
                 let color = bins[bin].color;
                 let tmpBin = this.add.image(bins[color].x, bins[color].y, 'bin' + bins[color].color)
                 if(bins[color].flip)tmpBin.flipX = true;
+                tmpBin.in = false;
+                tmpBin.color = color;
                 allBins.push(tmpBin)
-                console.log(allBins);
     
             }
             for (const bin of allBins) {
@@ -222,7 +237,17 @@ class MyGame extends Phaser.Scene {
                 bin.setDepth(30)
             }
         });
+
+        //DECHETS
+        garbageBag = this.add.text(100,100,'J4AI UN DECHETTTTTT')
+        .setScrollFactor(0)
+        
+
+        //garbageBag.setTo(200,200);
+        
         //this.enable([garbagePile,player], Phaser.Physics.ARCADE);
+
+        console.log()
     }
     
     update() {
@@ -245,22 +270,84 @@ class MyGame extends Phaser.Scene {
                 player.movedLastFrame = false;
             }
             //Animate player sprite
-            moveAnimate(keys, player.container.getByName('sprite'));
+            moveAnimate(keys, player.container.getByName('sprite'),player);
             //Animate other player
             otherPlayer.forEach(p => {
                 distance = getDistance(p.container.x,p.container.y,player.container.x,player.container.y)
-                console.log(distance,'->',getVolume(distance));
-                walkAudio.volume = getVolume(distance)
+                //console.log(distance,'->',getVolume(distance));
+                p.walkSound.volume = getVolume(distance)
                 if (p.moving && !p.container.getByName('sprite').anims.isPlaying) {
                     p.container.getByName('sprite').play('running');
-                    if (walkAudio.paused)startWalkSound();
+                    if (p.walkSound.paused)startWalkSound(p.walkSound);
                 }
                 else if (!p.moving && p.container.getByName('sprite').anims.isPlaying) {
                     p.container.getByName('sprite').stop('running');
-                    stopWalkSound();
+                    stopWalkSound(p.walkSound);
                 }
             });
+
+            //trigger poubelle 
+
+            for(const bin of allBins){
+                if(getDistance(player.container.x,player.container.y,bin.x,bin.y)<50){
+                    if(!bin.in){
+                        //bin.setTexture('garbagePileGlow')
+                        bin.in = true;
+                        console.log('in');
+                    }
+                }else{
+                    if(bin.in){
+                        //bin.setTexture('garbagePile');
+                        bin.in = false;
+                        console.log('out');
+                    }
+                }
+    
+                if(keys.includes('KeyE')){
+                    if(bin.in ){
+                        
+                        recycleDechet(player,bin);
+                        garbageBag.visible = true;
+                        console.log('ouiiii')
+                    }
+                }
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+            ///trigger garbage pile
+            if(getDistance(player.container.x,player.container.y,garbagePile.x,garbagePile.y)<160){
+                if(!garbagePile.in){
+                    garbagePile.setTexture('garbagePileGlow')
+                    garbagePile.in = true;
+                    console.log('in');
+                }
+            }else{
+                if(garbagePile.in){
+                    garbagePile.setTexture('garbagePile');
+                    garbagePile.in = false;
+                    console.log('out');
+                }
+            }
+
+            if(keys.includes('KeyE')){
+                if(garbagePile.in && !player.dechet){
+                    getDechet(player);
+                    garbageBag.setVisible(true);
+                    console.log(player);
+                }
+            }
         }
+        
         //this.physics.arcade.collide(garbagePile, player, collisionHandler, null, this);
     }
 
@@ -269,6 +356,7 @@ class MyGame extends Phaser.Scene {
         this.debug.body(player);
     }*/
 }
+
 
 const config = {
     type: Phaser.AUTO,

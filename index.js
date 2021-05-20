@@ -20,7 +20,7 @@ const { body, validationResult } = require('express-validator');
 
 ///////
 const functionBins = require('./back/bins');
-allFunctionBins = new functionBins;
+allFunctionBins = new functionBins();
 ///////
 ///////
 const rooms = require('./back/rooms');
@@ -95,8 +95,8 @@ app.post('/login', urlencodedParser, (req, res) => {
 
 
 //Start serveur
-http.listen(22222, () => {
-    console.log('Serveur lancé sur le port 22222');
+http.listen(55555, () => {
+    console.log('Serveur lancé sur le port 55555');
 });
 
 io.on('connection', (socket) => {
@@ -165,12 +165,27 @@ io.on('connection', (socket) => {
         })
 
         //PLACEMENT POUBELLES
-        socket.on('generate-bins', ()=>{
+        socket.on('generate-bins-query', ()=>{
+            console.log('génération de poubelle pour la game '+gameId);
             let bins = allFunctionBins.generateBins();
+/*
+            let bins =  {
+                "Bleue" : {color:'Bleue',x: 0, y: 0, flip: false, url: '../../assets/poubelle-bleue.png'},
+                "Violet" : {color: 'Violet',x: 0, y: 0, flip: false, url: '../../assets/poubelle-violet.png'},
+                "Marron" :{color: 'Marron',x: 0, y: 0, flip: false, url: '../../assets/poubelle-marron.png'},
+                "Jaune" : {color: 'Jaune',x: 0, y: 0, flip: false, url: '../../assets/poubelle-jaune.png'},
+                "Noir": {color: 'Noir',x: 0, y: 0, flip: false, url: '../../assets/poubelle-noir.png'},
+                "Rouge" : {color: 'Rouge',x: 0, y: 0, flip: false, url: '../../assets/poubelle-rouge.png'},
+                "Orange" : {color: 'Orange',x: 0, y: 0, flip: false, url: '../../assets/poubelle-orange.png'},
+                "Blanc": {color: 'Blanc',x: 0, y: 0, flip: false, url: '../../assets/poubelle-blanc.png'},
+                "Vert": {color: 'Vert',x: 0, y: 0, flip: false, url: '../../assets/poubelle-vert.png'}
+            };*/
             socket.to(gameId).emit('generate-bins',bins);
             socket.emit('generate-bins',bins);
-            console.log(bins);
         })
+        console.log('gameId :'+ gameId);
     }
+
+
 });
 

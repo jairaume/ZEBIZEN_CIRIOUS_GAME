@@ -21,6 +21,8 @@ class Player{
         this.imposteur = this.imposteur;
 
         this.container = container;
+        this.walkSound = new Audio('../audio/walk-audio.mp3');
+
     }
     
 

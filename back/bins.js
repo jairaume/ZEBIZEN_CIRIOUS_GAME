@@ -64,6 +64,9 @@ class functionBins{
             "Blanc": {color: 'Blanc',x: coord[7][0]['x'], y: coord[7][0]['y'], flip: coord[7][0]['flip'], url: '../../assets/poubelle-blanc.png'},
             "Vert": {color: 'Vert',x: coord[8][0]['x'], y: coord[8][0]['y'], flip: coord[8][0]['flip'], url: '../../assets/poubelle-vert.png'}
         };
+
+        this.list = [];
+
         return bin;
     }
     

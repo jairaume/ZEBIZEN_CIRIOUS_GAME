@@ -258,6 +258,12 @@ button, input, .fakeBtn {
   box-shadow: 1px 5px 5px 0px #b8b8b8;
 }
 
+form#formLogin {
+  min-width: 450px;
+  width: 800px;
+  max-width: 99.99vw;
+}
+
 .flip-card {
   position: relative;
   perspective: 2000;
