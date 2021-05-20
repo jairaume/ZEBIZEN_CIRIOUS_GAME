@@ -28,6 +28,7 @@ let roomInfos;
 let keys = [];
 let spawnPositions;
 let binImg = generateBins();
+let distance = 0;
 //creating gamemode
 const currentGame = new GameMode(8);
 
@@ -247,11 +248,16 @@ class MyGame extends Phaser.Scene {
             moveAnimate(keys, player.container.getByName('sprite'));
             //Animate other player
             otherPlayer.forEach(p => {
+                distance = getDistance(p.container.x,p.container.y,player.container.x,player.container.y)
+                console.log(distance,'->',getVolume(distance));
+                walkAudio.volume = getVolume(distance)
                 if (p.moving && !p.container.getByName('sprite').anims.isPlaying) {
                     p.container.getByName('sprite').play('running');
+                    if (walkAudio.paused)startWalkSound();
                 }
                 else if (!p.moving && p.container.getByName('sprite').anims.isPlaying) {
                     p.container.getByName('sprite').stop('running');
+                    stopWalkSound();
                 }
             });
         }
