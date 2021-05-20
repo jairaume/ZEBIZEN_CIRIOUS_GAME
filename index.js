@@ -24,12 +24,14 @@ allFunctionBins = new functionBins();
 ///////
 ///////
 const rooms = require('./back/rooms');
+const games = require('./back/gamesInfos');
 //////
 let sessionInfo = new Array();
 /////
 
 const mysql = require('mysql');
 const { newRoom, joinRoom } = require('./back/rooms');
+const gamesInfos = require('./back/gamesInfos');
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 //Set static folder
@@ -154,7 +156,21 @@ io.on('connection', (socket) => {
             socket.to(gameId).emit('message',data);
             socket.emit('message',data);
         })
-        
+        //creation de la partie
+
+        socket.on('createGameInfos', (gameId)=>{
+            gamesInfos.addGame(gameId);
+            console.log('gameInfos:' +gamesInfos.getGameInfos(gameId));
+        });
+
+        socket.on('getGameInfos', (gameId)=>{
+            let data = gamesInfos.getGameInfos(gameId);
+            socket.emit('giveGameInfos', (data));
+        });
+
+        socket.on('joinGame',(gameId,playerId, username)=>{
+            gamesInfos.addPlayer(gameId, playerId, username);
+        });
         
         //MULTIPLAYER GAME
         socket.on('move',(data)=>{
@@ -166,8 +182,9 @@ io.on('connection', (socket) => {
 
         //PLACEMENT POUBELLES
         socket.on('generate-bins-query', ()=>{
-            console.log('génération de poubelle pour la game '+gameId);
+            //console.log('génération de poubelle pour la game '+gameId);
             let bins = allFunctionBins.generateBins();
+            gamesInfos.setPoubelles(gameId, bins);
 /*
             let bins =  {
                 "Bleue" : {color:'Bleue',x: 0, y: 0, flip: false, url: '../../assets/poubelle-bleue.png'},
@@ -182,8 +199,12 @@ io.on('connection', (socket) => {
             };*/
             socket.to(gameId).emit('generate-bins',bins);
             socket.emit('generate-bins',bins);
-        })
-        console.log('gameId :'+ gameId);
+        });
+
+        socket.on('getPoubelles', (gameId)=>{
+            socket.emit('generate-bins',gamesInfos.getPoubelles(gameId));
+        });
+        //console.log('gameId :'+ gameId);
     }
 
 

@@ -27,6 +27,7 @@ let otherPlayer = new Array();
 let player;
 let garbagePile;
 let roomInfos;
+let gameInfos;
 let garbageBag;
 let allBins = [];
 let keys = [];
@@ -98,7 +99,13 @@ class MyGame extends Phaser.Scene {
         .setDepth(2)
         garbagePile.in = false;
 
-
+        garbageBag = this.add
+        .image(0,0,'garbageBag')
+        .setDepth(100)
+        .setVisible(false)
+        garbageBag.displayHeight = garbageBag.height/5
+        garbageBag.displayWidth = garbageBag.width/5
+       
         
         
         //JOUEURS
@@ -135,28 +142,39 @@ class MyGame extends Phaser.Scene {
             roomInfos = data;
             clientId = data.me;
             console.log(roomInfos);
+
+            socket.emit('getGameInfos',roomInfos.id);
+
             spawnPositions = generateSpawnPositions(roomInfos.playerList.length)
             let i = 0;
             for (const aPlayer of data.playerList) {
+
                 if (aPlayer.id != clientId) {
                     otherPlayer.push(newPlayer(aPlayer.id, aPlayer.username, 'yellow', false, spawnPositions[i]));
                 } 
                 else {
                     player = newPlayer(aPlayer.id, aPlayer.username, 'blue', false, spawnPositions[i]);
-                }
-                if(aPlayer.id == clientId && aPlayer.isOwner){
-                    console.log("je suis le owner et je genere grave a balle de poubelles")
-                    socket.emit('generate-bins-query')
+                    /*let light = this.add.light(0,0,100)
+                    player.container.add(light)*/
+                    socket.emit('joinGame',roomInfos.id,clientId, aPlayer.username);
                 }
                 i++;
             }
-        });
 
-        socket.on('newInfo', (data) => {
-            ////
-        });
+            socket.on('giveGameInfos', (data)=>{
+                gameInfos = data;
+                console.log(data)
+                if(clientId == roomInfos.owner.id && !gameInfos){
+                    socket.emit('createGameInfos', roomInfos.id);
+                    console.log('je demande a creer les poubelles');
         
-        
+                    socket.emit('generate-bins-query')
+                }
+            });
+
+            socket.emit('getPoubelles', roomInfos.id);
+        });    
+
         this.input.on(Phaser.Input.Events.POINTER_DOWN, function (pointer) {
             console.log("x: ", player.container.x, " y: ", player.container.y)
         });
@@ -217,9 +235,8 @@ class MyGame extends Phaser.Scene {
         
         
         //POUBELLE
-
         socket.on('generate-bins',(bins)=>{
-            console.log("je genere la en gros")
+            console.log("je load les poubelles en gros")
             
             for(const bin in binImg){
                 let color = bins[bin].color;
@@ -237,17 +254,9 @@ class MyGame extends Phaser.Scene {
                 bin.setDepth(30)
             }
         });
-
-        //DECHETS
-        garbageBag = this.add.text(100,100,'J4AI UN DECHETTTTTT')
-        .setScrollFactor(0)
-        
-
-        //garbageBag.setTo(200,200);
         
         //this.enable([garbagePile,player], Phaser.Physics.ARCADE);
 
-        console.log()
     }
     
     update() {
@@ -302,26 +311,15 @@ class MyGame extends Phaser.Scene {
                         console.log('out');
                     }
                 }
-    
+                
+                //Déposer déchet dans poubelle
                 if(keys.includes('KeyE')){
-                    if(bin.in ){
-                        
-                        recycleDechet(player,bin);
-                        garbageBag.visible = true;
-                        console.log('ouiiii')
+                    if(bin.in && player.dechet){                      
+                        recycleDechet(player,bin);   
+                        garbageBag.setVisible(false);
                     }
                 }
             }
-
-
-
-
-
-
-
-
-
-
 
 
             ///trigger garbage pile
@@ -338,12 +336,12 @@ class MyGame extends Phaser.Scene {
                     console.log('out');
                 }
             }
-
+            //Récuperer déchet dans tas 
             if(keys.includes('KeyE')){
                 if(garbagePile.in && !player.dechet){
                     getDechet(player);
                     garbageBag.setVisible(true);
-                    console.log(player);
+                    player.container.add(garbageBag)
                 }
             }
         }
