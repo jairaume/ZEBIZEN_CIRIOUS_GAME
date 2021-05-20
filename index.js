@@ -19,6 +19,10 @@ const bodyParser = require('body-parser');
 const { body, validationResult } = require('express-validator');
 
 ///////
+const functionBins = require('./back/bins');
+allFunctionBins = new functionBins;
+///////
+///////
 const rooms = require('./back/rooms');
 //////
 let sessionInfo = new Array();
@@ -91,8 +95,8 @@ app.post('/login', urlencodedParser, (req, res) => {
 
 
 //Start serveur
-http.listen(55555, () => {
-    console.log('Serveur lancé sur le port 55555');
+http.listen(22222, () => {
+    console.log('Serveur lancé sur le port 22222');
 });
 
 io.on('connection', (socket) => {
@@ -141,6 +145,15 @@ io.on('connection', (socket) => {
         socket.on('leave-query', playerId => {
             socket.to(gameId).emit('leave', playerId);
         });   
+
+        socket.on('new-message', message =>{
+            let data ={
+                username : socket.handshake.session.username,
+                message: message
+            }
+            socket.to(gameId).emit('message',data);
+            socket.emit('message',data);
+        })
         
         
         //MULTIPLAYER GAME
@@ -149,6 +162,14 @@ io.on('connection', (socket) => {
         })
         socket.on('end-move',(id)=>{
             socket.to(gameId).emit('end-move',id);
+        })
+
+        //PLACEMENT POUBELLES
+        socket.on('generate-bins', ()=>{
+            let bins = allFunctionBins.generateBins();
+            socket.to(gameId).emit('generate-bins',bins);
+            socket.emit('generate-bins',bins);
+            console.log(bins);
         })
     }
 });

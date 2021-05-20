@@ -2,7 +2,14 @@ const leaveBtn = document.getElementById('leave');
 
 const gameId = document.getElementById('gameId');
 const players = document.getElementById('players');
+let playerUsername ='';
 
+const chat = document.getElementById("messages");
+const chatForm = document.getElementById('newMessage')
+const chatInput = document.getElementById("chatInput")
+const chatSend = document.getElementById("chatSend")
+let message = '';
+let messageUser = '';
 
 const readyBtn = document.getElementById('readyBtn');
 let ready = false;
@@ -32,6 +39,8 @@ const colors = [
 ];
 let color = Math.floor(Math.random() * 11);
 colorSelector.style.background = colors[color];
+
+let now = new Date();
 /*****************Reload*******************/
 
 socket.on('reload', ()=>{
@@ -98,13 +107,48 @@ function joueurListDisplay() {
 
             playerDiv.appendChild(kickBtn);
         }
+        if(clientId == player.id) playerUsername = player.username
+        
 
         players.appendChild(playerDiv);
     }
 }
 
 /**********************CHAT**********************/
+chatForm.addEventListener('submit',(event)=>{
+    event.preventDefault();
+    message = chatInput.value;
+    chatInput.value = '';
+    socket.emit('new-message',message);
+});
 
+socket.on('message', (data)=>{
+    now = new Date()
+    message = data.message;
+    messageUser = data.username;
+    console.log(data);
+    if (messageUser != playerUsername){
+        receiveSound();
+    }
+    else sendSound();
+
+    let item = document.createElement('li');
+    let messageUsername = document.createElement('h6')
+    let messageHour = document.createElement('span')
+    messageHour.classList.add('hour');
+    messageHour.innerHTML += (now.getHours()>10 ? '':'0') + now.getHours()+':'
+    messageHour.innerHTML += (now.getMinutes()>10 ? '':'0') + now.getMinutes()
+    
+    messageUsername.innerHTML = messageUser
+    messageUsername.appendChild(messageHour);
+    
+    let messageText = document.createElement('p')
+    messageText.innerHTML = message
+    item.appendChild(messageUsername)
+    item.appendChild(messageText)
+    chat.appendChild(item);
+    chat.scrollTop = chat.scrollHeight;
+})
 /*******************GAME CODE**********************/
 gameId.addEventListener('click', () => {
     let copyText = document.getElementById("code");
@@ -190,10 +234,23 @@ rightColor.addEventListener('click', () => {
 
 
 /**************AUDIO*******************************/
-let moveaudio = new Audio('../audio/salon.mp3');
-moveaudio.volume = .1;
+let moveAudio = new Audio('../audio/salon.mp3');
+moveAudio.volume = .1;
 function salonAudio() {
-    moveaudio.play();
+    moveAudio.play();
+}
+
+let receiveAudio = new Audio('../audio/receive-audio.mp3');
+receiveAudio.volume = .5;
+function receiveSound(){
+    receiveAudio.play();
+}
+
+
+let sendAudio = new Audio('../audio/send-audio.mp3');
+sendAudio.volume = .1;
+function sendSound() {
+    sendAudio.play();
 }
 
 
