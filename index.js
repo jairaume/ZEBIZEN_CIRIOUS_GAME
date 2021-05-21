@@ -188,14 +188,14 @@ io.on('connection', (socket) => {
 /*
             let bins =  {
                 "Bleue" : {color:'Bleue',x: 0, y: 0, flip: false, url: '../../assets/poubelle-bleue.png'},
-                "Violet" : {color: 'Violet',x: 0, y: 0, flip: false, url: '../../assets/poubelle-violet.png'},
-                "Marron" :{color: 'Marron',x: 0, y: 0, flip: false, url: '../../assets/poubelle-marron.png'},
-                "Jaune" : {color: 'Jaune',x: 0, y: 0, flip: false, url: '../../assets/poubelle-jaune.png'},
-                "Noir": {color: 'Noir',x: 0, y: 0, flip: false, url: '../../assets/poubelle-noir.png'},
-                "Rouge" : {color: 'Rouge',x: 0, y: 0, flip: false, url: '../../assets/poubelle-rouge.png'},
-                "Orange" : {color: 'Orange',x: 0, y: 0, flip: false, url: '../../assets/poubelle-orange.png'},
-                "Blanc": {color: 'Blanc',x: 0, y: 0, flip: false, url: '../../assets/poubelle-blanc.png'},
-                "Vert": {color: 'Vert',x: 0, y: 0, flip: false, url: '../../assets/poubelle-vert.png'}
+                "Violet" : {color: 'Violet',x: 50, y: 0, flip: false, url: '../../assets/poubelle-violet.png'},
+                "Marron" :{color: 'Marron',x: 100, y: 0, flip: false, url: '../../assets/poubelle-marron.png'},
+                "Jaune" : {color: 'Jaune',x: 150, y: 0, flip: false, url: '../../assets/poubelle-jaune.png'},
+                "Noir": {color: 'Noir',x: 200, y: 0, flip: false, url: '../../assets/poubelle-noir.png'},
+                "Rouge" : {color: 'Rouge',x: 250, y: 0, flip: false, url: '../../assets/poubelle-rouge.png'},
+                "Orange" : {color: 'Orange',x: 300, y: 0, flip: false, url: '../../assets/poubelle-orange.png'},
+                "Blanc": {color: 'Blanc',x: 350, y: 0, flip: false, url: '../../assets/poubelle-blanc.png'},
+                "Vert": {color: 'Vert',x: 400, y: 0, flip: false, url: '../../assets/poubelle-vert.png'}
             };*/
             socket.to(gameId).emit('generate-bins',bins);
             socket.emit('generate-bins',bins);
