@@ -202,7 +202,9 @@ io.on('connection', (socket) => {
         });
 
         socket.on('getPoubelles', (gameId)=>{
-            socket.emit('generate-bins',gamesInfos.getPoubelles(gameId));
+            if(gamesInfos.getPoubelles(gameId)){
+                socket.emit('generate-bins',gamesInfos.getPoubelles(gameId));
+            }
         });
         //console.log('gameId :'+ gameId);
     }
