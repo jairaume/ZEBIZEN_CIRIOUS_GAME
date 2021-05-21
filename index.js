@@ -123,6 +123,7 @@ io.on('connection', (socket) => {
             socket.emit('toggle-ready', sessionId);
             socket.to(gameId).emit('toggle-ready', sessionId);
             if(rooms.getNbReady(gameId)==rooms.getNbPlayer(gameId)){
+                rooms.generateImposteur(gameId)
                 rooms.setGameStatus(gameId,true);
                 socket.emit('reload');
                 socket.to(gameId).emit('reload');
@@ -160,7 +161,7 @@ io.on('connection', (socket) => {
 
         socket.on('createGameInfos', (gameId)=>{
             gamesInfos.addGame(gameId);
-            console.log('gameInfos:' +gamesInfos.getGameInfos(gameId));
+            //console.log('gameInfos:' +gamesInfos.getGameInfos(gameId));
         });
 
         socket.on('getGameInfos', (gameId)=>{
@@ -179,29 +180,33 @@ io.on('connection', (socket) => {
         socket.on('end-move',(id)=>{
             socket.to(gameId).emit('end-move',id);
         })
-
+        //
+        /************POUBELLES**************/
+        //
         //PLACEMENT POUBELLES
         socket.on('generate-bins-query', ()=>{
-            //console.log('génération de poubelle pour la game '+gameId);
             let bins = allFunctionBins.generateBins();
-            gamesInfos.setPoubelles(gameId, bins);
-/*
-            let bins =  {
-                "Bleue" : {color:'Bleue',x: 0, y: 0, flip: false, url: '../../assets/poubelle-bleue.png'},
-                "Violet" : {color: 'Violet',x: 50, y: 0, flip: false, url: '../../assets/poubelle-violet.png'},
-                "Marron" :{color: 'Marron',x: 100, y: 0, flip: false, url: '../../assets/poubelle-marron.png'},
-                "Jaune" : {color: 'Jaune',x: 150, y: 0, flip: false, url: '../../assets/poubelle-jaune.png'},
-                "Noir": {color: 'Noir',x: 200, y: 0, flip: false, url: '../../assets/poubelle-noir.png'},
-                "Rouge" : {color: 'Rouge',x: 250, y: 0, flip: false, url: '../../assets/poubelle-rouge.png'},
-                "Orange" : {color: 'Orange',x: 300, y: 0, flip: false, url: '../../assets/poubelle-orange.png'},
-                "Blanc": {color: 'Blanc',x: 350, y: 0, flip: false, url: '../../assets/poubelle-blanc.png'},
-                "Vert": {color: 'Vert',x: 400, y: 0, flip: false, url: '../../assets/poubelle-vert.png'}
-            };*/
+            gamesInfos.setPoubelles(gameId, bins);            
             socket.to(gameId).emit('generate-bins',bins);
             socket.emit('generate-bins',bins);
         });
 
-        socket.on('getPoubelles', (gameId)=>{
+        //changement de place des poubelles
+        socket.on('regenerate-bins-query', ()=>{
+            let bins = allFunctionBins.generateBins();
+            gamesInfos.setPoubelles(gameId, bins);            
+            socket.to(gameId).emit('regenerate-bins',bins);
+            socket.emit('regenerate-bins',bins);
+        });
+
+        //modif poubelle connue ou non
+        socket.on('setPoubelleUnknowAttribute', (poubelleColor,value)=>{
+            gamesInfos.setPoubelleUnknowAttribute(gameId, poubelleColor,value);
+            socket.to(gameId).emit('generate-bins',gamesInfos.getPoubelles(gameId));
+            //socket.emit('generate-bins', gamesInfos.getPoubelles(gameId));
+        });
+        //reload les poubelles
+        socket.on('getPoubelles', (gameId = gameId)=>{
             if(gamesInfos.getPoubelles(gameId)){
                 socket.emit('generate-bins',gamesInfos.getPoubelles(gameId));
             }

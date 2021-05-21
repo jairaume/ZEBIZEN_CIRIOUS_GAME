@@ -50,6 +50,10 @@ module.exports = {
         return gamesInfos[gameId].bins;
     },
 
+    setPoubelleUnknowAttribute(gameId,color,value){
+        gamesInfos[gameId].bins[color].unknow = value;
+    },
+
     exist(gameId){
         return gamesInfos[gameId] != undefined;
     }

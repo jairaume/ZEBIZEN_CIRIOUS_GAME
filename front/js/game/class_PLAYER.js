@@ -14,11 +14,11 @@ function moveIsPossible  (x,y){
 }
 
 class Player{
-    constructor(id, container, name, color, imposteur = false) {
+    constructor(id, container, name, color, imposteur) {
         this.id = id;
         this.name = name;
         this.color = color;
-        this.imposteur = this.imposteur;
+        this.imposteur = imposteur;
 
         this.container = container;
         this.walkSound = new Audio('../audio/walk-audio.mp3');

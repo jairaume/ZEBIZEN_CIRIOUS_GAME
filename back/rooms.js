@@ -25,7 +25,9 @@ module.exports = {
             id: playerId,
             username: username,
             isReady: false,
-            isOwner:  playerId === state[roomId].owner.id?true:false,
+            isImposteur: false,
+            isOwner:  playerId === state[roomId].owner.id?true:false
+            
         });
         return 1;
     },
@@ -79,6 +81,12 @@ module.exports = {
 
     setGameStatus(roomId, status){
         state[roomId].gameStatus = status;
+    },
+
+    generateImposteur(roomId){
+        let nbJoueur = this.getNbReady(roomId)-1;
+        let imposteur = entierAleatoire(0,nbJoueur);
+        state[roomId].playerList[imposteur].isImposteur = true;
     }
 
 }
@@ -104,4 +112,8 @@ function createGameState(id, ownerId, username) {
             username: username
         }
     }
+}
+
+function entierAleatoire(min, max){
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }

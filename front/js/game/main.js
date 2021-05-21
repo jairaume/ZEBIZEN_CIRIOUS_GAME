@@ -9,13 +9,18 @@ import { Player } from './class_PLAYER.js'
 import { generateSpawnPositions } from './generateSpawnPositions.js'
 import { generateBins } from './generateBins.js'
 import { getDistance } from './getDistance.js'
+import { dechet } from './dechets.js'
+import { dechets } from './dechets.js'
+import CountdownController from './countdownTimer.js'
+import { imposteur } from './imposteur.js'
+
 
 const PLAYER_SPRITE_WIDTH = 84
 const PLAYER_SPRITE_HEIGHT = 128
 const PLAYER_SPRITE_STARTX = -80
 const PLAYER_SPRITE_STARTY = 0
-const PLAYER_HEIGHT = 60
-const PLAYER_WIDTH = 40
+const PLAYER_HEIGHT = 80
+const PLAYER_WIDTH = 80
 const MAP_WIDTH = 1392
 const MAP_HEIGHT = 1120
 const MAP_ZOOM = 5
@@ -28,25 +33,29 @@ let player;
 let garbagePile;
 let roomInfos;
 let gameInfos;
-let garbageBag;
 let allBins = [];
 let keys = [];
+let trashAudio;
+let binAudio;
 let spawnPositions;
 let binImg = generateBins();
 let distance = 0;
+let timerLabel;
+let timer;
+let gameDuration = 90; // seconds
 //creating gamemode
 const currentGame = new GameMode(8);
 
 
 class MyGame extends Phaser.Scene {
     constructor() {
-        super();
+        super('GameScene');
     }
 
     preload() {
         const screenCenterX = this.cameras.main.worldView.x + this.cameras.main.width / 2;
         const screenCenterY = this.cameras.main.worldView.y + this.cameras.main.height / 2;
-        const loadingText = this.add.text(screenCenterX, screenCenterY, 'CHARGEMENT...').setOrigin(0.5);
+        const loadingText = this.add.text(screenCenterX, screenCenterY, 'CHARGEMENT DU JEU...').setOrigin(0.5);
         //Loading map background
         this.load.image('mapT', mapTiles);
 
@@ -60,30 +69,46 @@ class MyGame extends Phaser.Scene {
         this.load.image('binNoir', binImg.Noir.url);
         this.load.image('binOrange', binImg.Orange.url);
         this.load.image('binRouge', binImg.Rouge.url);
-    
+        this.load.image('falseBin', '../../assets/poubelles/falseBin.png')
 
         //garbage pile textures
         this.load.image('garbagePile', '../../assets/garbagePile.png');
         this.load.image('garbagePileGlow', '../../assets/garbagePile-glow.png');
-        
+
         //all dechets textures
-        this.load.image('garbageBag','../../assets/garbage.png')
+
 
 
         //Loading player spritesheet
-        this.load.spritesheet('player', playerImg, {
+        /*this.load.spritesheet('player', playerImg, {
             frameWidth: PLAYER_SPRITE_WIDTH,
             frameHeight: PLAYER_SPRITE_HEIGHT
-        });
+        });*/       
         //Loading other player spritesheet
         this.load.spritesheet('otherPlayer', playerImg, {
             frameWidth: PLAYER_SPRITE_WIDTH,
             frameHeight: PLAYER_SPRITE_HEIGHT
         });
+
+        //Loading dino spritesheet
+        this.load.spritesheet('player', '../../assets/player_sprite/blanc.png', {
+            frameWidth: 24,
+            frameHeight: 24
+        });
+
         this.load.image('mapP', mapProps);
+
+
     }
 
     create() {
+
+
+        //Audio
+        trashAudio = new Audio('../audio/trash-audio.mp3');
+        binAudio = new Audio('../audio/bin-audio.mp3');
+        trashAudio.volume = .4;
+        binAudio.volume = .3;
 
         //Map tiles display
         const mapT = this.add.image(0, 0, 'mapT');
@@ -91,51 +116,49 @@ class MyGame extends Phaser.Scene {
         mapT.displayWidth = MAP_WIDTH * MAP_ZOOM;
         mapT.setDepth(1);
 
-        
+
         //DECHETS
         garbagePile = this.add
-        .image(-70, 0, 'garbagePile')
-        .setScale(0.6)
-        .setDepth(2)
+            .image(-70, 0, 'garbagePile')
+            .setScale(0.6)
+            .setDepth(2)
         garbagePile.in = false;
 
-        garbageBag = this.add
-        .image(0,0,'garbageBag')
-        .setDepth(100)
-        .setVisible(false)
-        garbageBag.displayHeight = garbageBag.height/5
-        garbageBag.displayWidth = garbageBag.width/5
-       
-        
-        
+
+
+
+
         //JOUEURS
-        let newContainer = (name, position) => {
+        let newContainer = (name, position,imposteur) => {
             let container = this.add.container(position.x, position.y);
 
             let textPlayer = this.add.text(0, -45, name)
             textPlayer.x = textPlayer.width / -2
             textPlayer.name = 'text';
+            if(imposteur){
+                textPlayer.setColor("#CB4335")
+            }
             container.add(textPlayer);
-            
+
             let spritePlayer = this.add.sprite(0, 0, 'player')
             spritePlayer.name = 'sprite';
             spritePlayer.displayHeight = PLAYER_HEIGHT;
             spritePlayer.displayWidth = PLAYER_WIDTH;
-            spritePlayer.setFrame(10);
+            spritePlayer.play('iddle',true)
 
             container.add(spritePlayer);
             container.setDepth(2);
-            
+
             return container;
         }
-        
-        let newPlayer = (id, username, color, imposteur = false, position) => {
-            let newPlayer = new Player(id, newContainer(username, position), username, color);
+
+        let newPlayer = (id, username, color, imposteur, position) => {
+            let newPlayer = new Player(id, newContainer(username, position, imposteur), username, color, imposteur);
             newPlayer.walkSound.loop = true;
-            newPlayer.walkSound.volume=.5
+            newPlayer.walkSound.volume = .5
             return newPlayer;
         }
-        
+
         //Récuperation des infos de la session
         socket.emit('getRoomInfo');
         socket.on('roomInfo', (data) => {
@@ -143,7 +166,7 @@ class MyGame extends Phaser.Scene {
             clientId = data.me;
             console.log(roomInfos);
 
-            socket.emit('getGameInfos',roomInfos.id);
+            socket.emit('getGameInfos', roomInfos.id);
 
             spawnPositions = generateSpawnPositions(roomInfos.playerList.length)
             let i = 0;
@@ -151,32 +174,31 @@ class MyGame extends Phaser.Scene {
 
                 if (aPlayer.id != clientId) {
                     otherPlayer.push(newPlayer(aPlayer.id, aPlayer.username, 'yellow', false, spawnPositions[i]));
-                } 
+                }
                 else {
-                    player = newPlayer(aPlayer.id, aPlayer.username, 'blue', false, spawnPositions[i]);
-                    /*let light = this.add.light(0,0,100)
-                    player.container.add(light)*/
-                    socket.emit('joinGame',roomInfos.id,clientId, aPlayer.username);
+                    player = newPlayer(aPlayer.id, aPlayer.username, 'blue', aPlayer.isImposteur, spawnPositions[i]);
+                    player.container.getByName('sprite').play('iddle')
+                    socket.emit('joinGame', roomInfos.id, clientId, aPlayer.username);
                 }
                 i++;
             }
 
-            socket.on('giveGameInfos', (data)=>{
+            socket.on('giveGameInfos', (data) => {
                 gameInfos = data;
                 console.log(data)
-                if(clientId == roomInfos.owner.id && !gameInfos){
+                if (clientId == roomInfos.owner.id && !gameInfos) {
                     socket.emit('createGameInfos', roomInfos.id);
                     console.log('je demande a creer les poubelles');
-        
+
                     socket.emit('generate-bins-query')
                 }
             });
 
             socket.emit('getPoubelles', roomInfos.id);
-        });    
+        });
 
         this.input.on(Phaser.Input.Events.POINTER_DOWN, function (pointer) {
-            console.log("x: ", player.container.x, " y: ", player.container.y)
+            console.log("x: ", Math.ceil(player.container.x), " y: ", Math.ceil(player.container.y))
         });
 
 
@@ -188,11 +210,18 @@ class MyGame extends Phaser.Scene {
 
         //Player Animation
         this.anims.create({
-            key: 'running',
-            frames: this.anims.generateFrameNumbers('player'),
-            frameRate: 24,
-            reapeat: -1,
+            key: 'iddle',
+            frames: this.anims.generateFrameNumbers('player',{start:0,end:3}),
+            frameRate: 5,
+            reapeat: -1
         });
+        this.anims.create({
+            key: 'running',
+            frames: this.anims.generateFrameNumbers('player',{start:4,end:10}),
+            frameRate: 15,
+            reapeat: -1
+        });
+
 
         //Move with keys
         this.input.keyboard.on("keydown", (key) => {
@@ -203,7 +232,7 @@ class MyGame extends Phaser.Scene {
         this.input.keyboard.on("keyup", (key) => {
             keys = keys.filter((touche) => touche != key.code);
         })
-        
+
         socket.on('move', (data) => {
             let id = data.id;
             let index = otherPlayer.findIndex((player) => player.id == id);
@@ -222,49 +251,67 @@ class MyGame extends Phaser.Scene {
             otherPlayer[index].moving = false;
             otherPlayer[index].container.getByName('sprite').setFrame(11);
         });
-        
-        
+
+
         this.scene.scene.cameras.main.setBounds(-MAP_WIDTH * 5 / 2, -MAP_HEIGHT * 5 / 2, (MAP_WIDTH * MAP_ZOOM), (MAP_HEIGHT * MAP_ZOOM))
-        
-        this.minimap = this.cameras.add(5, 5, MAP_WIDTH / 5, MAP_HEIGHT / 5)
+
+        /*this.minimap = this.cameras.add(5, 5, MAP_WIDTH / 5, MAP_HEIGHT / 5)
         this.minimap.setZoom(0.08)
         this.minimap.setBackgroundColor(0x002244);
-        this.minimap.setName('mini');
-        //this.minimap.ignore(otherPlayer);
-        this.minimap.setLerp(0.1)
-        
-        
+        this.minimap.setName('mini');*/
+
+
+
         //POUBELLE
-        socket.on('generate-bins',(bins)=>{
-            console.log("je load les poubelles en gros")
-            
-            for(const bin in binImg){
-                let color = bins[bin].color;
-                let tmpBin = this.add.image(bins[color].x, bins[color].y, 'bin' + bins[color].color)
-                if(bins[color].flip)tmpBin.flipX = true;
-                tmpBin.in = false;
-                tmpBin.color = color;
-                allBins.push(tmpBin)
-    
-            }
-            for (const bin of allBins) {
-                bin.displayHeight = 200 * POUBELLE_ZOOM;
-                bin.displayWidth = 125 * POUBELLE_ZOOM;
-                bin.pixelArt = true;
-                bin.setDepth(30)
+        socket.on('generate-bins', (bins) => {
+            if (!allBins[0]) {
+                for (const bin in binImg) {
+                    let color = bins[bin].color;
+                    let tmpBin = this.add.image(bins[color].x, bins[color].y, 'falseBin')
+                    if (bins[color].flip) tmpBin.flipX = true;
+                    tmpBin.unknow = bins[color].unknow;
+                    tmpBin.in = false;
+                    tmpBin.color = color;
+                    allBins.push(tmpBin)
+                }
+                for (const bin of allBins) {
+                    bin.displayHeight = 200 * POUBELLE_ZOOM;
+                    bin.displayWidth = 125 * POUBELLE_ZOOM;
+                    bin.pixelArt = true;
+                    bin.setDepth(30)
+                }
+            }else{
+                for (const bin of allBins) {
+                    //console.log("je load les poubelles en gros")
+                    if (bins[bin.color].unknow == false) {
+                        bin.setTexture('bin' + bin.color);
+                    }
+                }
             }
         });
-        
+
+        socket.on('regenerate-bins', (bins)=>{
+            for(const bin of allBins){
+                bin.x = bins[bin.color].x;
+                bin.y = bins[bin.color].y;
+                bin.setTexture('falseBin');
+                bin.flipX = bins[bin.color].flip;
+                
+            }
+            
+            
+
+        })
+
         //this.enable([garbagePile,player], Phaser.Physics.ARCADE);
 
     }
-    
-    update() {
-        if (roomInfos) {
 
+    update() {
+        if (roomInfos && gameInfos != undefined) {
 
             //Camera always centered on player
-            this.minimap.startFollow(player.container,true, 0.5, 0.5)
+            //this.minimap.startFollow(player.container, true, 0.5, 0.5)
             this.scene.scene.cameras.main.startFollow(player.container);
             //Move player when appropriate keys are pressed
             let playerMoved = player.move(keys, currentGame);
@@ -279,33 +326,39 @@ class MyGame extends Phaser.Scene {
                 player.movedLastFrame = false;
             }
             //Animate player sprite
-            moveAnimate(keys, player.container.getByName('sprite'),player);
+            moveAnimate(keys, player.container.getByName('sprite'), player);
             //Animate other player
             otherPlayer.forEach(p => {
-                distance = getDistance(p.container.x,p.container.y,player.container.x,player.container.y)
-                //console.log(distance,'->',getVolume(distance));
+                distance = getDistance(p.container.x, p.container.y, player.container.x, player.container.y)
                 p.walkSound.volume = getVolume(distance)
                 if (p.moving && !p.container.getByName('sprite').anims.isPlaying) {
                     p.container.getByName('sprite').play('running');
-                    if (p.walkSound.paused)startWalkSound(p.walkSound);
+                    if (p.walkSound.paused) startWalkSound(p.walkSound);
                 }
                 else if (!p.moving && p.container.getByName('sprite').anims.isPlaying) {
                     p.container.getByName('sprite').stop('running');
+                    p.container.getByName('sprite').stop('iddle');
+                    p.container.getByName('sprite').setFrame(4)
                     stopWalkSound(p.walkSound);
                 }
             });
 
             //trigger poubelle 
 
-            for(const bin of allBins){
-                if(getDistance(player.container.x,player.container.y,bin.x,bin.y)<50){
-                    if(!bin.in){
+            for (const bin of allBins) {
+                if (getDistance(player.container.x, player.container.y, bin.x, bin.y) < 50) {
+                    if (!bin.in) {
+                        if (bin.unknow == true) {
+                            bin.setTexture('bin' + bin.color);
+                            socket.emit('setPoubelleUnknowAttribute', bin.color, false);
+                            console.log('oui');
+                        }
                         //bin.setTexture('garbagePileGlow')
                         bin.in = true;
                         console.log('in');
                     }
-                }else{
-                    if(bin.in){
+                } else {
+                    if (bin.in) {
                         //bin.setTexture('garbagePile');
                         bin.in = false;
                         console.log('out');
@@ -313,39 +366,45 @@ class MyGame extends Phaser.Scene {
                 }
                 
                 //Déposer déchet dans poubelle
-                if(keys.includes('KeyE')){
-                    if(bin.in && player.dechet){                      
-                        recycleDechet(player,bin);   
-                        garbageBag.setVisible(false);
+                if (keys.includes('KeyE') /*&& !player.imposteur*/) {
+                    if (bin.in && player.dechet) {
+                        this.events.emit('throwTrash',player.dechet.trashColor==bin.color)
+                        dechet.recycleDechet(player, bin);
+                        binAudio.play();
                     }
+                }
+
+                //Melanger les poubelles POUR IMPOSTEUR
+                if (keys.includes('KeyP') && player.imposteur) {
+                    imposteur.changebin();
                 }
             }
 
 
             ///trigger garbage pile
-            if(getDistance(player.container.x,player.container.y,garbagePile.x,garbagePile.y)<160){
-                if(!garbagePile.in){
+            if (getDistance(player.container.x, player.container.y, garbagePile.x, garbagePile.y) < 160) {
+                if (!garbagePile.in) {
                     garbagePile.setTexture('garbagePileGlow')
                     garbagePile.in = true;
                     console.log('in');
                 }
-            }else{
-                if(garbagePile.in){
+            } else {
+                if (garbagePile.in) {
                     garbagePile.setTexture('garbagePile');
                     garbagePile.in = false;
                     console.log('out');
                 }
             }
             //Récuperer déchet dans tas 
-            if(keys.includes('KeyE')){
-                if(garbagePile.in && !player.dechet){
-                    getDechet(player);
-                    garbageBag.setVisible(true);
-                    player.container.add(garbageBag)
+            if (keys.includes('KeyE')/*&& !player.imposteur*/) {
+                if (garbagePile.in && !player.dechet) {
+                    dechet.getDechet(player);
+                    this.events.emit('showTrash', player.dechet)
+                    trashAudio.play();
                 }
             }
         }
-        
+
         //this.physics.arcade.collide(garbagePile, player, collisionHandler, null, this);
     }
 
@@ -356,6 +415,107 @@ class MyGame extends Phaser.Scene {
 }
 
 
+class MyHUD extends Phaser.Scene {
+
+    constructor() {
+        super({ key: 'HUDScene', active: true });
+        this.timer = undefined;
+        this.gameDuration = 20;
+    }
+    preload() {
+        this.load.image('trash', '../../assets/garbage.png');
+
+        dechets.forEach(d => {
+            this.load.image(d.name, d.url);
+        });
+    }
+
+    create() {
+        const screenCenterX = this.cameras.main.worldView.x + this.cameras.main.width / 2;
+        const screenCenterY = this.cameras.main.worldView.y + this.cameras.main.height / 2;
+        
+        // --------------------- TIMER ---------------------
+        timerLabel = this.add.text(window.innerWidth - 20, window.innerHeight - 20, "", { fontSize: 30 })
+            .setDepth(10)
+            .setOrigin(1, 1)
+        this.timer = new CountdownController(this, this.gameDuration, timerLabel);
+        this.timer.start();
+
+        //AJOUT DECHET EN MAIN
+        let backgroundTrash = this.add.circle(30+(window.innerHeight/10), window.innerHeight-30-(window.innerHeight/10), window.innerHeight / 10, 0xdbdbdb)
+            .setAlpha(0.3) 
+            .setOrigin(0.5)
+
+        let trashDisplay = this.add.image(30+(window.innerHeight/10), window.innerHeight-30-(window.innerHeight/10), 'trash')
+            .setVisible(false)
+            .setOrigin(0.5)
+
+        let trashText = this.add.text(20 + window.innerHeight / 10, window.innerHeight - 5, 'Ramassez un déchet')
+            .setOrigin(.5, 1)
+            .setFontSize(17)
+
+
+        //----------EVENTS----------
+        let myGame = this.scene.get('GameScene')
+
+        //MONTRER LE DECHET EN MAIN
+        myGame.events.on('showTrash', (d) => {
+            //afficher l'image du dechet
+            trashDisplay.setTexture(d.name)
+            let proportions = trashDisplay.width/trashDisplay.height
+            if (trashDisplay.height > trashDisplay.width){
+                trashDisplay.displayHeight = window.innerHeight / 8
+                trashDisplay.displayWidth = trashDisplay.displayHeight*proportions
+            }
+            else{
+                trashDisplay.displayWidth = window.innerHeight / 8
+                trashDisplay.displayHeight = trashDisplay.displayWidth/proportions
+            }
+            trashDisplay.setVisible(true)
+
+            //afficher son nom
+            trashText.setText(d.name)
+            trashText.setVisible(true)
+        })
+        //CLE DECHET VIENS D'ETRE JETé
+        myGame.events.on('throwTrash', (result) => {
+            trashDisplay.setVisible(false)
+            trashText.setText(result ? "Bravo!":"Mauvaise poubelle!")
+            .setColor(result ? "#00ff00" : "#ff0000")
+            setTimeout(()=>{
+                trashText.setColor("#ffffff")
+                trashText.setText("Ramassez un déchet")
+            },5000)
+        })
+        //window resize
+        window.addEventListener('resize', () => {
+            backgroundTrash.x = 30+(window.innerHeight/10)
+            backgroundTrash.y = window.innerHeight-30-(window.innerHeight/10)
+
+            trashDisplay.x = 30+(window.innerHeight/10) 
+            trashDisplay.y = window.innerHeight-30-(window.innerHeight/10)
+            let proportions = trashDisplay.width/trashDisplay.height
+            if (trashDisplay.height > trashDisplay.width){
+                trashDisplay.displayHeight = window.innerHeight / 8
+                trashDisplay.displayWidth = trashDisplay.displayHeight*proportions
+            }
+            else{
+                trashDisplay.displayWidth = window.innerHeight / 8
+                trashDisplay.displayHeight = trashDisplay.displayWidth/proportions
+            }
+
+            trashText.x = 20 + window.innerHeight / 10
+            trashText.y = window.innerHeight - 10
+
+            timerLabel.x = window.innerWidth - 20
+            timerLabel.y = window.innerHeight - 20
+        })
+    }
+    update() {
+        this.timer.isFinish()
+    }
+}
+
 const config = {
     type: Phaser.AUTO,
     parent: 'game',
@@ -363,10 +523,10 @@ const config = {
     height: '100%',
     pixelArt: true,
     scale: {
-        mode: Phaser.Scale.ENVELOP,
+        mode: Phaser.Scale.RESIZE,
         autoCenter: Phaser.Scale.CENTER_BOTH
     },
-    scene: MyGame,
+    scene: [MyGame, MyHUD]
 };
 
 
