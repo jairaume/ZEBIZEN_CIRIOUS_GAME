@@ -42,7 +42,9 @@ let binImg = generateBins();
 let distance = 0;
 let timerLabel;
 let timer;
-let gameDuration = 90; // seconds
+let gameDuration = 10; // seconds
+let progressBar;
+let progressBox;
 //creating gamemode
 const currentGame = new GameMode(8);
 
@@ -74,16 +76,7 @@ class MyGame extends Phaser.Scene {
         //garbage pile textures
         this.load.image('garbagePile', '../../assets/garbagePile.png');
         this.load.image('garbagePileGlow', '../../assets/garbagePile-glow.png');
-
-        //all dechets textures
-
-
-
-        //Loading player spritesheet
-        /*this.load.spritesheet('player', playerImg, {
-            frameWidth: PLAYER_SPRITE_WIDTH,
-            frameHeight: PLAYER_SPRITE_HEIGHT
-        });*/       
+     
         //Loading other player spritesheet
         this.load.spritesheet('otherPlayer', playerImg, {
             frameWidth: PLAYER_SPRITE_WIDTH,
@@ -91,7 +84,7 @@ class MyGame extends Phaser.Scene {
         });
 
         //Loading dino spritesheet
-        this.load.spritesheet('player', '../../assets/player_sprite/blanc.png', {
+        this.load.spritesheet('playerWhite', '../../assets/player_sprite/blanc.png', {
             frameWidth: 24,
             frameHeight: 24
         });
@@ -102,7 +95,6 @@ class MyGame extends Phaser.Scene {
     }
 
     create() {
-
 
         //Audio
         trashAudio = new Audio('../audio/trash-audio.mp3');
@@ -140,7 +132,7 @@ class MyGame extends Phaser.Scene {
             }
             container.add(textPlayer);
 
-            let spritePlayer = this.add.sprite(0, 0, 'player')
+            let spritePlayer = this.add.sprite(0, 0, 'playerWhite')
             spritePlayer.name = 'sprite';
             spritePlayer.displayHeight = PLAYER_HEIGHT;
             spritePlayer.displayWidth = PLAYER_WIDTH;
@@ -211,13 +203,13 @@ class MyGame extends Phaser.Scene {
         //Player Animation
         this.anims.create({
             key: 'iddle',
-            frames: this.anims.generateFrameNumbers('player',{start:0,end:3}),
+            frames: this.anims.generateFrameNumbers('playerWhite',{start:0,end:3}),
             frameRate: 5,
             reapeat: -1
         });
         this.anims.create({
             key: 'running',
-            frames: this.anims.generateFrameNumbers('player',{start:4,end:10}),
+            frames: this.anims.generateFrameNumbers('playerWhite',{start:4,end:10}),
             frameRate: 15,
             reapeat: -1
         });
@@ -434,11 +426,22 @@ class MyHUD extends Phaser.Scene {
         const screenCenterX = this.cameras.main.worldView.x + this.cameras.main.width / 2;
         const screenCenterY = this.cameras.main.worldView.y + this.cameras.main.height / 2;
         
-        // --------------------- TIMER ---------------------
-        timerLabel = this.add.text(window.innerWidth - 20, window.innerHeight - 20, "", { fontSize: 30 })
+        // --------------------- PROGRESS BAR ---------------------
+
+        progressBar = this.add.graphics();
+        progressBox = this.add.graphics();
+
+        
+        progressBox.fillStyle(0x000000,1)
+        progressBox.fillRoundedRect(window.innerWidth - 720,window.innerHeight - 120,700,50,27);
+        progressBox.setDepth(10);
+
+
+        // ---------------------- TIMER ---------------------
+        timerLabel = this.add.text(window.innerWidth-310, window.innerHeight - 130, "Timer", { fontSize: 50 })
             .setDepth(10)
             .setOrigin(1, 1)
-        this.timer = new CountdownController(this, this.gameDuration, timerLabel);
+        this.timer = new CountdownController(this, this.gameDuration, timerLabel,progressBar);
         this.timer.start();
 
         //AJOUT DECHET EN MAIN
@@ -507,12 +510,17 @@ class MyHUD extends Phaser.Scene {
             trashText.x = 20 + window.innerHeight / 10
             trashText.y = window.innerHeight - 10
 
-            timerLabel.x = window.innerWidth - 20
-            timerLabel.y = window.innerHeight - 20
+            // timerLabel.x = window.innerWidth - 20
+            // timerLabel.y = window.innerHeight - 20
+
+            // progressBox.x = window.innerWidth - 20;
+            // progressBox.y = window.innerHeight - 20;
+            // progressBar.x = window.innerWidth - 20;
+            // progressBar.y = window.innerHeight - 20;
         })
     }
     update() {
-        this.timer.isFinish()
+        //this.timer.isFinish()
     }
 }
 
@@ -525,6 +533,9 @@ const config = {
     scale: {
         mode: Phaser.Scale.RESIZE,
         autoCenter: Phaser.Scale.CENTER_BOTH
+    },
+    physics:{
+        default: 'arcade'
     },
     scene: [MyGame, MyHUD]
 };
