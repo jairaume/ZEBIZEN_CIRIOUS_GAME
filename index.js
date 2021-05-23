@@ -157,8 +157,14 @@ io.on('connection', (socket) => {
             socket.to(gameId).emit('message',data);
             socket.emit('message',data);
         })
-        //creation de la partie
 
+        socket.on('color', color =>{
+            rooms.changeColor(gameId, sessionId, color)
+            socket.emit('newInfo', rooms.getData(gameId));
+            socket.to(gameId).emit('newInfo', rooms.getData(gameId));
+        })
+
+        //creation de la partie
         socket.on('createGameInfos', (gameId)=>{
             gamesInfos.addGame(gameId);
             //console.log('gameInfos:' +gamesInfos.getGameInfos(gameId));

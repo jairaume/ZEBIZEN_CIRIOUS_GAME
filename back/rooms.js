@@ -26,8 +26,8 @@ module.exports = {
             username: username,
             isReady: false,
             isImposteur: false,
-            isOwner:  playerId === state[roomId].owner.id?true:false
-            
+            isOwner:  playerId === state[roomId].owner.id?true:false,
+            color: 0
         });
         return 1;
     },
@@ -61,6 +61,11 @@ module.exports = {
         state[roomId].playerList[index].isReady = false;
     },
 
+    changeColor(roomId, playerId, color){
+        let index = state[roomId].playerList.findIndex((player)=> player.id == playerId);
+        state[roomId].playerList[index].color = color;
+    },
+    
     leaveRoom(roomId, playerId){
         let index = state[roomId].playerList.findIndex((player)=> player.id == playerId);
         console.log(index);

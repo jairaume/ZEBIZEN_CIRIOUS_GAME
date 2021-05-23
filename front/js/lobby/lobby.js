@@ -54,7 +54,7 @@ socket.emit('getRoomInfo');
 socket.on('roomInfo', (data) => {
     roomInfos = data;
     if(clientId==undefined)clientId = data.me;
-    salonAudio();
+    //salonAudio();
     showId(data.id);
     joueurListDisplay();
     initReady();
@@ -62,7 +62,7 @@ socket.on('roomInfo', (data) => {
 socket.on('newInfo', (data) => {
     roomInfos = data;
     console.log(roomInfos);
-    salonAudio();
+    //salonAudio();
     joueurListDisplay();
 });
 
@@ -225,10 +225,12 @@ speedOutput.oninput = function () {
 leftColor.addEventListener('click', () => {
     color = color == 0 ? colors.length-1 : color - 1;
     colorSelector.style.background = colors[color];
+    socket.emit('color',color)
 });
 rightColor.addEventListener('click', () => {
     color = color == colors.length-1 ? 0 : color + 1;
     colorSelector.style.background = colors[color];
+    socket.emit('color',color)
 });
 
 
