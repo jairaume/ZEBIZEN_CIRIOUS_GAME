@@ -90,7 +90,6 @@ class MyGame extends Phaser.Scene {
                 frameWidth: 24,
                 frameHeight: 24
             });
-            console.log(playerImg[img].color+'Player')
         };
 
         this.load.image('mapP', mapProps);
@@ -137,7 +136,6 @@ class MyGame extends Phaser.Scene {
             container.add(textPlayer);
 
             let spritePlayer = this.add.sprite(0, 0, color+'Player')
-            console.log(color)
             spritePlayer.name = 'sprite';
             spritePlayer.displayHeight = PLAYER_HEIGHT;
             spritePlayer.displayWidth = PLAYER_WIDTH;
@@ -172,7 +170,7 @@ class MyGame extends Phaser.Scene {
                     otherPlayer.push(newPlayer(aPlayer.id, aPlayer.username, 'yellow', false, spawnPositions[i]));
                 }
                 else {
-                    player = newPlayer(aPlayer.id, aPlayer.username, 'blue', aPlayer.isImposteur, spawnPositions[i]);
+                    player = newPlayer(aPlayer.id, aPlayer.username, 'brown', aPlayer.isImposteur, spawnPositions[i]);
                     socket.emit('joinGame', roomInfos.id, clientId, aPlayer.username);
                 }
                 i++;
@@ -206,14 +204,14 @@ class MyGame extends Phaser.Scene {
         for(const img in playerImg) {
             //Player Animation iddle
             this.anims.create({
-                key: 'iddle',
+                key: playerImg[img].color+'Iddle',
                 frames: this.anims.generateFrameNumbers(playerImg[img].color +'Player',{start:0,end:3}),
                 frameRate: 5,
                 reapeat: -1
             });
             //Player Animation running
             this.anims.create({
-                key: 'running',
+                key: playerImg[img].color+'Running',
                 frames: this.anims.generateFrameNumbers(playerImg[img].color +'Player',{start:4,end:10}),
                 frameRate: 15,
                 reapeat: -1
@@ -329,14 +327,12 @@ class MyGame extends Phaser.Scene {
             otherPlayer.forEach(p => {
                 distance = getDistance(p.container.x, p.container.y, player.container.x, player.container.y)
                 p.walkSound.volume = getVolume(distance)
-                if (p.moving && !p.container.getByName('sprite').anims.isPlaying) {
-                    p.container.getByName('sprite').play('running');
+                if (p.moving) {
+                    p.container.getByName('sprite').play(p.color+'Running',true);
                     if (p.walkSound.paused) startWalkSound(p.walkSound);
                 }
-                else if (!p.moving && p.container.getByName('sprite').anims.isPlaying) {
-                    p.container.getByName('sprite').stop('running');
-                    p.container.getByName('sprite').stop('iddle');
-                    p.container.getByName('sprite').setFrame(4)
+                else if (!p.moving) {
+                    p.container.getByName('sprite').play(p.color+'Iddle',true);
                     stopWalkSound(p.walkSound);
                 }
             });
