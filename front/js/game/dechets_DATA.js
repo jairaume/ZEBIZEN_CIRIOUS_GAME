@@ -6,7 +6,7 @@ const dechets = [
     { id: 4, name: 'Journal', url: '../../assets/dechets/journal.png', id_poubelle: 'Jaune'},
     { id: 5, name: 'Boite en Carton', url: '../../assets/dechets/carton.png', id_poubelle: 'Jaune'},
     { id: 6, name: 'Sac Plastique', url: '../../assets/dechets/sac.png', id_poubelle: 'Vert'},
-    { id: 7, name: 'Bouteille plastique', url: '../../assets/dechets/bouteille.png', id_poubelle: 'Vert'},
+    { id: 7, name: 'Bouteille plastique', url: '../../assets/dechets/water_bottle.png', id_poubelle: 'Vert'},
     { id: 8, name: 'Gobelet Plastique', url: '../../assets/dechets/cup.png', id_poubelle: 'Vert'},
     { id: 9, name: 'Bouteille en verre', url: '../../assets/dechets/bouteille_verre.png', id_poubelle: 'Bleue'},
     { id: 10, name: 'Bocal en Verre', url: '../../assets/dechets/verre.png', id_poubelle: 'Bleue'},

@@ -1,10 +1,3 @@
-//import Phaser from 'phaser';
-const playerImg = '../../assets/player.png';
-const mapProps = '../../assets/map/map_props.png';
-const mapTiles = '../../assets/map/map_tiles.png';
-
-
-
 import { Player } from './class_PLAYER.js'
 import { generateSpawnPositions } from './generateSpawnPositions.js'
 import { generateBins } from './generateBins.js'
@@ -15,10 +8,24 @@ import CountdownController from './countdownTimer.js'
 import { imposteur } from './imposteur.js'
 
 
-const PLAYER_SPRITE_WIDTH = 84
-const PLAYER_SPRITE_HEIGHT = 128
-const PLAYER_SPRITE_STARTX = -80
-const PLAYER_SPRITE_STARTY = 0
+
+const playerImg = {
+    'red': { url:'../../assets/player_sprite/red.png', color : 'red'},
+    'blue': { url:'../../assets/player_sprite/blue.png', color : 'blue'},
+    'white': { url:'../../assets/player_sprite/white.png', color : 'white'},
+    'black': { url:'../../assets/player_sprite/black.png', color : 'black'},
+    'brown': { url:'../../assets/player_sprite/brown.png', color : 'brown'},
+    'green': { url:'../../assets/player_sprite/green.png', color : 'green'},
+    'dGreen': { url:'../../assets/player_sprite/dGreen.png', color : 'dGreen'},
+    'cyan': { url:'../../assets/player_sprite/cyan.png', color : 'cyan'},
+    'yellow': { url:'../../assets/player_sprite/yellow.png', color : 'yellow'},
+    'rose': { url:'../../assets/player_sprite/rose.png', color : 'rose'}
+};
+
+
+const mapProps = '../../assets/map/map_props.png';
+const mapTiles = '../../assets/map/map_tiles.png';
+
 const PLAYER_HEIGHT = 80
 const PLAYER_WIDTH = 80
 const MAP_WIDTH = 1392
@@ -76,18 +83,15 @@ class MyGame extends Phaser.Scene {
         //garbage pile textures
         this.load.image('garbagePile', '../../assets/garbagePile.png');
         this.load.image('garbagePileGlow', '../../assets/garbagePile-glow.png');
-     
-        //Loading other player spritesheet
-        this.load.spritesheet('otherPlayer', playerImg, {
-            frameWidth: PLAYER_SPRITE_WIDTH,
-            frameHeight: PLAYER_SPRITE_HEIGHT
-        });
 
         //Loading dino spritesheet
-        this.load.spritesheet('playerWhite', '../../assets/player_sprite/blanc.png', {
-            frameWidth: 24,
-            frameHeight: 24
-        });
+        for(const img in playerImg) {
+            this.load.spritesheet(playerImg[img].color+'Player', playerImg[img].url ,{
+                frameWidth: 24,
+                frameHeight: 24
+            });
+            console.log(playerImg[img].color+'Player')
+        };
 
         this.load.image('mapP', mapProps);
 
@@ -121,22 +125,22 @@ class MyGame extends Phaser.Scene {
 
 
         //JOUEURS
-        let newContainer = (name, position,imposteur) => {
+        let newContainer = (name, position,imposteur,color) => {
             let container = this.add.container(position.x, position.y);
 
             let textPlayer = this.add.text(0, -45, name)
             textPlayer.x = textPlayer.width / -2
             textPlayer.name = 'text';
             if(imposteur){
-                textPlayer.setColor("#CB4335")
+                textPlayer.setColor("#ff1010")
             }
             container.add(textPlayer);
 
-            let spritePlayer = this.add.sprite(0, 0, 'playerWhite')
+            let spritePlayer = this.add.sprite(0, 0, color+'Player')
+            console.log(color)
             spritePlayer.name = 'sprite';
             spritePlayer.displayHeight = PLAYER_HEIGHT;
             spritePlayer.displayWidth = PLAYER_WIDTH;
-            spritePlayer.play('iddle',true)
 
             container.add(spritePlayer);
             container.setDepth(2);
@@ -145,9 +149,9 @@ class MyGame extends Phaser.Scene {
         }
 
         let newPlayer = (id, username, color, imposteur, position) => {
-            let newPlayer = new Player(id, newContainer(username, position, imposteur), username, color, imposteur);
+            let newPlayer = new Player(id, newContainer(username, position, imposteur, color), username, color, imposteur);
             newPlayer.walkSound.loop = true;
-            newPlayer.walkSound.volume = .5
+            newPlayer.walkSound.volume = .5;
             return newPlayer;
         }
 
@@ -169,7 +173,6 @@ class MyGame extends Phaser.Scene {
                 }
                 else {
                     player = newPlayer(aPlayer.id, aPlayer.username, 'blue', aPlayer.isImposteur, spawnPositions[i]);
-                    player.container.getByName('sprite').play('iddle')
                     socket.emit('joinGame', roomInfos.id, clientId, aPlayer.username);
                 }
                 i++;
@@ -200,19 +203,22 @@ class MyGame extends Phaser.Scene {
         mapP.displayWidth = MAP_WIDTH * MAP_ZOOM;
         mapP.setDepth(10);
 
-        //Player Animation
-        this.anims.create({
-            key: 'iddle',
-            frames: this.anims.generateFrameNumbers('playerWhite',{start:0,end:3}),
-            frameRate: 5,
-            reapeat: -1
-        });
-        this.anims.create({
-            key: 'running',
-            frames: this.anims.generateFrameNumbers('playerWhite',{start:4,end:10}),
-            frameRate: 15,
-            reapeat: -1
-        });
+        for(const img in playerImg) {
+            //Player Animation iddle
+            this.anims.create({
+                key: 'iddle',
+                frames: this.anims.generateFrameNumbers(playerImg[img].color +'Player',{start:0,end:3}),
+                frameRate: 5,
+                reapeat: -1
+            });
+            //Player Animation running
+            this.anims.create({
+                key: 'running',
+                frames: this.anims.generateFrameNumbers(playerImg[img].color +'Player',{start:4,end:10}),
+                frameRate: 15,
+                reapeat: -1
+            });
+        }
 
 
         //Move with keys
