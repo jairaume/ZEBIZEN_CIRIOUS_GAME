@@ -467,7 +467,8 @@ class MyHUD extends Phaser.Scene {
 
     preload() {
         this.load.image('trash', '../../assets/garbage.png');
-        this.load.image('mapImg', '../../assets/mapIcon.png');
+        this.load.image('mapIcon', '../../assets/mapIcon.png');
+        this.load.image('mapImg', '../../assets/carte.png');
 
 
         dechets.forEach(d => {
@@ -525,9 +526,14 @@ class MyHUD extends Phaser.Scene {
         .setAlpha(0.5)
         .setOrigin(0.5)
 
-        let imgMap = this.add.image(40,40, 'mapImg')
+        let iconMap = this.add.image(40,40, 'mapIcon')
         .setDisplaySize(window.innerHeight/25,window.innerHeight/25)
         .setOrigin(0.5)
+
+        let imgMap = this.add.image(screenCenterX,screenCenterY, 'mapImg')
+        .setOrigin(0.5)
+        .setVisible(false)
+        imgMap.setDisplaySize(window.innerWidth-300,(window.innerWidth-300)/(imgMap.width/imgMap.height))
         
         buttonMap.setInteractive()
 
@@ -549,6 +555,7 @@ class MyHUD extends Phaser.Scene {
         buttonMap.on('pointerup',function(){
             buttonMap.setFillStyle(0x383838)
             .setAlpha(.5)
+            imgMap.setVisible(true)
         })
 
         //MONTRER LE DECHET EN MAIN
