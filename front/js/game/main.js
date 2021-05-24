@@ -5,6 +5,7 @@ import { getDistance } from './getDistance.js'
 import { dechet } from './dechets.js'
 import { dechets } from './dechets.js'
 import CountdownController from './countdownTimer.js'
+import GarbageCountroller from './garbageCountroller.js'
 import { imposteur } from './imposteur.js'
 
 
@@ -50,11 +51,21 @@ let binAudio;
 let spawnPositions;
 let binImg = generateBins();
 let distance = 0;
+
+// Timer
+let timerCountroller; 
 let timerLabel;
-let timer;
-let gameDuration = 10; // seconds
-let progressBar;
-let progressBox;
+let timerProgressBar;
+let timerProgressBox;
+let gameDuration = 20; // seconds
+
+// Déchets 
+let garbageCountroller;
+let garbageLabel;
+let garbageProgressBar;
+let garbageProgressBox;
+let garbageObjectif = 50;
+
 //creating gamemode
 const currentGame = new GameMode(8);
 
@@ -452,9 +463,8 @@ class MyHUD extends Phaser.Scene {
 
     constructor() {
         super({ key: 'HUDScene', active: true });
-        this.timer = undefined;
-        this.gameDuration = 20;
     }
+
     preload() {
         this.load.image('trash', '../../assets/garbage.png');
         this.load.image('mapImg', '../../assets/mapIcon.png');
@@ -470,22 +480,31 @@ class MyHUD extends Phaser.Scene {
         const screenCenterY = this.cameras.main.worldView.y + this.cameras.main.height / 2;
         
         // --------------------- PROGRESS BAR ---------------------
-
-        progressBar = this.add.graphics();
-        progressBox = this.add.graphics();
-
         
-        progressBox.fillStyle(0x000000,1)
-        progressBox.fillRoundedRect(window.innerWidth - 720,window.innerHeight - 120,700,50,27);
-        progressBox.setDepth(10);
+        // Du timer puis du nombre de déchets objectif
+        timerProgressBar = this.add.graphics();
+        timerProgressBox = this.add.graphics();
+
+        garbageProgressBar = this.add.graphics();
+        garbageProgressBox = this.add.graphics();
+        
+        // On remplit les progressBox
+        timerProgressBox.fillStyle(0x000000,1)
+        timerProgressBox.fillRoundedRect(window.innerWidth - 720,window.innerHeight - 220,700,50,27);
+        timerProgressBox.setDepth(10);
+
+        garbageProgressBox.fillStyle(0x000000,1)
+        garbageProgressBox.fillRoundedRect(window.innerWidth - 720,window.innerHeight - 70,700,50,27);
+        garbageProgressBox.setDepth(10);
 
 
-        // ---------------------- TIMER ---------------------
-        timerLabel = this.add.text(window.innerWidth-310, window.innerHeight - 130, "Timer", { fontSize: 50 })
-            .setDepth(10)
-            .setOrigin(1, 1)
-        this.timer = new CountdownController(this, this.gameDuration, timerLabel,progressBar);
-        this.timer.start();
+        // ---------------------- TIMER COUNTROLLER---------------------
+        timerCountroller = new CountdownController(this,timerLabel,timerProgressBar,gameDuration)
+        timerCountroller.start()
+
+        // ---------------------- GARBAGE COUNTROLLER ---------------------
+        garbageCountroller = new GarbageCountroller(this,garbageLabel,garbageProgressBar,garbageObjectif)
+        garbageCountroller.start();
 
         //----------------------HUD----------------------------
         let backgroundTrash = this.add.circle(30+(window.innerHeight/10), window.innerHeight-30-(window.innerHeight/10), window.innerHeight / 10, 0x383838)
