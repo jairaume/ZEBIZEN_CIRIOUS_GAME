@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Règles Recycl'Us</title>
+        <link rel="icon" type="image/png" href="../assets/icon.gif"/>
+    
+        <script src="https://kit.fontawesome.com/1c62d16d7a.js" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="../css/lobby.css">
+        <link rel="stylesheet" href="../css/regles.css">
+        
+        <script src="/socket.io/socket.io.js"></script>
+        
+    </head>
+    <body>
+        <div class="header">
+            <h1>Règles du Jeu :</h1>
+        </div>
+        <div class="content">
+            <h2>Préambule</h2>
+            <div class="box">
+                <p>
+                    Aprés des années à ne pas tenir compte de la pollution de la planète Terre, celle-ci fut saturé de déchets et les humains la déserta.
+                    Laissant derrière eux, une planète "poubelle". De ce fait, de nouvelles espèces d'animaux reprirent leurs droits.
+                    Vous incarnerez une nouvelles générations de dinosaures qui veulent nettoyer cette planète pour la rendre plus propre et plus vivable.
+                </p>
+                </br>
+                <p>
+                    Vous vous retrouvez donc dans une ville avec un tas de dèchets à ramasser et trier dans différentes poubelles correspondantes.
+                    MAIS ATTENTION, certains dinosaures voudront vous en empêchez !
+                </p>
+                </br>
+                <p>Chaque joueur aura un rôle que lui seul connaîtra, il y a deux types de rôles :</p>
+                </br>
+                <ul>
+                    <li>Les Dinosaures "gentils" : leur but est de trier tous les déchets dans les bonnes poubelles et de débusquer les dinosaures "imposteurs".</li>
+                    <li>Les Dinosaures "imposteurs" : leur but est d'empêcher les "gentils" de réussir leur nettoyage pour le biais de plusieurs outils pour les ralentir.</li>
+                </ul>
+                
+            </div>
+            <h2>Les dinosaures "gentils"</h2>
+            <div class="box">
+                <div>
+                    <p>
+                        Pour les dinosaures "gentils", il faut prendre les déchets sur le tas de déchets présent au milieu de la map et les recycler dans les poubelles correspondantes. 
+                        Les poubelles sont générés aléatoirement sur la map, et leurs couleurs ne sont affichées seulement si un autre dinosaure est déjà passé dessus.
+                    </p>
+                    </br>
+                    <p>La partie est gagnée lorsque tous les déchets sont recyclés ou bien lorsque que tous le dinosaures "imposteurs" ont été expulsés.</p>  
+                </div>
+            </div>
+            <h2>Les dinosaures "imposteurs"</h2>
+            <div class="box">
+                <div>
+                    <p>Pour les dinosaures "imposteurs", ils peuvent donc utiliser 3 pouvoirs différents pour ralentir la progression des "gentils" :</p>
+                    </br>
+                    <ul>
+                        <li><p>Le mélange des poubelles : comme son nom l'indique à l'activation ce pouvoir change les couleurs aléatoirement des poubelles de la map.</p></li>
+                        <li><p>La poubelle sur la tête : lorsque qu'il est assez proche d'un dinosaure "gentil", il peut mettre une poubelle sur sa tête cela réduit le champ de vision
+                        du joueur et l'empêche de discuter pour le reste de la partie avec les autres joueurs.</p></li>
+                        <li><p>Le sabottage des poubelles : lorsque qu'il est assez proche d'une poubelle, il peut décider de la renversée cela obligera les dinosaures "gentils" à 
+                        se mettre à deux simultanément pour redresser la poubelle.</p></li>
+                    </ul>
+                    </br>
+                    <p>La partie est gagnée lorsque les "gentils" sont en infériorité numérique ou bien que les "gentils" n'ont pas fini dans le temps imparti.</p>
+                </div>
+            </div>
+            <h2>Les Réunions</h2>
+            <div class="box">
+                <p>Une Réunion se déclenche lorsque qu'un joueur déclare un dinosaure avec une poubelle sur la tête et décide de déclencher une réunion.</p>
+                </br>
+                <p>Deroulement de la réunion :</p>
+                <ul>
+                    <li><p>Les joueurs débattent et essayent de se mettre d'accord sur un vote, le joueur avec la majorité de vote est exclu si ils ne se sont pas mis d'accord alors aucune exclusion, la partie reprend.</p></li>
+                </ul>
+            </div>
+        </div>
+    </body>
+</html>
