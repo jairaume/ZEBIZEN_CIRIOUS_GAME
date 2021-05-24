@@ -10,21 +10,24 @@ import { imposteur } from './imposteur.js'
 
 
 const playerImg = {
-    'red': { url:'../../assets/player_sprite/red.png', color : 'red'},
-    'blue': { url:'../../assets/player_sprite/blue.png', color : 'blue'},
-    'white': { url:'../../assets/player_sprite/white.png', color : 'white'},
-    'black': { url:'../../assets/player_sprite/black.png', color : 'black'},
-    'brown': { url:'../../assets/player_sprite/brown.png', color : 'brown'},
-    'green': { url:'../../assets/player_sprite/green.png', color : 'green'},
-    'dGreen': { url:'../../assets/player_sprite/dGreen.png', color : 'dGreen'},
-    'cyan': { url:'../../assets/player_sprite/cyan.png', color : 'cyan'},
-    'yellow': { url:'../../assets/player_sprite/yellow.png', color : 'yellow'},
-    'rose': { url:'../../assets/player_sprite/rose.png', color : 'rose'}
+    'black': { url:'../../assets/player_sprite/black.png', color : 'black', id:0},
+    'blue': { url:'../../assets/player_sprite/blue.png', color : 'blue', id:1},
+    'cyan': { url:'../../assets/player_sprite/cyan.png', color : 'cyan', id:2},
+    'dGreen': { url:'../../assets/player_sprite/dGreen.png', color : 'dGreen', id:3},
+    'green': { url:'../../assets/player_sprite/green.png', color : 'green', id:4},
+    'yellow': { url:'../../assets/player_sprite/yellow.png', color : 'yellow', id:5},
+    'brown': { url:'../../assets/player_sprite/brown.png', color : 'brown', id:6},
+    'red': { url:'../../assets/player_sprite/red.png', color : 'red', id:7},
+    'rose': { url:'../../assets/player_sprite/rose.png', color : 'rose', id:8},
+    'white': { url:'../../assets/player_sprite/white.png', color : 'white', id:9},
 };
 
 
-const mapProps = '../../assets/map/map_props.png';
-const mapTiles = '../../assets/map/map_tiles.png';
+//V2
+const Map_layer_0 = '../../assets/map/map_layer_0.png';
+const Map_layer_1 = '../../assets/map/map_layer_1.png';
+const Map_layer_2 = '../../assets/map/map_layer_2.png';
+
 
 const PLAYER_HEIGHT = 80
 const PLAYER_WIDTH = 80
@@ -65,8 +68,12 @@ class MyGame extends Phaser.Scene {
         const screenCenterX = this.cameras.main.worldView.x + this.cameras.main.width / 2;
         const screenCenterY = this.cameras.main.worldView.y + this.cameras.main.height / 2;
         const loadingText = this.add.text(screenCenterX, screenCenterY, 'CHARGEMENT DU JEU...').setOrigin(0.5);
-        //Loading map background
-        this.load.image('mapT', mapTiles);
+
+        //Loading map layer
+
+        this.load.image('map_layer_0',Map_layer_0);
+        this.load.image('map_layer_1',Map_layer_1);
+        this.load.image('map_layer_2',Map_layer_2);
 
         //bin textures
         this.load.image('binBlanc', binImg.Blanc.url);
@@ -92,9 +99,6 @@ class MyGame extends Phaser.Scene {
             });
         };
 
-        this.load.image('mapP', mapProps);
-
-
     }
 
     create() {
@@ -106,17 +110,41 @@ class MyGame extends Phaser.Scene {
         binAudio.volume = .3;
 
         //Map tiles display
+        /*
         const mapT = this.add.image(0, 0, 'mapT');
         mapT.displayHeight = MAP_HEIGHT * MAP_ZOOM;
         mapT.displayWidth = MAP_WIDTH * MAP_ZOOM;
         mapT.setDepth(1);
+
+        //Map tiles display
+        const mapP = this.add.image(0, 0, 'mapP');
+        mapP.displayHeight = MAP_HEIGHT * MAP_ZOOM;
+        mapP.displayWidth = MAP_WIDTH * MAP_ZOOM;
+        mapP.setDepth(10);*/
+
+        //map layers display
+        
+        const map_layer_0 = this.add.image(0,0,'map_layer_0')
+        map_layer_0.displayHeight = MAP_HEIGHT * MAP_ZOOM;
+        map_layer_0.displayWidth = MAP_WIDTH * MAP_ZOOM;
+        map_layer_0.setDepth(1);
+
+        const map_layer_1 = this.add.image(0,0,'map_layer_1')
+        map_layer_1.displayHeight = MAP_HEIGHT * MAP_ZOOM;
+        map_layer_1.displayWidth = MAP_WIDTH * MAP_ZOOM;
+        map_layer_1.setDepth(200);
+
+        const map_layer_2 = this.add.image(0,0,'map_layer_2')
+        map_layer_2.displayHeight = MAP_HEIGHT * MAP_ZOOM;
+        map_layer_2.displayWidth = MAP_WIDTH * MAP_ZOOM;  
+        map_layer_2.setDepth(100);    
 
 
         //DECHETS
         garbagePile = this.add
             .image(-70, 0, 'garbagePile')
             .setScale(0.6)
-            .setDepth(2)
+            .setDepth(99)
         garbagePile.in = false;
 
 
@@ -141,7 +169,7 @@ class MyGame extends Phaser.Scene {
             spritePlayer.displayWidth = PLAYER_WIDTH;
 
             container.add(spritePlayer);
-            container.setDepth(2);
+            container.setDepth(250);
 
             return container;
         }
@@ -158,19 +186,18 @@ class MyGame extends Phaser.Scene {
         socket.on('roomInfo', (data) => {
             roomInfos = data;
             clientId = data.me;
-            console.log(roomInfos);
 
             socket.emit('getGameInfos', roomInfos.id);
 
             spawnPositions = generateSpawnPositions(roomInfos.playerList.length)
             let i = 0;
             for (const aPlayer of data.playerList) {
-
+                console.log(aPlayer.color);
                 if (aPlayer.id != clientId) {
-                    otherPlayer.push(newPlayer(aPlayer.id, aPlayer.username, 'yellow', false, spawnPositions[i]));
+                    otherPlayer.push(newPlayer(aPlayer.id, aPlayer.username, aPlayer.color, false, spawnPositions[i]));
                 }
                 else {
-                    player = newPlayer(aPlayer.id, aPlayer.username, 'brown', aPlayer.isImposteur, spawnPositions[i]);
+                    player = newPlayer(aPlayer.id, aPlayer.username,aPlayer.color, aPlayer.isImposteur, spawnPositions[i]);
                     socket.emit('joinGame', roomInfos.id, clientId, aPlayer.username);
                 }
                 i++;
@@ -194,12 +221,6 @@ class MyGame extends Phaser.Scene {
             console.log("x: ", Math.ceil(player.container.x), " y: ", Math.ceil(player.container.y))
         });
 
-
-        //Map tiles display
-        const mapP = this.add.image(0, 0, 'mapP');
-        mapP.displayHeight = MAP_HEIGHT * MAP_ZOOM;
-        mapP.displayWidth = MAP_WIDTH * MAP_ZOOM;
-        mapP.setDepth(10);
 
         for(const img in playerImg) {
             //Player Animation iddle
