@@ -25,21 +25,23 @@ const colorSelector = document.getElementById('color');
 const leftColor = document.getElementById('left');
 const rightColor = document.getElementById('right');
 const colors = [
-    '#4d4d4d',//noir
-    '#4d92bc',//bleu
-    '#50b8b6',//cyan
-    '#4dbc97',//vert-verdeaux
-    '#9fbc4d',//Vert
-    '#fdc760',//jaune
-    '#834d4a',//marron
-    '#bc4d4f',//rouge
-    '#fd6069',//rose
-    '#bbbbbb',//blanc
-    //'#38fedb',
+    {hex: '#4d4d4d', name:'black'},
+    {hex: '#4d92bc', name:'blue'},
+    {hex: '#50b8b6', name:'cyan'},
+    {hex: '#4dbc97', name:'dGreen'},   
+    {hex: '#9fbc4d', name:'green'},
+    {hex: '#fdc760', name:'yellow'},
+    {hex: '#834d4a', name:'brown'},
+    {hex: '#bc4d4f', name:'red'},
+    {hex: '#fd6069', name:'rose'},
+    {hex: '#bbbbbb', name:'white'},
 ];
-let color = Math.floor(Math.random() * colors.length);
-colorSelector.style.background = colors[color];
 
+let color = Math.floor(Math.random() * colors.length);
+colorSelector.style.background = colors[color].hex;
+socket.emit('color',colors[color].name)
+
+/****/
 let now = new Date();
 /*****************Reload*******************/
 
@@ -224,13 +226,13 @@ speedOutput.oninput = function () {
 
 leftColor.addEventListener('click', () => {
     color = color == 0 ? colors.length-1 : color - 1;
-    colorSelector.style.background = colors[color];
-    socket.emit('color',color)
+    colorSelector.style.background = colors[color].hex;
+    socket.emit('color',colors[color].name)
 });
 rightColor.addEventListener('click', () => {
     color = color == colors.length-1 ? 0 : color + 1;
-    colorSelector.style.background = colors[color];
-    socket.emit('color',color)
+    colorSelector.style.background = colors[color].hex;
+    socket.emit('color',colors[color].name)
 });
 
 

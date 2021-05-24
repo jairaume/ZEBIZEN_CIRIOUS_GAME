@@ -1,4 +1,4 @@
-import {mapBounds} from './mapBounds.js'
+import {mapBounds} from './mapLayers/mapBounds.js';
 
 const MAP_WIDTH = 1392
 const MAP_HEIGHT = 1120

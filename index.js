@@ -97,7 +97,7 @@ app.post('/login', urlencodedParser, (req, res) => {
 
 
 //Start serveur
-http.listen(22222, () => {
+http.listen(55555, () => {
     console.log('Serveur lancé sur le port 55555');
 });
 
@@ -123,7 +123,7 @@ io.on('connection', (socket) => {
             socket.emit('toggle-ready', sessionId);
             socket.to(gameId).emit('toggle-ready', sessionId);
             if(rooms.getNbReady(gameId)==rooms.getNbPlayer(gameId)){
-                rooms.generateImposteur(gameId)
+                rooms.generateImposteur(gameId);
                 rooms.setGameStatus(gameId,true);
                 socket.emit('reload');
                 socket.to(gameId).emit('reload');
@@ -157,7 +157,7 @@ io.on('connection', (socket) => {
             socket.to(gameId).emit('message',data);
             socket.emit('message',data);
         })
-
+        
         socket.on('color', color =>{
             rooms.changeColor(gameId, sessionId, color)
             socket.emit('newInfo', rooms.getData(gameId));
@@ -165,6 +165,7 @@ io.on('connection', (socket) => {
         })
 
         //creation de la partie
+
         socket.on('createGameInfos', (gameId)=>{
             gamesInfos.addGame(gameId);
             //console.log('gameInfos:' +gamesInfos.getGameInfos(gameId));
