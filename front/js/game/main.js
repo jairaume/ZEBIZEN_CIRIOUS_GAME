@@ -39,6 +39,8 @@ const POUBELLE_ZOOM = 0.4
 
 let clientId;
 
+let loadingText;
+
 let otherPlayer = new Array();
 let player;
 let garbagePile;
@@ -66,6 +68,9 @@ let garbageProgressBar;
 let garbageProgressBox;
 let garbageObjectif = 50;
 
+let screenCenterX;
+let screenCenterY;
+
 //creating gamemode
 const currentGame = new GameMode(8);
 
@@ -76,9 +81,9 @@ class MyGame extends Phaser.Scene {
     }
 
     preload() {
-        const screenCenterX = this.cameras.main.worldView.x + this.cameras.main.width / 2;
-        const screenCenterY = this.cameras.main.worldView.y + this.cameras.main.height / 2;
-        const loadingText = this.add.text(screenCenterX, screenCenterY, 'CHARGEMENT DU JEU...').setOrigin(0.5);
+        const screenCenterX = window.innerWidth/2;
+        const screenCenterY = window.innerHeight/ 2;
+        let loadingText = this.add.text(screenCenterX, screenCenterY, 'CHARGEMENT DES TEXTURES...').setOrigin(0.5).setDepth(100);
 
         //Loading map layer
 
@@ -110,9 +115,11 @@ class MyGame extends Phaser.Scene {
             });
         };
 
+
     }
 
     create() {
+        loadingText = this.add.text(screenCenterX, screenCenterY, 'CHARGEMENT DU JEU...').setOrigin(0.5).setDepth(101);
 
         //Audio
         trashAudio = new Audio('../audio/trash-audio.mp3');
@@ -157,8 +164,6 @@ class MyGame extends Phaser.Scene {
             .setScale(0.6)
             .setDepth(99)
         garbagePile.in = false;
-
-
 
 
 
@@ -231,7 +236,6 @@ class MyGame extends Phaser.Scene {
         this.input.on(Phaser.Input.Events.POINTER_DOWN, function (pointer) {
             console.log("x: ", Math.ceil(player.container.x), " y: ", Math.ceil(player.container.y))
         });
-
 
         for(const img in playerImg) {
             //Player Animation iddle
@@ -344,14 +348,10 @@ class MyGame extends Phaser.Scene {
                 bin.setTexture('falseBin');
                 bin.flipX = bins[bin.color].flip;
                 
-            }
-            
-            
+            }      
 
         })
-
-        //this.enable([garbagePile,player], Phaser.Physics.ARCADE);
-
+        loadingText.setVisible(false)
     }
 
     update() {
@@ -459,6 +459,8 @@ class MyGame extends Phaser.Scene {
     }*/
 }
 
+
+
 class MyHUD extends Phaser.Scene {
 
     constructor() {
@@ -477,8 +479,8 @@ class MyHUD extends Phaser.Scene {
     }
 
     create() {
-        const screenCenterX = this.cameras.main.worldView.x + this.cameras.main.width / 2;
-        const screenCenterY = this.cameras.main.worldView.y + this.cameras.main.height / 2;
+        screenCenterX = this.cameras.main.worldView.x + this.cameras.main.width / 2;
+        screenCenterY = this.cameras.main.worldView.y + this.cameras.main.height / 2;
         
         // --------------------- PROGRESS BAR ---------------------
         
@@ -523,17 +525,19 @@ class MyHUD extends Phaser.Scene {
         
             //----------BOUTTON MAP----------
         let buttonMap = this.add.circle(40,40,window.innerHeight/25,0x383838)
-        .setAlpha(0.5)
+        .setAlpha(0.8)
         .setOrigin(0.5)
-
         let iconMap = this.add.image(40,40, 'mapIcon')
         .setDisplaySize(window.innerHeight/25,window.innerHeight/25)
         .setOrigin(0.5)
-
         let imgMap = this.add.image(screenCenterX,screenCenterY, 'mapImg')
         .setOrigin(0.5)
         .setVisible(false)
-        imgMap.setDisplaySize(window.innerWidth-300,(window.innerWidth-300)/(imgMap.width/imgMap.height))
+        .setDepth(1000)
+        imgMap.setDisplaySize(window.innerHeight-10,(window.innerHeight-10)/(imgMap.width/imgMap.height))
+        let mapText = this.add.text(40,42+window.innerHeight/25,'(M)')
+        .setOrigin(0.5, 0)
+
         
         buttonMap.setInteractive()
 
@@ -546,17 +550,21 @@ class MyHUD extends Phaser.Scene {
         })
         buttonMap.on('pointerout',function(){
             buttonMap.setFillStyle(0x383838)
-            .setAlpha(.5)
+            .setAlpha(.8)
         })
         buttonMap.on('pointerdown',function(){
-            buttonMap.setFillStyle(0x383838)
+            buttonMap.setFillStyle(0x000000)
             .setAlpha(1)
+            imgMap.setVisible(true)
         })
         buttonMap.on('pointerup',function(){
             buttonMap.setFillStyle(0x383838)
-            .setAlpha(.5)
-            imgMap.setVisible(true)
+            .setAlpha(.8)
+            imgMap.setVisible(false)
         })
+        var keyObj = myGame.input.keyboard.addKey('M'); 
+        keyObj.on('down', function(event) { imgMap.setVisible(true) });
+        keyObj.on('up', function(event) {imgMap.setVisible(false) });
 
         //MONTRER LE DECHET EN MAIN
         myGame.events.on('showTrash', (d) => {
@@ -594,6 +602,9 @@ class MyHUD extends Phaser.Scene {
             backgroundTrash.x = 30+(window.innerHeight/10)
             backgroundTrash.y = window.innerHeight-30-(window.innerHeight/10)
 
+            screenCenterX = this.cameras.main.worldView.x + this.cameras.main.width / 2;
+            screenCenterY = this.cameras.main.worldView.y + this.cameras.main.height / 2;
+
             trashDisplay.x = 30+(window.innerHeight/10) 
             trashDisplay.y = window.innerHeight-30-(window.innerHeight/10)
             let proportions = trashDisplay.width/trashDisplay.height
@@ -616,6 +627,8 @@ class MyHUD extends Phaser.Scene {
             // progressBox.y = window.innerHeight - 20;
             // progressBar.x = window.innerWidth - 20;
             // progressBar.y = window.innerHeight - 20;
+
+            imgMap.setX(screenCenterX).setY(screenCenterY)
         })
 
 
