@@ -261,6 +261,25 @@ class MyGame extends Phaser.Scene {
             }
             otherPlayer[index].container.x = data.x;
             otherPlayer[index].container.y = data.y;
+            console.log(data.layer);
+            switch (data.layer) {
+                case 0:
+                    otherPlayer[index].container.setDepth(250);
+    
+                    break;
+                case 1:
+                    otherPlayer[index].container.setDepth(150);
+    
+                    break;
+                case 2:
+                    otherPlayer[index].container.setDepth(50);
+    
+                    break;
+                default:
+                    otherPlayer[index].container.setDepth(250);
+    
+            }
+
             otherPlayer[index].moving = true;
         });
         socket.on('end-move', (id) => {
@@ -333,7 +352,7 @@ class MyGame extends Phaser.Scene {
             //Move player when appropriate keys are pressed
             let playerMoved = player.move(keys, currentGame);
             if (playerMoved) {
-                socket.emit('move', { x: player.container.x, y: player.container.y, id: player.id })
+                socket.emit('move', { x: player.container.x, y: player.container.y, layer: player.layer, id: player.id })
                 player.movedLastFrame = true;
             }
             else {
@@ -428,8 +447,7 @@ class MyGame extends Phaser.Scene {
         this.debug.body(player);
     }*/
 }
-
-
+let buttonMap;
 class MyHUD extends Phaser.Scene {
 
     constructor() {
@@ -439,6 +457,8 @@ class MyHUD extends Phaser.Scene {
     }
     preload() {
         this.load.image('trash', '../../assets/garbage.png');
+        this.load.image('mapImg', '../../assets/mapIcon.png');
+
 
         dechets.forEach(d => {
             this.load.image(d.name, d.url);
@@ -467,23 +487,38 @@ class MyHUD extends Phaser.Scene {
         this.timer = new CountdownController(this, this.gameDuration, timerLabel,progressBar);
         this.timer.start();
 
-        //AJOUT DECHET EN MAIN
-        let backgroundTrash = this.add.circle(30+(window.innerHeight/10), window.innerHeight-30-(window.innerHeight/10), window.innerHeight / 10, 0xdbdbdb)
-            .setAlpha(0.3) 
+        //----------------------HUD----------------------------
+        let backgroundTrash = this.add.circle(30+(window.innerHeight/10), window.innerHeight-30-(window.innerHeight/10), window.innerHeight / 10, 0x383838)
+            .setAlpha(0.4) 
             .setOrigin(0.5)
 
         let trashDisplay = this.add.image(30+(window.innerHeight/10), window.innerHeight-30-(window.innerHeight/10), 'trash')
             .setVisible(false)
             .setOrigin(0.5)
 
-        let trashText = this.add.text(20 + window.innerHeight / 10, window.innerHeight - 5, 'Ramassez un déchet')
+        let trashText = this.add.text(30+(window.innerHeight/10), window.innerHeight - 5, 'Ramassez un déchet')
             .setOrigin(.5, 1)
             .setFontSize(17)
+            .setBackgroundColor("#383838")
+        //----------BOUTTON----------
 
-
+        buttonMap = this.add.container(50,50)
+        buttonMap.add(
+            this.add.circle(0,0,window.innerHeight/25,0x383838).setAlpha(0.5)
+        )
+        buttonMap.add(
+            this.add.image(0,0, 'mapImg')
+            .setDisplaySize(window.innerHeight/25,window.innerHeight/25)
+        )
+        buttonMap.inputEnabled = true;
+        buttonMap.input.useHandCursor = true;
+        buttonMap.events.onInputUp.add(showMap, this);
+        let showMap = (target,pointer)=>{
+            console.log("LA MAAAAAAAP")
+        }
         //----------EVENTS----------
         let myGame = this.scene.get('GameScene')
-
+        
         //MONTRER LE DECHET EN MAIN
         myGame.events.on('showTrash', (d) => {
             //afficher l'image du dechet
@@ -498,7 +533,7 @@ class MyHUD extends Phaser.Scene {
                 trashDisplay.displayHeight = trashDisplay.displayWidth/proportions
             }
             trashDisplay.setVisible(true)
-
+            
             //afficher son nom
             trashText.setText(d.name)
             trashText.setVisible(true)
@@ -529,10 +564,10 @@ class MyHUD extends Phaser.Scene {
                 trashDisplay.displayWidth = window.innerHeight / 8
                 trashDisplay.displayHeight = trashDisplay.displayWidth/proportions
             }
-
+            
             trashText.x = 20 + window.innerHeight / 10
             trashText.y = window.innerHeight - 10
-
+            
             // timerLabel.x = window.innerWidth - 20
             // timerLabel.y = window.innerHeight - 20
 
@@ -541,10 +576,15 @@ class MyHUD extends Phaser.Scene {
             // progressBar.x = window.innerWidth - 20;
             // progressBar.y = window.innerHeight - 20;
         })
+
     }
+
     update() {
-        //this.timer.isFinish()
+
+        
+        
     }
+
 }
 
 const config = {

@@ -182,7 +182,7 @@ io.on('connection', (socket) => {
         
         //MULTIPLAYER GAME
         socket.on('move',(data)=>{
-            socket.to(gameId).emit('move',{x:data.x, y:data.y, id:data.id});
+            socket.to(gameId).emit('move',{x:data.x, y:data.y, layer: data.layer, id:data.id});
         })
         socket.on('end-move',(id)=>{
             socket.to(gameId).emit('end-move',id);
