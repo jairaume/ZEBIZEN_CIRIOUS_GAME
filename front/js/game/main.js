@@ -458,7 +458,7 @@ class MyGame extends Phaser.Scene {
         this.debug.body(player);
     }*/
 }
-let buttonMap;
+
 class MyHUD extends Phaser.Scene {
 
     constructor() {
@@ -519,25 +519,38 @@ class MyHUD extends Phaser.Scene {
             .setOrigin(.5, 1)
             .setFontSize(17)
             .setBackgroundColor("#383838")
-        //----------BOUTTON----------
+        
+            //----------BOUTTON MAP----------
+        let buttonMap = this.add.circle(40,40,window.innerHeight/25,0x383838)
+        .setAlpha(0.5)
+        .setOrigin(0.5)
 
-        buttonMap = this.add.container(50,50)
-        buttonMap.add(
-            this.add.circle(0,0,window.innerHeight/25,0x383838).setAlpha(0.5)
-        )
-        buttonMap.add(
-            this.add.image(0,0, 'mapImg')
-            .setDisplaySize(window.innerHeight/25,window.innerHeight/25)
-        )
-        buttonMap.inputEnabled = true;
-        buttonMap.input.useHandCursor = true;
-        buttonMap.events.onInputUp.add(showMap, this);
-        let showMap = (target,pointer)=>{
-            console.log("LA MAAAAAAAP")
-        }
+        let imgMap = this.add.image(40,40, 'mapImg')
+        .setDisplaySize(window.innerHeight/25,window.innerHeight/25)
+        .setOrigin(0.5)
+        
+        buttonMap.setInteractive()
+
         //----------EVENTS----------
         let myGame = this.scene.get('GameScene')
         
+        buttonMap.on('pointerover',function(){
+            buttonMap.setFillStyle(0x2f89ff)
+            .setAlpha(1)
+        })
+        buttonMap.on('pointerout',function(){
+            buttonMap.setFillStyle(0x383838)
+            .setAlpha(.5)
+        })
+        buttonMap.on('pointerdown',function(){
+            buttonMap.setFillStyle(0x383838)
+            .setAlpha(1)
+        })
+        buttonMap.on('pointerup',function(){
+            buttonMap.setFillStyle(0x383838)
+            .setAlpha(.5)
+        })
+
         //MONTRER LE DECHET EN MAIN
         myGame.events.on('showTrash', (d) => {
             //afficher l'image du dechet
@@ -557,6 +570,7 @@ class MyHUD extends Phaser.Scene {
             trashText.setText(d.name)
             trashText.setVisible(true)
         })
+
         //CLE DECHET VIENS D'ETRE JETé
         myGame.events.on('throwTrash', (result) => {
             trashDisplay.setVisible(false)
@@ -567,6 +581,7 @@ class MyHUD extends Phaser.Scene {
                 trashText.setText("Ramassez un déchet")
             },5000)
         })
+
         //window resize
         window.addEventListener('resize', () => {
             backgroundTrash.x = 30+(window.innerHeight/10)
@@ -596,11 +611,10 @@ class MyHUD extends Phaser.Scene {
             // progressBar.y = window.innerHeight - 20;
         })
 
+
     }
 
     update() {
-
-        
         
     }
 
