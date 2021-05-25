@@ -203,9 +203,9 @@ class MyGame extends Phaser.Scene {
             clientId = data.me;
             let myIndex = roomInfos.playerList.findIndex(playerr=>playerr.id == clientId)
             let me = roomInfos.playerList[myIndex];
-
+            let impo = '';
             socket.emit('getGameInfos', roomInfos.id);
-
+            
             spawnPositions = generateSpawnPositions(roomInfos.playerList.length)
             currentGame.setSpeed(Math.ceil(currentGame.getSpeed()*roomInfos.speed))
             let i = 0;
@@ -219,7 +219,8 @@ class MyGame extends Phaser.Scene {
                 }
                 i++;
             }
-
+            if(me.isImposteur)this.events.emit('impo')
+            
             socket.on('giveGameInfos', (data) => {
                 gameInfos = data;
                 console.log(data)
@@ -531,7 +532,6 @@ class MyHUD extends Phaser.Scene {
         let trashText = this.add.text(30+(window.innerHeight/10), window.innerHeight - 5, 'Ramassez un déchet')
             .setOrigin(.5, 1)
             .setFontSize(17)
-            .setBackgroundColor("#383838")
         
             //----------BOUTTON MAP----------
         let buttonMap = this.add.circle(40,40,window.innerHeight/25,0x383838)
@@ -577,6 +577,12 @@ class MyHUD extends Phaser.Scene {
         var keyObj = myGame.input.keyboard.addKey('TAB'); 
         keyObj.on('down', showMap);
         keyObj.on('up', hideMap);
+
+        //INFO IMPOSTEUR
+        myGame.events.on('impo', () => {
+            trashText.setText('Vous êtes imposteur')
+            .setColor('#ff0000')
+        });
 
         //MONTRER LE DECHET EN MAIN
         myGame.events.on('showTrash', (d) => {
