@@ -158,13 +158,41 @@ io.on('connection', (socket) => {
             socket.emit('message',data);
         })
         
+
+        /*-------------SETTINGS------------*/
         socket.on('color', color =>{
             rooms.changeColor(gameId, sessionId, color)
             socket.emit('newInfo', rooms.getData(gameId));
             socket.to(gameId).emit('newInfo', rooms.getData(gameId));
         })
 
-        //creation de la partie
+        socket.on('speed', speed =>{
+            rooms.changeSpeed(gameId, speed)
+            socket.emit('newInfo', rooms.getData(gameId));
+            socket.to(gameId).emit('newInfo', rooms.getData(gameId));
+        })
+        socket.on('nbImpo', nb =>{
+            rooms.changeNbImpo(gameId, nb)
+            socket.emit('newInfo', rooms.getData(gameId));
+            socket.to(gameId).emit('newInfo', rooms.getData(gameId));
+        })
+        socket.on('gameDuration', dur =>{
+            rooms.changeGameDuration(gameId, dur)
+            socket.emit('newInfo', rooms.getData(gameId));
+            socket.to(gameId).emit('newInfo', rooms.getData(gameId));
+        })
+        socket.on('nbDechets', nb =>{
+            rooms.changeNbDechet(gameId, nb)
+            socket.emit('newInfo', rooms.getData(gameId));
+            socket.to(gameId).emit('newInfo', rooms.getData(gameId));
+        })
+        socket.on('modeIncognito', bool =>{
+            rooms.changeMode(gameId, bool)
+            socket.emit('newInfo', rooms.getData(gameId));
+            socket.to(gameId).emit('newInfo', rooms.getData(gameId));
+        })
+
+        //--------------creation de la partie--------
 
         socket.on('createGameInfos', (gameId)=>{
             gamesInfos.addGame(gameId);
@@ -218,7 +246,15 @@ io.on('connection', (socket) => {
                 socket.emit('generate-bins',gamesInfos.getPoubelles(gameId));
             }
         });
-        //console.log('gameId :'+ gameId);
+        
+        //renverser les poubelles
+        socket.on('reverse-bin', (poubelleColor)=>{
+            console.log('je suis la ')
+            gamesInfos.reverseBin(gameId, poubelleColor);
+
+            socket.to(gameId).emit('generate-bins',gamesInfos.getPoubelles(gameId));
+            socket.emit('generate-bins', gamesInfos.getPoubelles(gameId));
+        });
     }
 
 

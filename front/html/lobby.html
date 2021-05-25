@@ -64,11 +64,11 @@
                         <div>
                             <p>
                                 <b class="setting" >Mode imposteur inconnus :</b>
-                                <p class="default setting">Par defaut : <b class="primary">OFF</b></p>
+                                <p class="default setting">Par defaut : <b class="red">OFF</b></p>
                             </p>
                         </div>
                         
-                        <label class="switch setting"><input type="checkbox"><span class="sliderround"></span></label>
+                        <label class="switch setting"><input id='incognito' type="checkbox" disabled><span class="sliderround"></span></label>
                     </div>
 
                     <div class="container sliderContainer">
@@ -78,8 +78,41 @@
                                 <p class="default setting">Par defaut : <b>1</b></p>
                             </p>     
                         </div>
-                        <input type="range" min="0.5" max="1.5" value="1" step="0.1" class="slider setting" id="speedRange">
-                        <input type='number' min="0.5" max="1.5" id="speed" class="settingOut setting">
+                        <input type="range" min="0.5" max="2" value="2" step="0.1" class="slider setting" id="speedRange" disabled>
+                        <input type='number' min="0.5" max="2" value="2" id="speed" class="settingOut setting" disabled>
+                    </div>
+
+                    <div class="container sliderContainer">
+                        <div>
+                            <p>
+                                <b class="setting" >Nombre d'imposteurs :</b>
+                                <p class="default setting">Par defaut : <b>1</b></p>
+                            </p>     
+                        </div>
+                        <input type="range" min="1" max="9" value="2" step="1" class="slider setting" id="nbImpoRange" disabled>
+                        <input type='number' min="1" max="9" id="nbImpo" class="settingOut setting" disabled>
+                    </div>
+
+                    <div class="container sliderContainer">
+                        <div>
+                            <p>
+                                <b class="setting" >Durée de la partie (min) :</b>
+                                <p class="default setting">Par defaut : <b>10 (min)</b></p>
+                            </p>     
+                        </div>
+                        <input type="range" min="1" max="30" value="10" step="1" class="slider setting" id="gameDurationRange" disabled>
+                        <input type='number' min="1" max="30" id="gameDuration" class="settingOut setting" disabled>
+                    </div>
+
+                    <div class="container sliderContainer">
+                        <div>
+                            <p>
+                                <b class="setting" >Nombre de déchets à recycler :</b>
+                                <p class="default setting">Par defaut : <b>50</b></p>
+                            </p>     
+                        </div>
+                        <input type="range" min="1" max="999" value="50" step="1" class="slider setting" id="nbDechetsRange" disabled>
+                        <input type='number' min="1" max="999" id="nbDechets" class="settingOut setting" disabled>
                     </div>
 
 

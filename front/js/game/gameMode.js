@@ -5,4 +5,7 @@ class GameMode{
     getSpeed(){
         return this.speed;
     }
+    setSpeed(newSpeed){
+        this.speed = newSpeed;
+    }
 }

@@ -94,6 +94,10 @@ class Player {
 
         return playerMoved;
     }
+    
+    isImposteur(){
+        return this.imposteur;
+    }
 
 }
 

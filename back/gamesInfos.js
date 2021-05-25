@@ -56,5 +56,9 @@ module.exports = {
 
     exist(gameId){
         return gamesInfos[gameId] != undefined;
+    },
+
+    reverseBin(gameId, poubelleColor){
+        gamesInfos[gameId].bins[poubelleColor].angle = 90;
     }
 }

@@ -83,7 +83,6 @@ class MyGame extends Phaser.Scene {
     preload() {
         const screenCenterX = window.innerWidth/2;
         const screenCenterY = window.innerHeight/ 2;
-        let loadingText = this.add.text(screenCenterX, screenCenterY, 'CHARGEMENT DES TEXTURES...').setOrigin(0.5).setDepth(100);
 
         //Loading map layer
 
@@ -202,15 +201,17 @@ class MyGame extends Phaser.Scene {
         socket.on('roomInfo', (data) => {
             roomInfos = data;
             clientId = data.me;
+            let myIndex = roomInfos.playerList.findIndex(playerr=>playerr.id == clientId)
+            let me = roomInfos.playerList[myIndex];
 
             socket.emit('getGameInfos', roomInfos.id);
 
             spawnPositions = generateSpawnPositions(roomInfos.playerList.length)
+            currentGame.setSpeed(Math.ceil(currentGame.getSpeed()*roomInfos.speed))
             let i = 0;
             for (const aPlayer of data.playerList) {
-                console.log(aPlayer.color);
                 if (aPlayer.id != clientId) {
-                    otherPlayer.push(newPlayer(aPlayer.id, aPlayer.username, aPlayer.color, false, spawnPositions[i]));
+                    otherPlayer.push(newPlayer(aPlayer.id, aPlayer.username, aPlayer.color, (me.isImposteur && !roomInfos.modeIncognito)?aPlayer.isImposteur:false , spawnPositions[i]));
                 }
                 else {
                     player = newPlayer(aPlayer.id, aPlayer.username,aPlayer.color, aPlayer.isImposteur, spawnPositions[i]);
@@ -396,11 +397,11 @@ class MyGame extends Phaser.Scene {
                         if (bin.unknow == true) {
                             bin.setTexture('bin' + bin.color);
                             socket.emit('setPoubelleUnknowAttribute', bin.color, false);
-                            console.log('oui');
                         }
                         //bin.setTexture('garbagePileGlow')
                         bin.in = true;
                         console.log('in');
+
                     }
                 } else {
                     if (bin.in) {
@@ -411,7 +412,7 @@ class MyGame extends Phaser.Scene {
                 }
                 
                 //Déposer déchet dans poubelle
-                if (keys.includes('KeyE') /*&& !player.imposteur*/) {
+                if (keys.includes('KeyE')/* && !player.imposteur*/) {
                     if (bin.in && player.dechet) {
                         this.events.emit('throwTrash',player.dechet.trashColor==bin.color)
                         dechet.recycleDechet(player, bin);
@@ -421,8 +422,17 @@ class MyGame extends Phaser.Scene {
 
                 //Melanger les poubelles POUR IMPOSTEUR
                 if (keys.includes('KeyP') && player.imposteur) {
-                    imposteur.changebin();
+                    imposteur.changeBin();
                 }
+
+                //Renverser les poubelles POUR IMPOSTEUR
+                if(keys.includes('KeyY') && player.imposteur){
+                    if(bin.in){
+                        console.log(bin);
+                        imposteur.reverseBin(bin.color);
+                    }
+                }
+
             }
 
 
@@ -442,7 +452,7 @@ class MyGame extends Phaser.Scene {
             }
             //Récuperer déchet dans tas 
             if (keys.includes('KeyE')/*&& !player.imposteur*/) {
-                if (garbagePile.in && !player.dechet) {
+                if (garbagePile.in && !player.dechet/* && !player.isImposteur()*/) {
                     dechet.getDechet(player);
                     this.events.emit('showTrash', player.dechet)
                     trashAudio.play();
@@ -535,14 +545,24 @@ class MyHUD extends Phaser.Scene {
         .setVisible(false)
         .setDepth(1000)
         imgMap.setDisplaySize(window.innerHeight-10,(window.innerHeight-10)/(imgMap.width/imgMap.height))
-        let mapText = this.add.text(40,42+window.innerHeight/25,'(M)')
+        let mapText = this.add.text(40,42+window.innerHeight/25,'(TAB)')
         .setOrigin(0.5, 0)
 
-        
+
         buttonMap.setInteractive()
 
         //----------EVENTS----------
         let myGame = this.scene.get('GameScene')
+        let showMap = ()=>{
+            buttonMap.setFillStyle(0x000000)
+            .setAlpha(1)
+            imgMap.setVisible(true)
+        }
+        let hideMap = ()=>{
+            buttonMap.setFillStyle(0x383838)
+            .setAlpha(.8)
+            imgMap.setVisible(false)
+        }
         
         buttonMap.on('pointerover',function(){
             buttonMap.setFillStyle(0x2f89ff)
@@ -552,19 +572,11 @@ class MyHUD extends Phaser.Scene {
             buttonMap.setFillStyle(0x383838)
             .setAlpha(.8)
         })
-        buttonMap.on('pointerdown',function(){
-            buttonMap.setFillStyle(0x000000)
-            .setAlpha(1)
-            imgMap.setVisible(true)
-        })
-        buttonMap.on('pointerup',function(){
-            buttonMap.setFillStyle(0x383838)
-            .setAlpha(.8)
-            imgMap.setVisible(false)
-        })
-        var keyObj = myGame.input.keyboard.addKey('M'); 
-        keyObj.on('down', function(event) { imgMap.setVisible(true) });
-        keyObj.on('up', function(event) {imgMap.setVisible(false) });
+        buttonMap.on('pointerdown',showMap)
+        buttonMap.on('pointerup',hideMap)
+        var keyObj = myGame.input.keyboard.addKey('TAB'); 
+        keyObj.on('down', showMap);
+        keyObj.on('up', hideMap);
 
         //MONTRER LE DECHET EN MAIN
         myGame.events.on('showTrash', (d) => {

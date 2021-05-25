@@ -61,11 +61,28 @@ module.exports = {
         state[roomId].playerList[index].isReady = false;
     },
 
+
     changeColor(roomId, playerId, color){
         let index = state[roomId].playerList.findIndex((player)=> player.id == playerId);
         state[roomId].playerList[index].color = color;
     },
+    changeSpeed(roomId, speed){
+        state[roomId].speed = speed;
+    },
+    changeNbImpo(roomId, nb){
+        state[roomId].nbImposteur = nb;
+    },
+    changeGameDuration(roomId, dur){
+        state[roomId].gameDuration = dur;
+    },
+    changeNbDechet(roomId, nb){
+        state[roomId].nbDechets = nb;
+    },
+    changeMode(roomId, bool){
+        state[roomId].modeIncognito = bool;
+    },
     
+
     leaveRoom(roomId, playerId){
         let index = state[roomId].playerList.findIndex((player)=> player.id == playerId);
         console.log(index);
@@ -90,8 +107,15 @@ module.exports = {
 
     generateImposteur(roomId){
         let nbJoueur = this.getNbReady(roomId)-1;
-        let imposteur = entierAleatoire(0,nbJoueur);
-        state[roomId].playerList[imposteur].isImposteur = true;
+        let imposteur
+        for(let i = 0; i<state[roomId].nbImposteur; i++){
+            do{
+                imposteur = entierAleatoire(0,nbJoueur-i);
+            }
+            while(state[roomId].playerList[imposteur].isImposteur)
+            state[roomId].playerList[imposteur].isImposteur = true;
+        
+        }
     }
 
 }
@@ -115,7 +139,12 @@ function createGameState(id, ownerId, username) {
         owner: {
             id: ownerId,
             username: username
-        }
+        },
+        speed: 1,
+        nbImposteur: 1,
+        nbDechet:50,
+        gameDuration:10,
+        modeIncognito: false
     }
 }
 
