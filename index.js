@@ -262,10 +262,17 @@ io.on('connection', (socket) => {
 
         // Incrémentation de la variabe comptant le nombre de déchets "réussis" par les joueurs d'une room
         socket.on("modifyGarbageServer", (goodChoice) => {
-            goodChoice == true ? gamesInfos.increaseGarbage(gameId) : gamesInfos.increaseGarbage(gameId);
-            // gamesInfos.decreaseGarbage(gameId);
-            console.log("GoodChoice passé.")
-            socket.to(gameId).emit("sendGarbageClient",gamesInfos.garbageNumber(gameId));
+            goodChoice == true ? gamesInfos.increaseGarbage(gameId) : gamesInfos.decreaseGarbage(gameId);
+            let garbageNum = gamesInfos.returnGarbageNumber(gameId);
+            let variableGarbageMax = rooms.getData(gameId).nbDechet;
+            if(garbageNum == variableGarbageMax){
+                // ANNONCER LA WIIIIIIIIIIIIIIIN
+                // ANNONCER LA WIIIIIIIIIIIIIIIN
+                // ANNONCER LA WIIIIIIIIIIIIIIIN
+                // ANNONCER LA WIIIIIIIIIIIIIIIN
+            }else{
+                socket.to(gameId).emit("sendGarbageClient",garbageNum);
+            }
             socket.emit("autorizationFalse");
         })
 
@@ -284,6 +291,6 @@ io.on('connection', (socket) => {
         })
 
     }
-    
+
 });
 

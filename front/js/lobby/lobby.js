@@ -75,8 +75,14 @@ socket.on('roomInfo', (data) => {
     settingOn(roomInfos.owner.id, clientId);
 });
 socket.on('newInfo', (data) => {
+
+    if(roomInfos != undefined){
+        if(roomInfos.playerList.length != data.playerList.length) salonAudio();
+    }
+    
     roomInfos = data;
     joueurListDisplay();
+
 
     if(roomInfos.modeIncognito){
         modeIncognito.checked = true;

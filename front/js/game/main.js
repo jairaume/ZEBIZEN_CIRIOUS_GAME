@@ -40,6 +40,8 @@ const POUBELLE_ZOOM = 0.4
 let clientId;
 let myIndex;
 let loadingText;
+let infoAffiche = false;
+
 
 let otherPlayer = new Array();
 let player;
@@ -53,19 +55,17 @@ let binAudio;
 let spawnPositions;
 let binImg = generateBins();
 let distance = 0;
+let carte;
+let megaphone;
 
 // Timer
 let timerCountroller;
 let timerLabel;
-let timerProgressBar;
-let timerProgressBox;
-let gameDuration = 20; // seconds
+let gameDuration = 150; // seconds
 
 // Déchets 
-let garbageCountroller = new GarbageCountroller();;
+let garbageCountroller = new GarbageCountroller();
 let garbageLabel;
-let garbageProgressBar;
-let garbageProgressBox;
 let garbageObjectif = 50;
 
 let screenCenterX;
@@ -108,7 +108,7 @@ class MyGame extends Phaser.Scene {
 
         //Info Recyclage + Megaphone
         this.load.image('infoRecycle', '../../assets/Affiche_tri_selectif.png');
-        this.load.image('megaphone','../../assets/megaphone.png');
+        this.load.image('megaphone', '../../assets/megaphone.png');
 
         //Loading dino spritesheet
         for (const img in playerImg) {
@@ -124,6 +124,7 @@ class MyGame extends Phaser.Scene {
     }
 
     create() {
+
         loadingText = this.add.text(screenCenterX, screenCenterY, 'CHARGEMENT DU JEU...').setOrigin(0.5).setDepth(101);
 
         //Audio
@@ -169,9 +170,6 @@ class MyGame extends Phaser.Scene {
             .setScale(0.6)
             .setDepth(99)
         garbagePile.in = false;
-
-
-        //garbageCountroller = new GarbageCountroller();
 
         //JOUEURS
         let newContainer = (name, position, imposteur, color) => {
@@ -243,7 +241,10 @@ class MyGame extends Phaser.Scene {
         });
 
         this.input.on(Phaser.Input.Events.POINTER_DOWN, function (pointer) {
-            console.log("x: ", Math.ceil(player.container.x), " y: ", Math.ceil(player.container.y))
+            if(player.container){
+                console.log("x: ", Math.ceil(player.container.x), " y: ", Math.ceil(player.container.y))
+
+            }
         });
 
         for (const img in playerImg) {
@@ -378,30 +379,30 @@ class MyGame extends Phaser.Scene {
             socket.emit('end-move', player.id)
         })
 
-        socket.on('setPoubelleHead', (id)=>{
-            let sac = this.add.image(0,-30,'trashBag').setFlipY(true).setOrigin(.5,0)
-            sac.displayWidth = PLAYER_WIDTH-20 
-            sac.displayHeight = (sac.width/sac.height)*sac.displayWidth
+        socket.on('setPoubelleHead', (id) => {
+            let sac = this.add.image(0, -30, 'trashBag').setFlipY(true).setOrigin(.5, 0)
+            sac.displayWidth = PLAYER_WIDTH - 20
+            sac.displayHeight = (sac.width / sac.height) * sac.displayWidth
             sac.name = 'trashBag'
-            if(id == clientId){
+            if (id == clientId) {
                 player.container.add(sac)
             }
-            else{
-                let index3 = otherPlayer.findIndex(p=>p.id==id)
+            else {
+                let index3 = otherPlayer.findIndex(p => p.id == id)
                 otherPlayer[index3].container.add(sac)
             }
         });
 
         loadingText.setVisible(false)
 
-        let carte = this.add.image(562, -510, 'infoRecycle')
+        carte = this.add.image(562, -510, 'infoRecycle')
             .setDepth(201)
-            .setDisplaySize(110,50);
-        
-        let megaphone = this.add.image(390,-25, 'megaphone')
-            .setDepth(201)
+            .setDisplaySize(110, 50);
+
+        megaphone = this.add.image(390, -25, 'megaphone')
+            .setDepth(10)
             .setFlipX(true)
-            .setDisplaySize(40,40);
+            .setDisplaySize(40, 40);
         megaphone.angle = 30;
     }
 
@@ -445,7 +446,7 @@ class MyGame extends Phaser.Scene {
                 if (getDistance(player.container.x, player.container.y, oPlayer.container.x, oPlayer.container.y) < 100) {
                     if (player.imposteur && !player.cooldown) {
                         if (keys.includes('KeyF') && !oPlayer.poubelle) {
-                            if(roomInfos.modeIncognito){
+                            if (roomInfos.modeIncognito) {
                                 oPlayer.poubelle = true;
                                 oPlayer.recycle = false;
                                 socket.emit('setPoubelleHead', oPlayer.id);
@@ -453,25 +454,37 @@ class MyGame extends Phaser.Scene {
                                 setTimeout(() => {
                                     player.cooldown = false;
                                 }, 20000);
-                                
                             }
-                            if(!roomInfos.modeIncognito){
-                                if(!oPlayer.imposteur){
-                                    oPlayer.poubelle = true;
-                                    oPlayer.recycle = false;
-                                    socket.emit('setPoubelleHead', oPlayer.id);
-                                    player.cooldown = true;
-                                    setTimeout(() => {
-                                        player.cooldown = false;
-                                    }, 20000);
-                                }
+                            if (!roomInfos.modeIncognito && !oPlayer.imposteur) {
+                                oPlayer.poubelle = true;
+                                oPlayer.recycle = false;
+                                socket.emit('setPoubelleHead', oPlayer.id);
+                                player.cooldown = true;
+                                setTimeout(() => {
+                                    player.cooldown = false;
+                                }, 20000);
                             }
                         }
                     }
                 }
             }
 
-            
+            ///trigger garbage pile
+            if (getDistance(player.container.x, player.container.y, garbagePile.x, garbagePile.y) < 160) {
+                if (!garbagePile.in) {
+                    garbagePile.setTexture('garbagePileGlow')
+                    garbagePile.in = true;
+                    console.log('in');
+                }
+            } 
+            else {
+                if (garbagePile.in) {
+                    garbagePile.setTexture('garbagePile');
+                    garbagePile.in = false;
+                    console.log('out');
+                }
+            }
+
 
             //trigger poubelle 
             for (const bin of allBins) {
@@ -481,118 +494,107 @@ class MyGame extends Phaser.Scene {
                             bin.setTexture('bin' + bin.color);
                             socket.emit('setPoubelleUnknowAttribute', bin.color, false);
                         }
-                        //bin.setTexture('garbagePileGlow')
                         bin.in = true;
                         console.log('in');
-
                     }
-                } else {
+                }
+                else {
                     if (bin.in) {
                         //bin.setTexture('garbagePile');
                         bin.in = false;
                         console.log('out');
                     }
                 }
+            }
 
+            //Melanger les poubelles POUR IMPOSTEUR
+            if (keys.includes('KeyP') && player.imposteur && !player.cooldown) {
+                imposteur.changeBin();
+                player.cooldown = true;
+                setTimeout(() => {
+                    player.cooldown = false;
+                }, 20000);
+            }
 
-                if (keys.includes('KeyE') && bin.in) {
-                    if (!player.imposteur) {
-                        //Déposer déchet dans poubelle POUR GENTIL
-                        if (player.dechet && bin.angle == 0 && garbageCountroller.getAutorization() && player.recycle) {
-                            this.events.emit('throwTrash', player.dechet.trashColor == bin.color);
-                            let goodChoice = dechet.recycleDechet(player, bin) == 1 ? true : false;
-                            socket.emit("modifyGarbageServer", goodChoice);
-                            binAudio.play();
+            if (keys.includes('KeyE')) {
+                //Récuperer déchet dans tas 
+                if (garbagePile.in && !player.dechet && !player.imposteur && player.recycle) {
+                    dechet.getDechet(player);
+                    this.events.emit('showTrash', player.dechet)
+                    garbageCountroller.autorizationOnTrue();
+                    trashAudio.play();
+                }
 
-                            return 1;
+                //Lancer une reunion
+                if (getDistance(player.container.x, player.container.y, megaphone.x, megaphone.y) < 50) {
+                    socket.emit('reunion')
+                }
+
+                //trigger poubelle 
+                for (const bin of allBins) {
+                    if (bin.in) {
+                        if (!player.imposteur) {
+                            //Déposer déchet dans poubelle POUR GENTIL
+                            if (player.dechet && bin.angle == 0 && garbageCountroller.getAutorization() && player.recycle) {
+                                this.events.emit('throwTrash', player.dechet.trashColor == bin.color);
+                                let goodChoice = dechet.recycleDechet(player, bin) == 1 ? true : false;
+                                socket.emit("modifyGarbageServer", goodChoice);
+                                binAudio.play();
+                                return 1;
+                            }
+
+                            //Remettre les poubelles POUR GENTIL
+                            if (bin.angle == 90) {
+                                imposteur.reverseBin(bin.color, 0);
+                                player.stop = true;
+                                player.cantReclyque = true;
+                                setTimeout(() => {
+                                    player.stop = false;
+                                    player.cantReclyque = false;
+                                }, 5000);
+                                return 1;
+                            }
                         }
+                        if (player.imposteur == true && !player.cooldown) {
 
-                        //Remettre les poubelles POUR GENTIL
-                        if (bin.angle == 90) {
-                            imposteur.reverseBin(bin.color, 0);
-                            player.stop = true;
-                            player.cantReclyque = true;
-
-                            setTimeout(() => {
-                                player.stop = false;
-                                player.cantReclyque = false;
-                            }, 5000);
-
-                            return 1;
+                            //Renverser les poubelles POUR IMPOSTEUR
+                            if (bin.angle == 0) {
+                                imposteur.reverseBin(bin.color, 90);
+                                player.stop = true;
+                                player.cooldown = true;
+                                setTimeout(() => {
+                                    player.stop = false;
+                                }, 5000);
+                                setTimeout(() => {
+                                    player.cooldown = false;
+                                }, 20000);
+                                return 1;
+                            }
+                            if (bin.angle == 90 && !player.cooldown) {
+                                imposteur.reverseBin(bin.color, 0);
+                                player.stop = true;
+                                player.cooldown = true;
+                                setTimeout(() => {
+                                    player.stop = false;
+                                    player.cooldown = false;
+                                }, 5000);
+                                return 1;
+                            }
                         }
                     }
-                    if (player.imposteur == true && !player.cooldown) {
-                        //Renverser les poubelles POUR IMPOSTEUR
-                        if (bin.angle == 0) {
-                            imposteur.reverseBin(bin.color, 90);
-                            player.stop = true;
-                            player.cooldown = true;
-                            setTimeout(() => {
-                                player.stop = false;
-                            }, 5000);
-                            setTimeout(() => {
-                                player.cooldown = false;
-                            }, 20000);
-
-                            return 1;
-                        }
-                        if (bin.angle == 90 && !player.cooldown) {
-                            imposteur.reverseBin(bin.color, 0);
-                            player.stop = true;
-                            player.cooldown = true;
-
-                            setTimeout(() => {
-                                player.stop = false;
-                                player.cooldown = false;
-                            }, 5000);
-
-                            return 1;
-                        }
-                    }
-
-
-                }
-
-                //Melanger les poubelles POUR IMPOSTEUR
-                if (keys.includes('KeyP') && player.imposteur && !player.cooldown) {
-                    imposteur.changeBin();
-                    player.cooldown = true;
-                    setTimeout(() => {
-                        player.cooldown = false;
-                    }, 20000);
-                }
-
-
-
-            }
-
-
-            ///trigger garbage pile
-            if (getDistance(player.container.x, player.container.y, garbagePile.x, garbagePile.y) < 160) {
-                if (!garbagePile.in) {
-                    garbagePile.setTexture('garbagePileGlow')
-                    garbagePile.in = true;
-                    console.log('in');
-                }
-            } else {
-                if (garbagePile.in) {
-                    garbagePile.setTexture('garbagePile');
-                    garbagePile.in = false;
-                    console.log('out');
                 }
             }
-            //Récuperer déchet dans tas 
-            if (keys.includes('KeyE') && garbagePile.in && !player.dechet && !player.imposteur && player.recycle) {
-                dechet.getDechet(player);
-                this.events.emit('showTrash', player.dechet)
-                garbageCountroller.autorizationOnTrue();
-                trashAudio.play();
+
+            //Agrandir les infos de recyclage   
+            if (getDistance(player.container.x, player.container.y, carte.x, carte.y) < 100 && !infoAffiche) {
+                this.events.emit('showInfo')
+                infoAffiche = true;
+            }
+            else if (getDistance(player.container.x, player.container.y, carte.x, carte.y) > 100 && infoAffiche) {
+                this.events.emit('hideInfo')
+                infoAffiche = false;
             }
 
-            //Agrandir les infos de recyclage
-            
-            if(getDistance(player.container.x, player.container.y, garbagePile.x, garbagePile.y) < 160)
-            
         }
 
         //this.physics.arcade.collide(garbagePile, player, collisionHandler, null, this);
@@ -615,10 +617,9 @@ class MyHUD extends Phaser.Scene {
     preload() {
         this.load.image('trash', '../../assets/garbage.png');
         this.load.image('mapIcon', '../../assets/mapIcon.png');
-        this.load.image('mapImg', '../../assets/carte.png');
+        this.load.image('mapImg', '../../assets/minimap.png');
         this.load.image('reportIcon', '../../assets/alarm.png');
-
-
+        this.load.image('infoRecycleBig', '../../assets/Affiche_tri_selectif.png');
 
         dechets.forEach(d => {
             this.load.image(d.name, d.url);
@@ -629,36 +630,17 @@ class MyHUD extends Phaser.Scene {
         screenCenterX = this.cameras.main.worldView.x + this.cameras.main.width / 2;
         screenCenterY = this.cameras.main.worldView.y + this.cameras.main.height / 2;
 
-        // --------------------- PROGRESS BAR ---------------------
-
-        // Du timer puis du nombre de déchets objectif
-        timerProgressBar = this.add.graphics();
-        timerProgressBox = this.add.graphics();
-
-        garbageProgressBar = this.add.graphics();
-        garbageProgressBox = this.add.graphics();
-
-        // On remplit les progressBox
-        timerProgressBox.fillStyle(0x000000, 1)
-        timerProgressBox.fillRoundedRect(window.innerWidth - 720, window.innerHeight - 220, 700, 50, 27);
-        timerProgressBox.setDepth(10);
-
-        garbageProgressBox.fillStyle(0x000000, 1)
-        garbageProgressBox.fillRoundedRect(window.innerWidth - 720, window.innerHeight - 70, 700, 50, 27);
-        garbageProgressBox.setDepth(10);
-
-
         // ---------------------- TIMER COUNTROLLER---------------------
-        timerCountroller = new CountdownController(this, timerLabel, timerProgressBar, timerProgressBox, gameDuration)
+
+        timerCountroller = new CountdownController(this, timerLabel, gameDuration)
         timerCountroller.start()
 
         // ---------------------- GARBAGE COUNTROLLER ---------------------
 
-        garbageCountroller.setAttribute(this, garbageLabel, garbageProgressBar, garbageObjectif)
+        garbageCountroller.setAttribute(this, garbageLabel, garbageObjectif)
         garbageCountroller.start();
 
         socket.on("sendGarbageClient", (garbageNumber) => {
-            console.log("On est avant setGarbageNumber")
             garbageCountroller.setGarbageNumber(garbageNumber);
         })
         socket.on("autorizationFalse", () => {
@@ -673,11 +655,25 @@ class MyHUD extends Phaser.Scene {
         let trashDisplay = this.add.image(30 + (window.innerHeight / 10), window.innerHeight - 30 - (window.innerHeight / 10), 'trash')
             .setVisible(false)
             .setOrigin(0.5)
-
-        let trashText = this.add.text(30 + (window.innerHeight / 10), window.innerHeight - 5, 'Vous êtes gentil !')
+/*
+        if(!player.imposteur){
+            let trashText = this.add.text(30 + (window.innerHeight / 10), window.innerHeight - 5, 'Vous êtes gentil !')
             .setOrigin(.5, 1)
             .setFontSize(17)
+            .setColor("#1E90FF")
+        }
+        
+        if(player.imposteur){
+            let trashText = this.add.text(30 + (window.innerHeight / 10), window.innerHeight - 5, "Vous êtes l'imposteur !")
+            .setOrigin(.5, 1)
+            .setFontSize(17)
+            .setColor("#ff0000")
+        }
+        */
+        
+        
 
+        console.log('player', player);
         //----------BOUTTON MAP----------
         let buttonMap = this.add.circle(40, 40, window.innerHeight / 25, 0x383838)
             .setAlpha(0.8)
@@ -715,10 +711,19 @@ class MyHUD extends Phaser.Scene {
         let reportText = this.add.text(window.innerWidth - 50, window.innerHeight - 5, '(R)')
             .setOrigin(0.5, 1)
         let report = () => {
-            console.log('report')
             socket.emit('reunion');
         }
         buttonReport.setInteractive({ cursor: 'pointer' });
+
+
+        /*-------INFO DECHETS------*/
+        let imgInfo = this.add.image(screenCenterX, screenCenterY, 'infoRecycleBig')
+            .setOrigin(0.5)
+            .setVisible(false)
+            .setDepth(1000)
+        imgInfo.setDisplaySize(window.innerHeight - 10, (window.innerHeight - 10) / (imgInfo.width / imgInfo.height))
+
+
 
 
         //----------EVENTS----------
@@ -749,7 +754,7 @@ class MyHUD extends Phaser.Scene {
             buttonReport.setFillStyle(0x383838)
                 .setAlpha(.8)
         })
-        buttonMap.on('pointerup', report)
+        buttonReport.on('pointerup', report)
         var keyObj = myGame.input.keyboard.addKey('R');
         keyObj.on('up', report);
 
@@ -760,6 +765,15 @@ class MyHUD extends Phaser.Scene {
             trashText.setText('Vous êtes imposteur')
                 .setColor('#ff0000')
         });
+
+        //AFFICHER LES INFOS DES DECHETS
+        myGame.events.on('showInfo', () => {
+            imgInfo.setVisible(true)
+        });
+        myGame.events.on('hideInfo', () => {
+            imgInfo.setVisible(false)
+        });
+
 
         //MONTRER LE DECHET EN MAIN
         myGame.events.on('showTrash', (d) => {
@@ -817,11 +831,6 @@ class MyHUD extends Phaser.Scene {
             // timerLabel.x = window.innerWidth - 20
             // timerLabel.y = window.innerHeight - 20
 
-            // progressBox.x = window.innerWidth - 20;
-            // progressBox.y = window.innerHeight - 20;
-            // progressBar.x = window.innerWidth - 20;
-            // progressBar.y = window.innerHeight - 20;
-
             buttonReport.x = window.innerWidth - 50
             buttonReport.y = window.innerHeight - 50
             iconReport.x = buttonReport.x
@@ -830,6 +839,10 @@ class MyHUD extends Phaser.Scene {
             reportText.y = window.innerHeight - 5
 
             imgMap.setX(screenCenterX).setY(screenCenterY)
+
+            timerCountroller.target.setX(screenCenterX).setY(20)
+            garbageCountroller.garbageLabel.setX(window.innerWidth-50).setY(10);
+            garbageCountroller.garbageLabel.wordWrap.width = window.innerWidth/4
         })
 
 

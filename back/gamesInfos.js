@@ -7,20 +7,21 @@ module.exports = {
                 id: gameId,
                 playerList: new Array(),
                 garbage : 0,
-                garbageMax : 50,
             }
         }
     },
-    garbageNumber(gameId){
+    returnGarbageNumber(gameId){
         return gamesInfos[gameId].garbage;
     },
     increaseGarbage(gameId){
         gamesInfos[gameId].garbage+=1;
     },
-    decreaseGarbage(){
-        if(gamesInfos[gameId].garbage > 0 ) {
-            gamesInfos[gameId].garbage-=1;
-        }
+    decreaseGarbage(gameId){/*
+        if(gamesInfos[gameId].garbage){
+            if(gamesInfos[gameId].garbage > 0 ) {
+                gamesInfos[gameId].garbage-=1;
+            }
+        }*/
     },
     getGameInfos(gameId){
         return gamesInfos[gameId] != undefined?gamesInfos[gameId]:0;
