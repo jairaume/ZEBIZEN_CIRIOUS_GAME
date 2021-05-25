@@ -8,70 +8,100 @@
         <link rel="stylesheet" href="../css/lobby.css">
         <link rel="stylesheet" href="../css/regles.css">
         
-        <script src="/socket.io/socket.io.js"></script>
-        
     </head>
     <body>
         <div class="header">
             <h1>Règles du Jeu :</h1>
         </div>
+        </br>
         <div class="content">
-            <h2>Préambule</h2>
-            <div class="box">
-                <p>
-                    Aprés des années à ne pas tenir compte de la pollution de la planète Terre, celle-ci fut saturé de déchets et les humains la déserta.
-                    Laissant derrière eux, une planète "poubelle". De ce fait, de nouvelles espèces d'animaux reprirent leurs droits.
-                    Vous incarnerez une nouvelles générations de dinosaures qui veulent nettoyer cette planète pour la rendre plus propre et plus vivable.
-                </p>
-                </br>
-                <p>
-                    Vous vous retrouvez donc dans une ville avec un tas de dèchets à ramasser et trier dans différentes poubelles correspondantes.
-                    MAIS ATTENTION, certains dinosaures voudront vous en empêchez !
-                </p>
-                </br>
-                <p>Chaque joueur aura un rôle que lui seul connaîtra, il y a deux types de rôles :</p>
-                </br>
-                <ul>
-                    <li>Les Dinosaures "gentils" : leur but est de trier tous les déchets dans les bonnes poubelles et de débusquer les dinosaures "imposteurs".</li>
-                    <li>Les Dinosaures "imposteurs" : leur but est d'empêcher les "gentils" de réussir leur nettoyage par le biais de plusieurs outils pour les ralentir.</li>
-                </ul>
-                
-            </div>
-            <h2>Les dinosaures "gentils"</h2>
-            <div class="box">
-                <div>
-                    <p>
-                        Pour les dinosaures "gentils", il faut prendre les déchets sur le tas de déchets présent au milieu de la map et les recycler dans les poubelles correspondantes. 
-                        Les poubelles sont générés aléatoirement sur la map, et leurs couleurs ne sont affichées seulement si un autre dinosaure est déjà passé dessus.
-                    </p>
+            <div id="preambule">
+                <h2>Préambule</h2>
+                <div class="box">
+                    <p>Après des années à ne pas tenir compte de la pollution de la planète Terre, celle-ci fut saturée de déchets et les humains la déserta. Laissant derrière eux, une planète "poubelle". De ce fait, de nouvelles espèces d'animaux reprirent leurs droits. Vous incarnerez une nouvelles générations de dinosaures qui veulent nettoyer cette planète pour la rendre plus propre et plus vivable.</p>
                     </br>
-                    <p>La partie est gagnée lorsque tous les déchets sont recyclés ou bien lorsque que tous le dinosaures "imposteurs" ont été expulsés.</p>  
-                </div>
-            </div>
-            <h2>Les dinosaures "imposteurs"</h2>
-            <div class="box">
-                <div>
-                    <p>Pour les dinosaures "imposteurs", ils peuvent donc utiliser 3 pouvoirs différents pour ralentir la progression des "gentils" :</p>
+                    <p>Vous vous retrouvez donc dans une ville avec un tas de déchets à ramasser et trier dans différentes poubelles correspondantes. MAIS ATTENTION, certains dinosaures voudront vous en empêcher !!</p>
+                    </br>
+                    <p>Chaque joueur aura un rôle que lui seul connaîtra, il y a deux types de rôles :</p>
                     </br>
                     <ul>
-                        <li><p>Le mélange des poubelles : comme son nom l'indique à l'activation ce pouvoir change les couleurs aléatoirement des poubelles de la map.</p></li>
-                        <li><p>La poubelle sur la tête : lorsque qu'il est assez proche d'un dinosaure "gentil", il peut mettre une poubelle sur sa tête cela réduit le champ de vision
-                        du joueur et l'empêche de discuter pour le reste de la partie avec les autres joueurs.</p></li>
-                        <li><p>Le sabottage des poubelles : lorsque qu'il est assez proche d'une poubelle, il peut décider de la renversée cela obligera les dinosaures "gentils" à 
-                        se mettre à deux simultanément pour redresser la poubelle.</p></li>
+                        <li><p>Les Dinosaures "gentils" : leur but est de trier tous les déchets dans les bonnes poubelles et de débusquer les dinosaures "imposteurs".</p></li>
+                        </br>
+                        <li><p>Les Dinosaures "imposteurs" : leur but est d'empêcher les "gentils" de réussir leur nettoyage par le biais de plusieurs outils pour les ralentir.</p></li>
+                    </ul>
+                </div>
+            </div>
+            <div id="gentils">
+                <h2>Les dinosaures "gentils"</h2>
+                <div class="box">
+                    <p>Pour les dinosaures "gentils", il faut prendre les déchets sur le tas de déchets présent au milieu de la map et les recycler dans les poubelles correspondantes. Pour recycler les déchets, il faut rester immobile pendant 5s à côté de la bonne poubelle, une fois cette tâche effectuée, vous ne pouvez plus recycler pendant 5s.</p> 
+                    </br>
+                    <p>Les poubelles sont générées aléatoirement sur la map, et leurs couleurs ne sont affichées seulement si un autre dinosaure est déjà passé dessus.</p>
+                    </br>
+                    <p>Ils peuvent également réparer certaines poubelles cassées par les dinosaures "imposteurs" pour cela, il doit rester 5s immobile à côté de la poubelle cassée.</p>
+                    </br>
+                    <p>La partie est gagnée lorsque tous les déchets sont recyclés ou lorsque que tous les dinosaures "imposteurs" ont été expulsés.</p>  
+                </div>
+            </div>
+            <div id="imposteurs">
+                <h2>Les dinosaures "imposteurs"</h2>
+                <div class="box">
+                    <p>Pour les dinosaures "imposteurs", ils peuvent donc utiliser 3 sabotages pour ralentir la progression des "gentils" :</p>
+                    </br>
+                    <ul>
+                        <li><p>Le mélange des poubelles : comme son nom l'indique, ce sabotage change les couleurs aléatoirement des poubelles de la map.</p></li>
+                        </br>
+                        <li><p>La poubelle sur la tête : lorsque qu'il est assez proche d'un dinosaure "gentil", il peut mettre une poubelle sur sa tête cela l'empêche de discuter pour le reste de la partie avec les autres joueurs.</p></li>
+                        </br>
+                        <li><p>Casser une poubelle : lorsque qu'il est assez proche d'une poubelle, il peut décider de la casser pour cela il doit rester immobile pendant 5s à côté de celle-ci.
+                        Cette action empêchera les "gentils" de recycler les déchets et ils devront réparer la poubelle pour de nouveaux l'utiliser.</p></li>
+                        </br>
+                        <li><p>ATTENTION : A chaque sabotage peut importe lequel, les "imposteurs" ne pourront plus utiliser les sabotages pendant 20s !</p></li>
                     </ul>
                     </br>
                     <p>La partie est gagnée lorsque les "gentils" sont en infériorité numérique ou bien que les "gentils" n'ont pas fini dans le temps imparti.</p>
                 </div>
             </div>
-            <h2>Les Réunions</h2>
-            <div class="box">
-                <p>Une Réunion se déclenche lorsque qu'un joueur déclare un dinosaure avec une poubelle sur la tête et décide de déclencher une réunion.</p>
-                </br>
-                <p>Deroulement de la réunion :</p>
-                <ul>
-                    <li><p>Les joueurs débattent et essayent de se mettre d'accord sur un vote, le joueur avec la majorité de vote est exclu si ils ne se sont pas mis d'accord alors aucune exclusion, la partie reprend.</p></li>
-                </ul>
+            <div id="reunions">
+                <h2>Les Réunions</h2>
+                <div class="box">
+                    <p>Une Réunion se déclenche lorsque qu'un joueur déclare un dinosaure avec une poubelle sur la tête ou lorsqu'un joueur appuie sur le buzzer de réunion.</p>
+                    </br>
+                    <p>Deroulement de la réunion :</p>
+                    </br>
+                    <ul>
+                        <li><p>Les joueurs débattent et essayent de se mettre d'accord sur un vote, le joueur avec la majorité de vote est exclu si ils ne se sont pas mis d'accord alors aucune exclusion, la partie reprend.</p></li>
+                    </ul>
+                </div>
+            </div>
+            <div id="touches">
+                <h2>Les Touches</h2>
+                <div class="box">
+                    <div>
+                        <p>Tous les joueurs : </p>
+                        </br>
+                        <ul>
+                            <li><p>(TAB) Afficher la map</p></li>
+                            <li><p>(R) Signaler un dinosaure avec une poubelle sur la tête (être poche du joueur) OU lancer une réunion (être poche du buzzer).</p></li>
+                        </ul>
+                        </br>
+                        <p>Dinosaures "gentils" : </p>
+                        </br>
+                        <ul>
+                            <il><p>(E) Prendre un déchets sur le tas de déchets (être proche du tas de déchets).</p></il>
+                            <il><p>(E) Recycler le déchets dans la poubelle correspondantes (être proche de la poubelle).</p></il>
+                            <il><p>(E) Réparer une poubelle cassée (être proche de la poubelle).</p></il>
+                        </ul>
+                        </br>
+                        <p>Dinosaures "imposteurs" : </p>
+                        </br>
+                        <ul>
+                            <il><p>(P) Mélanger les poubelles</p></il>
+                            <il><p>(E) Casser une poubelle (être proche de la poubelle)</p></il>
+                            <il><p>(?) Mettre une poubelle sur la tête d'un dinosaure (être proche du joueur)</p></il>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </body>
