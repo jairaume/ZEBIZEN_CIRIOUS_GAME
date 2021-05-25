@@ -1,12 +1,12 @@
 export default class CountdownController{	
-    constructor(scene,target,progressBar,duration){
+    constructor(scene,target,progressBar,progressBox, duration){
 		this.scene=scene
 		this.duration=duration
 		this.max=duration
 		this.target=target
 		this.timerEvent=undefined
 		this.progressBar = progressBar
-		
+		this.progressBox = progressBox
 	}
 
 	formatTime(seconds)
@@ -25,10 +25,16 @@ export default class CountdownController{
 	{
 		this.duration -= 1; // One second
 		let pourcentage = (this.max-this.duration)/this.max;
-		let newWidth = pourcentage*680;
+		let newWidth = Math.ceil(pourcentage*680);
 		this.target.setText("Timer : "+this.formatTime(this.duration));
-		if(newWidth>40) this.progressBar.fillRoundedRect(window.innerWidth - 710,window.innerHeight - 210,newWidth,30,15);
+		if(newWidth>40) this.progressBar.fillRect(window.innerWidth - 710,window.innerHeight - 210,newWidth,30);
+		//console.log(newWidth)
+		// if(newWidth>40) {
+		// 	this.progressBar.displayWidth = newWidth
+		// }
+
 	}
+
 
 	start()
 	{
@@ -38,7 +44,7 @@ export default class CountdownController{
 
         //this.target.setText("Timer : "+this.formatTime(this.duration))
 		this.progressBar.fillStyle(0xFF0000,1)
-		this.progressBar.fillRoundedRect(window.innerWidth - 710,window.innerHeight - 210,50,30,15);
+		this.progressBar.fillRect(window.innerWidth - 710,window.innerHeight - 210,0,30);
 		this.progressBar.setDepth(11);
 		this.timerEvent = this.scene.time.addEvent({ delay: 1000, callback: this.onEvent, callbackScope: this, repeat:this.duration-1 });
     }
@@ -61,3 +67,4 @@ export default class CountdownController{
 		if(this.duration==0) this.target.setText("Le jeu est terminé !")
 	}
 }
+            

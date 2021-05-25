@@ -1,20 +1,39 @@
 export default class GarbageCountroller{	
-    constructor(scene,garbageLabel,garbageProgressBar,garbageObjectif){
+	constructor(){
+		this.scene = undefined
+		this.garbageLabel=undefined
+		this.garbageProgressBar = undefined
+		this.garbageObjectif = undefined
+		this.garbage = 0;
+		this.autorization = false;
+	}
+
+	setAttribute(scene,garbageLabel,garbageProgressBar,garbageObjectif){
 		this.scene = scene
 		this.garbageLabel=garbageLabel
 		this.garbageProgressBar = garbageProgressBar
 		this.garbageObjectif = garbageObjectif
-		this.garbage = 0;
 	}
 
-	onEvent()
+	autorizationOnTrue(){
+		console.log("Vous avez l'autorisation.")
+		this.autorization = true;
+	}
+
+	autorizationOnFalse(){
+		console.log("Vous n'avez plus l'autorisation.");
+		this.autorization = false;
+	}
+
+	getAutorization(){
+		return this.autorization
+	}
+
+	setGarbageNumber(garbageNumber)
 	{
-		this.garbage+=1;
-		
-		let pourcentage = this.garbage / this.garbageObjectif;
+		let pourcentage = garbageNumber / this.garbageObjectif;
 		let newWidth = pourcentage*680;
-		console.log("garbage : ",this.garbage,"\nPourcentage : ",pourcentage,"\nNew Width : ",newWidth);
-		this.garbageLabel.setText("Objectif Déchets : "+this.garbage+"/"+this.garbageObjectif);
+		this.garbageLabel.setText("Objectif Déchets : "+garbageNumber+"/"+this.garbageObjectif);
 		this.garbageProgressBar.fillRoundedRect(window.innerWidth - 710,window.innerHeight - 70,newWidth,30,15);
 	}
 

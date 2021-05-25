@@ -59,15 +59,19 @@ app.get('/', (req, res) => {
             res.sendFile(__dirname + '/front/html/lobby.html');
         } else {
             if (rooms.exist(sessionData.currentGameId)) {//si la game existe
-                if (!rooms.isPlayerInRoom(sessionData.currentGameId, req.sessionID)) {//si le joueur n'est pas deja dans la room
+                if (!rooms.isPlayerInRoom(sessionData.currentGameId, req.sessionID) && !rooms.getGameStatus(sessionData.currentGameId)) {//si le joueur n'est pas deja dans la room && que la game n est pas deja lancée
                     rooms.joinRoom(sessionData.currentGameId, req.sessionID, sessionData.username);
-                }
-                if(rooms.getGameStatus(sessionData.currentGameId)){
-                    res.sendFile(__dirname + '/front/html/index.html');
                 }else{
-                    res.sendFile(__dirname + '/front/html/lobby.html');
+                    //res.sendFile(__dirname + '/front/html/login.html');
                 }
-                //console.log(rooms.getData(sessionData.currentGameId));
+                if(rooms.isPlayerInRoom(sessionData.currentGameId, req.sessionID)){
+                    if(rooms.getGameStatus(sessionData.currentGameId)){
+                        res.sendFile(__dirname + '/front/html/index.html');
+                    }else{
+                        res.sendFile(__dirname + '/front/html/lobby.html');
+                    }
+                    //console.log(rooms.getData(sessionData.currentGameId));
+                }
             }
             else {
                 res.sendFile(__dirname + '/front/html/login.html');
@@ -248,15 +252,38 @@ io.on('connection', (socket) => {
         });
         
         //renverser les poubelles
-        socket.on('reverse-bin', (poubelleColor)=>{
-            console.log('je suis la ')
-            gamesInfos.reverseBin(gameId, poubelleColor);
+        socket.on('reverse-bin', (poubelleColor,angle)=>{
+            //console.log('je suis la avec : ', poubelleColor)
+            gamesInfos.reverseBin(gameId, poubelleColor,angle);
 
-            socket.to(gameId).emit('generate-bins',gamesInfos.getPoubelles(gameId));
-            socket.emit('generate-bins', gamesInfos.getPoubelles(gameId));
+            socket.to(gameId).emit('regenerate-bins',gamesInfos.getPoubelles(gameId));
+            socket.emit('regenerate-bins', gamesInfos.getPoubelles(gameId));
         });
+
+        // Incrémentation de la variabe comptant le nombre de déchets "réussis" par les joueurs d'une room
+        socket.on("modifyGarbageServer", (goodChoice) => {
+            goodChoice == true ? gamesInfos.increaseGarbage(gameId) : gamesInfos.increaseGarbage(gameId);
+            // gamesInfos.decreaseGarbage(gameId);
+            console.log("GoodChoice passé.")
+            socket.to(gameId).emit("sendGarbageClient",gamesInfos.garbageNumber(gameId));
+            socket.emit("autorizationFalse");
+        })
+
+        //Mettre une poubelle sur la tete d'un player
+        socket.on('setPoubelleHead', (id)=>{
+            socket.to(gameId).emit("setPoubelleHead",id);
+            socket.emit("setPoubelleHead", id);
+
+        })
+
+        //DEBUT DE REUNION
+        socket.on('reunion',()=>{
+            socket.to(gameId).emit('go-reunion')
+            socket.emit('go-reunion')
+            console.log('eebut reuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu')
+        })
+
     }
-
-
+    
 });
 

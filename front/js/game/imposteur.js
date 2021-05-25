@@ -1,10 +1,9 @@
 let imposteur = {
-    changebin(){
+    changeBin(){
         socket.emit('regenerate-bins-query','');
     },
-    reverseBin(colorBin){
-        console.log('ici')
-        socket.emit('reverse-bin',colorBin);
+    reverseBin(colorBin, angle){
+        socket.emit('reverse-bin',colorBin,angle);
     }
 }
 

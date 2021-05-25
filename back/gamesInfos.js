@@ -6,10 +6,22 @@ module.exports = {
             gamesInfos[gameId] = {
                 id: gameId,
                 playerList: new Array(),
+                garbage : 0,
+                garbageMax : 50,
             }
         }
     },
-
+    garbageNumber(gameId){
+        return gamesInfos[gameId].garbage;
+    },
+    increaseGarbage(gameId){
+        gamesInfos[gameId].garbage+=1;
+    },
+    decreaseGarbage(){
+        if(gamesInfos[gameId].garbage > 0 ) {
+            gamesInfos[gameId].garbage-=1;
+        }
+    },
     getGameInfos(gameId){
         return gamesInfos[gameId] != undefined?gamesInfos[gameId]:0;
     },
@@ -58,7 +70,7 @@ module.exports = {
         return gamesInfos[gameId] != undefined;
     },
 
-    reverseBin(gameId, poubelleColor){
-        gamesInfos[gameId].bins[poubelleColor].angle = 90;
+    reverseBin(gameId, poubelleColor, angle){
+        gamesInfos[gameId].bins[poubelleColor].angle = angle;
     }
 }

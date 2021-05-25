@@ -54,15 +54,15 @@ class functionBins{
             coord[i] = this.aleatoirePosBins(this.list);
         }
         const bin = {
-            "Bleue" : {color:'Bleue',x: coord[0][0]['x'], y: coord[0][0]['y'], flip: coord[0][0]['flip'], unknow: true, url: '../../assets/poubelles/poubelle-bleue.png'},
-            "Violet" : {color: 'Violet',x: coord[1][0]['x'], y: coord[1][0]['y'], flip: coord[1][0]['flip'], unknow: true, url: '../../assets/poubelles/poubelle-violet.png'},
-            "Marron" :{color: 'Marron',x: coord[2][0]['x'], y: coord[2][0]['y'], flip: coord[2][0]['flip'], unknow: true, url: '../../assets/poubelles/poubelle-marron.png'},
-            "Jaune" : {color: 'Jaune',x: coord[3][0]['x'], y: coord[3][0]['y'], flip: coord[3][0]['flip'], unknow: true, url: '../../assets/poubelles/poubelle-jaune.png'},
-            "Noir": {color: 'Noir',x: coord[4][0]['x'], y: coord[4][0]['y'], flip: coord[4][0]['flip'], unknow:true, url: '../../assets/poubelles/poubelle-noir.png'},
-            "Rouge" : {color: 'Rouge',x: coord[5][0]['x'], y: coord[5][0]['y'], flip: coord[5][0]['flip'], unknow: true, url: '../../assets/poubelles/poubelle-rouge.png'},
-            "Orange" : {color: 'Orange',x: coord[6][0]['x'], y: coord[6][0]['y'], flip: coord[6][0]['flip'], unknow: true, url: '../../assets/poubelles/poubelle-orange.png'},
-            "Blanc": {color: 'Blanc',x: coord[7][0]['x'], y: coord[7][0]['y'], flip: coord[7][0]['flip'], unknow: true, url: '../../assets/poubelles/poubelle-blanc.png'},
-            "Vert": {color: 'Vert',x: coord[8][0]['x'], y: coord[8][0]['y'], flip: coord[8][0]['flip'], unknow: true, url: '../../assets/poubelles/poubelle-vert.png'}
+            "Bleue" : {color:'Bleue',x: coord[0][0]['x'], y: coord[0][0]['y'], flip: coord[0][0]['flip'], unknow: true, angle : 0, url: '../../assets/poubelles/poubelle-bleue.png'},
+            "Violet" : {color: 'Violet',x: coord[1][0]['x'], y: coord[1][0]['y'], flip: coord[1][0]['flip'], unknow: true,angle : 0, url: '../../assets/poubelles/poubelle-violet.png'},
+            "Marron" :{color: 'Marron',x: coord[2][0]['x'], y: coord[2][0]['y'], flip: coord[2][0]['flip'], unknow: true,angle : 0, url: '../../assets/poubelles/poubelle-marron.png'},
+            "Jaune" : {color: 'Jaune',x: coord[3][0]['x'], y: coord[3][0]['y'], flip: coord[3][0]['flip'], unknow: true,angle : 0, url: '../../assets/poubelles/poubelle-jaune.png'},
+            "Noir": {color: 'Noir',x: coord[4][0]['x'], y: coord[4][0]['y'], flip: coord[4][0]['flip'], unknow:true, angle : 0,url: '../../assets/poubelles/poubelle-noir.png'},
+            "Rouge" : {color: 'Rouge',x: coord[5][0]['x'], y: coord[5][0]['y'], flip: coord[5][0]['flip'], unknow: true,angle : 0, url: '../../assets/poubelles/poubelle-rouge.png'},
+            "Orange" : {color: 'Orange',x: coord[6][0]['x'], y: coord[6][0]['y'], flip: coord[6][0]['flip'], unknow: true,angle : 0, url: '../../assets/poubelles/poubelle-orange.png'},
+            "Blanc": {color: 'Blanc',x: coord[7][0]['x'], y: coord[7][0]['y'], flip: coord[7][0]['flip'], unknow: true,angle : 0, url: '../../assets/poubelles/poubelle-blanc.png'},
+            "Vert": {color: 'Vert',x: coord[8][0]['x'], y: coord[8][0]['y'], flip: coord[8][0]['flip'], unknow: true,angle : 0, url: '../../assets/poubelles/poubelle-vert.png'}
         };
 
         this.list = [];
