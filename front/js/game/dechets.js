@@ -25,16 +25,18 @@ let dechet = {
             if(player.dechet.trashColor == bin.color){
                 player.dechet=null;
                 console.log( 'bonne poubelle')
+                return 1;
                 // Incrémenter l'objectif de déchets
             }
             else {
                 player.dechet=null;
                 console.log( 'mauvaise poubelles')
+                return -1;
                 // Decrementer l'objectif de dechets
             }
         }
         else{
-            console.log( 'pas de dechet sur le player')
+            return 0;
         }
     }
 }

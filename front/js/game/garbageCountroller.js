@@ -14,12 +14,12 @@ export default class GarbageCountroller{
 	}
 
 	autorizationOnTrue(){
-		console.log("Vous avez l'autorisation.")
+		//console.log("Vous avez l'autorisation.")
 		this.autorization = true;
 	}
 
 	autorizationOnFalse(){
-		console.log("Vous n'avez plus l'autorisation.");
+		//console.log("Vous n'avez plus l'autorisation.");
 		this.autorization = false;
 	}
 
@@ -29,6 +29,7 @@ export default class GarbageCountroller{
 
 	setGarbageNumber(garbageNumber)
 	{
+		//console.log("On modifie l'affiche")
 		this.garbageLabel.setText("Déchets jetés : "+garbageNumber+"/"+this.garbageObjectif);
 	}
 
@@ -40,7 +41,9 @@ export default class GarbageCountroller{
 			wordWrap: { width: window.innerWidth/4, useAdvancedWrap: true }
 		 })
         .setDepth(10)
-        .setOrigin(1,0);  
+        .setOrigin(1,0)
+		.setStroke("#383838",10)
+
     }
 
 }

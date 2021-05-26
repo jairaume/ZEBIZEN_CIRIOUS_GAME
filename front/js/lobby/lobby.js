@@ -99,8 +99,9 @@ socket.on('newInfo', (data) => {
     gameDurationRange.value = roomInfos.gameDuration;
     gameDurationOutput.value = roomInfos.gameDuration;
 
-    nbDechetsRange.value = roomInfos.nbDechet;
-    nbDechetsOutput.value = roomInfos.nbDechet;
+    nbDechetsRange.value = roomInfos.nbDechets;
+    nbDechetsOutput.value = roomInfos.nbDechets;
+
 
 });
 
@@ -278,7 +279,7 @@ gameDurationRange.oninput = function () {
 }
 gameDurationOutput.oninput = function () {
     gameDurationRange.value = this.value;
-    socket.emit('gameDuration', DechetsDurationOutput.value)
+    socket.emit('gameDuration', gameDurationOutput.value)
 }
 
 nbDechetsRange.oninput = function () {
@@ -336,6 +337,5 @@ sendAudio.volume = .1;
 function sendSound() {
     sendAudio.play();
 }
-
 
 /**************************************************/

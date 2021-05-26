@@ -14,6 +14,20 @@ const POUBELLE_POS_V2 =[
     {'id':9,'x': -2567, 'y': 1277, 'flip': true},
     {'id':10,'x': -1030, 'y': 1630, 'flip': false},
     {'id':11,'x': -2439, 'y': 2317, 'flip': false}
+
+/*
+    {'id':0,'x':-150,'y':100, 'flip': false},
+    {'id':1,'x':-50,'y':100, 'flip': true},
+    {'id':2,'x':-50,'y':200, 'flip': false},/////////
+    {'id':3,'x':-50,'y':300, 'flip': false},
+    {'id':4,'x':-50,'y':400, 'flip': true},
+    {'id':5,'x':-50,'y':500, 'flip': true},
+    {'id':6,'x':-50,'y':600, 'flip': false},
+    {'id':7,'x':-50,'y':700, 'flip': false},
+    {'id':8,'x':-50,'y':800, 'flip': true},
+    {'id':9,'x':-50,'y':900, 'flip': true},
+    {'id':10,'x': -50, 'y': 1000, 'flip': false},
+    {'id':11,'x': -50, 'y': 1100, 'flip': false}*/
 ]
 class functionBins{
     constructor(){

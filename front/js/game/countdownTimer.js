@@ -7,6 +7,10 @@ export default class CountdownController{
 		this.timerEvent=undefined
 	}
 
+	setDuration(duration){
+		this.duration = duration;
+	}
+
 	formatTime(seconds)
 	{
 		var minutes = Math.floor(seconds/60);
@@ -26,13 +30,12 @@ export default class CountdownController{
 	{
 		this.target = this.scene.add.text(window.innerWidth/2, 20, this.formatTime(this.duration), { 
 			fontSize: 50,
-			stroke: '#383838',
-			strokeThickness: 6
 		 })
 		.setDepth(10)
 		.setOrigin(0.5, 0)
+		.setStroke("#383838",8)
 
-		this.timerEvent = this.scene.time.addEvent({ delay: 1000, callback: this.onEvent, callbackScope: this, repeat:this.duration-1 });
+		this.timerEvent = this.scene.time.addEvent({ delay: 1000, callback: this.onEvent, callbackScope: this, repeat:this.duration-1});
     }
 
 	stop()
@@ -45,12 +48,15 @@ export default class CountdownController{
 	restart()
 	{
 		this.target.setText(this.formatTime(this.duration));
-		this.timerEvent = this.scene.time.addEvent({ delay: 1000, callback: this.onEvent, callbackScope: this, repeat:this.duration-1 });
+		this.timerEvent = this.scene.time.addEvent({ delay: 1000, callback: this.onEvent, callbackScope: this, repeat:this.duration-1});
 	}
 
 	isFinish()
 	{
-		if(this.duration==0) this.target.setText("Le jeu est terminé !")
+		if(this.duration==0){
+			this.target.setText("Le jeu est terminé !")
+			return true;
+		}
 	}
 }
             

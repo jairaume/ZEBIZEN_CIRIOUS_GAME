@@ -104,18 +104,29 @@ module.exports = {
     setGameStatus(roomId, status){
         state[roomId].gameStatus = status;
     },
+    destroy(roomId){
+        state[roomId] = undefined;
+        rooms[roomId] = undefined;
+    },
 
     generateImposteur(roomId){
-        let nbJoueur = this.getNbReady(roomId)-1;
-        let imposteur
-        for(let i = 0; i<state[roomId].nbImposteur; i++){
-            do{
-                imposteur = entierAleatoire(0,nbJoueur-i);
-            }
-            while(state[roomId].playerList[imposteur].isImposteur)
+        let nbJoueur = this.getNbReady(roomId);//nombre de joueur dans la partie
+        let imposteur = entierAleatoire(0,nbJoueur-1);
+        if(state[roomId].nbImposteur>=nbJoueur){
             state[roomId].playerList[imposteur].isImposteur = true;
-        
+            //console.log('plus d\'impo que de joueur')
+            return 1;
         }
+        //console.log('nombre impo :'+ state[roomId].nbImposteur );
+        for(let i = 0; i<state[roomId].nbImposteur; i++){
+            //console.log('generation des impos'+ imposteur)
+            do{
+            state[roomId].playerList[imposteur].isImposteur = true;
+            imposteur = entierAleatoire(0,nbJoueur-1);
+            }     
+            while(state[roomId].playerList[imposteur].isImposteur);
+        }
+        //console.log(state[roomId].playerList)
     }
 
 }
@@ -142,7 +153,7 @@ function createGameState(id, ownerId, username) {
         },
         speed: 1,
         nbImposteur: 1,
-        nbDechet:50,
+        nbDechets:30,
         gameDuration:10,
         modeIncognito: false
     }

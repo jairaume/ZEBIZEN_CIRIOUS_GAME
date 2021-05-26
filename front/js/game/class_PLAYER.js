@@ -39,7 +39,7 @@ class Player {
         this.walkSound = new Audio('../audio/walk-audio.mp3');
         this.poubelle = false;
         this.recycle = true;
-
+        this.dead = false;
     }
 
 
