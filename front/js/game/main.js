@@ -899,13 +899,13 @@ class MyHUD extends Phaser.Scene {
             // timerLabel.x = window.innerWidth - 20
             // timerLabel.y = window.innerHeight - 20
 
-            reportText.x = window.innerWidth - 50
-            reportText.y = window.innerHeight - 5
-
             imgMap.setX(screenCenterX).setY(screenCenterY)
 
             timerCountroller.target.setX(screenCenterX).setY(20)
             garbageCountroller.garbageLabel.setX(window.innerWidth - 50).setY(10);
+
+            inputText.x = window.innerWidth - 10
+            inputText.y = window.innerHeight - 10
         })
     }
 
