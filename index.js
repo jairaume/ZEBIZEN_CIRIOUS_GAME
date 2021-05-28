@@ -99,7 +99,7 @@ app.post('/login', urlencodedParser, (req, res) => {
 })
 
 
-let PORT = process.envv.PORT || 55555
+let PORT = process.env.PORT || 55555
 //Start serveur
 http.listen(PORT, () => {
     console.log('Serveur lancé sur le port ',PORT);
